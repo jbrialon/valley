@@ -10,18 +10,19 @@ export default class Environment {
 
     // Debug
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Environment");
+      // this.debugFolder = this.debug.ui.addFolder("Environment");
     }
 
     // Setup
-    this.setAmbientLight();
-    this.setSunLight();
+    // this.setAmbientLight();
+    // this.setSunLight();
   }
 
   setAmbientLight() {
     this.ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(this.ambientLight);
   }
+
   setSunLight() {
     this.sunLight = new THREE.DirectionalLight(0xffffff, 0.6);
     this.sunLight.castShadow = true;

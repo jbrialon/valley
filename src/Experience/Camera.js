@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
 import Experience from "./Experience";
+
 export default class Camera {
   constructor() {
     this.experience = new Experience();
@@ -22,7 +22,7 @@ export default class Camera {
       100
     );
 
-    this.instance.position.set(9, 9, 9);
+    this.instance.position.set(11, 7, 3);
     this.scene.add(this.instance);
   }
 
@@ -30,8 +30,8 @@ export default class Camera {
     this.controls = new OrbitControls(this.instance, this.canvas);
     this.controls.enableDamping = true;
 
-    this.controls.minPolarAngle = THREE.MathUtils.degToRad(30);
-    this.controls.maxPolarAngle = THREE.MathUtils.degToRad(90);
+    // this.controls.minPolarAngle = THREE.MathUtils.degToRad(30);
+    // this.controls.maxPolarAngle = THREE.MathUtils.degToRad(90);
   }
 
   resize() {
@@ -40,6 +40,6 @@ export default class Camera {
   }
 
   update() {
-    this.controls.update();
+    if (this.controls) this.controls.update();
   }
 }

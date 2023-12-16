@@ -12,7 +12,7 @@ export default class Renderer {
 
     // Options
     this.options = {
-      clearColor: "#e4dfd2",
+      clearColor: "#bca48f",
     };
 
     // Debug

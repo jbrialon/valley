@@ -1,5 +1,5 @@
-uniform vec3 uColorA;
-uniform vec3 uColorB;
+uniform vec3 uTerrainColor;
+uniform vec3 uLineColor;
 uniform float uContourFrequency;
 uniform float uContourWidth;
 varying float vElevation;
@@ -12,7 +12,7 @@ void main() {
     float isContour = step(mod(vElevation, contourThreshold), uContourWidth); // contour Width
 
     // Interpolate between colors based on whether it's a contour line or not
-    vec3 finalColor = mix(uColorA, uColorB, isContour);
+    vec3 finalColor = mix(uTerrainColor, uLineColor, isContour);
 
     // Color the pixel based on whether it's a contour line or not
     gl_FragColor = vec4(finalColor, 1.0);
