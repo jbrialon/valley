@@ -42,6 +42,7 @@ export default class Map {
 
     // Setup
     this.resource = this.resources.items.mapModel;
+    this.maskTexture = this.resources.items.noMaskTexture;
 
     // this.setElevationMaterial();
     this.setWireframeMaterial();
@@ -117,6 +118,7 @@ export default class Map {
         uColorThree: {
           value: new THREE.Color(this.options.uColorThree),
         },
+        uMaskTexture: { value: this.maskTexture },
       },
       vertexShader: wireFrameVertexShader,
       fragmentShader: wireframeFragmentShader,

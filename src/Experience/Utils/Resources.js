@@ -27,12 +27,18 @@ export default class Resources extends EventEmitter {
 
     this.loaders.gltfLoader = new GLTFLoader();
     this.loaders.gltfLoader.setDRACOLoader(this.loaders.dracoLoader);
+
+    this.loaders.textureLoader = new THREE.TextureLoader();
   }
 
   startLoading() {
     for (const source of this.sources) {
       if (source.type === "gltfModel") {
         this.loaders.gltfLoader.load(source.path, (file) => {
+          this.sourceLoaded(source, file);
+        });
+      } else if (source.type === "texture") {
+        this.loaders.textureLoader.load(source.path, (file) => {
           this.sourceLoaded(source, file);
         });
       }

@@ -6,11 +6,19 @@ uniform vec3 uLineColor;
 uniform vec3 uColorOne;
 uniform vec3 uColorTwo;
 uniform vec3 uColorThree;
+uniform sampler2D uMaskTexture;
 
 varying vec2 vUv;
 varying vec3 vVertex;
 
 void main() {
+  float maskValue = texture2D(uMaskTexture, vUv).r;
+
+  // Use the mask value to discard fragments
+  if (maskValue > 0.5) {
+      discard;
+  }
+  
   // Pick a coordinate to visualize in a grid
   // float coord = length(vUv) * 200.0; 
   float coord = length(vVertex.xz) * uContourFrequency;
