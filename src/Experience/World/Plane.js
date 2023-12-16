@@ -145,7 +145,7 @@ export default class Plane {
       }
     });
 
-    this.model.position.y = 0.01;
+    this.model.position.y = 0.001;
     this.scene.add(this.model);
   }
 
