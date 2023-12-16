@@ -18,7 +18,7 @@ export default class Camera {
     }
 
     this.setInstance();
-    // this.setOrbitControls();
+    this.setOrbitControls();
 
     this.mouse = new THREE.Vector2();
     this.target = new THREE.Vector2();
