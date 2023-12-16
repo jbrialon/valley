@@ -15,18 +15,19 @@ export default class Map {
     this.time = this.experience.time;
     this.resources = this.experience.resources;
 
+    this.camera = this.experience.camera;
+
     // Options
     this.options = {
       uLineColor: "#f4e2d6", // #74675e
       uColorOne: "#bca48f", // #6a5e52
-      uColorTwo: "#c8c6b7",
+      uColorTwo: "#eda17f",
       uColorThree: "#e45221",
       uColorNumber: 1,
-      uContourFrequency: 1,
+      uContourFrequency: 3.3,
     };
 
     // this.options = {
-    //   uTerrainColor: "#e45221",
     //   uLineColor: "#53524c", // #74675e
     //   uColorOne: "#f4814a", // #6a5e52
     //   uColorTwo: "#eda17f",
@@ -181,6 +182,7 @@ export default class Map {
         });
     }
   }
+
   setModel() {
     this.model = this.resource.scene;
 
@@ -188,9 +190,28 @@ export default class Map {
       if (child instanceof THREE.Mesh) {
         child.material = this.wireFrameMaterial;
       }
+      if (child instanceof THREE.PerspectiveCamera) {
+        this.addCameraButton(child.position, child.rotation);
+      }
     });
 
     this.scene.add(this.model);
+  }
+
+  addCameraButton(position, rotation) {
+    if (this.debug.active) {
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.camera.setPositionAndRotation(position, rotation);
+              console.log(position, rotation);
+            },
+          },
+          "button"
+        )
+        .name("Update Camera Angle");
+    }
   }
 
   setDebug() {}
