@@ -16,6 +16,16 @@ export default class Camera {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Camera");
       // this.debugFolder.close();
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              console.log(this.instance.position, this.instance.rotation);
+            },
+          },
+          "button"
+        )
+        .name("print camera value");
     }
 
     this.setInstance();
@@ -46,12 +56,16 @@ export default class Camera {
       100
     );
 
-    this.instance.position.set(18.616, 5.501, -14.821);
+    this.instance.position.set(
+      -8.104594951108977,
+      8.028910435129925,
+      -2.4037926450420994
+    );
     this.initialRotation = new THREE.Quaternion().setFromEuler(
       new THREE.Euler(
-        0.15419531693037145,
-        -1.4982757011949766,
-        0.12684288442070207,
+        -1.0953606794264232,
+        -1.0345297883673101,
+        -1.031190012857037,
         "XYZ"
       )
     );

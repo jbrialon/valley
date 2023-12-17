@@ -1,5 +1,6 @@
 import Experience from "../Experience";
 import Environment from "./Environment";
+import Loader from "./Loader";
 import Map from "./Map";
 
 export default class World {
@@ -10,6 +11,7 @@ export default class World {
 
     // Wait for resources to be loaded
     this.resources.on("ready", () => {
+      this.loaderOverlay = new Loader();
       // Setup
       this.map = new Map({
         name: "Map Overlay",
@@ -19,7 +21,7 @@ export default class World {
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "maskTexture",
+        uMaskTexture: "maskTexture2",
         offsetPosY: 0.001,
         addButton: false,
       });
@@ -37,6 +39,9 @@ export default class World {
         addButton: true,
       });
       this.environment = new Environment();
+
+      // Show Experience
+      this.loaderOverlay.hideLoader();
     });
   }
 

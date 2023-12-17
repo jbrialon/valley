@@ -1,6 +1,9 @@
-varying vec2 vUv;
+uniform float uAlpha;
+uniform vec3 uColor;
 uniform sampler2D uMaskTexture;
 uniform float uStrength;
+
+varying vec2 vUv;
 
 void main() {
     // Sample the mask texture
@@ -12,5 +15,5 @@ void main() {
     }
 
     // If not discarded, set the fragment color to white
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1);
+    gl_FragColor = vec4(uColor, 1);
 }
