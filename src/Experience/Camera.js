@@ -12,6 +12,10 @@ export default class Camera {
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
 
+    this.options = {
+      position: new THREE.Vector3(0, 26, 0),
+      rotation: new THREE.Vector3(-90, 0, 0),
+    };
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Camera");
@@ -25,27 +29,28 @@ export default class Camera {
           },
           "button"
         )
-        .name("print camera value");
+        .name("Print camera value");
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.animateCameraPosition(
+                this.options.position,
+                this.options.rotation
+              );
+              this.instance.lookAt(0, 0, 0);
+            },
+          },
+          "button"
+        )
+        .name("camera to top");
     }
 
     this.setInstance();
     // this.setOrbitControls();
 
-    this.mouse = new THREE.Vector2();
-    this.target = new THREE.Vector2();
-    this.windowHalf = new THREE.Vector2(
-      window.innerWidth / 2,
-      window.innerHeight / 2
-    );
-
-    window.addEventListener(
-      "mousemove",
-      this.handleMouseMove.bind(this),
-      false
-    );
-
     // Debug
-    // this.setDebug();
+    this.setDebug();
   }
 
   setInstance() {
@@ -57,49 +62,30 @@ export default class Camera {
     );
 
     this.instance.position.set(
-      -8.104594951108977,
-      8.028910435129925,
-      -2.4037926450420994
+      this.options.position.x,
+      this.options.position.y,
+      this.options.position.z
     );
-    this.initialRotation = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(
-        -1.0953606794264232,
-        -1.0345297883673101,
-        -1.031190012857037,
-        "XYZ"
-      )
+    this.instance.rotation.set(
+      this.options.rotation.x,
+      this.options.rotation.y,
+      this.options.rotation.z
     );
 
-    this.instance.applyQuaternion(this.initialRotation);
+    this.instance.lookAt(0, 0, 0);
     this.scene.add(this.instance);
   }
 
-  setPositionAndRotation(position, rotation, name) {
-    if (this.debug.active) {
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              this.instance.position.set(
-                position.x,
-                position.y + 1,
-                position.z
-              );
-              this.instance.rotation.set(rotation.x, rotation.y, rotation.z);
+  animateCameraPosition(position, rotation) {
+    this.instance.position.set(position.x, position.y + 1, position.z);
+    this.instance.rotation.set(rotation.x, rotation.y, rotation.z);
 
-              gsap.to(this.instance.position, {
-                y: position.y,
-                duration: 1,
-                ease: "power4.EaseInOut",
-              });
-            },
-          },
-          "button"
-        )
-        .name(name);
-    }
+    gsap.to(this.instance.position, {
+      y: position.y,
+      duration: 1,
+      ease: "power4.EaseInOut",
+    });
   }
-
   setOrbitControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
     this.controls.enableDamping = true;
@@ -162,12 +148,6 @@ export default class Camera {
     }
   }
 
-  handleMouseMove(event) {
-    // Calculate normalized device coordinates (NDC)
-    this.mouse.x = event.clientX / this.windowHalf.x;
-    this.mouse.y = event.clientY / this.windowHalf.x;
-  }
-
   resize() {
     this.instance.aspect = this.sizes.width / this.sizes.height;
     this.instance.updateProjectionMatrix();
@@ -175,29 +155,5 @@ export default class Camera {
 
   update() {
     if (this.controls) this.controls.update();
-
-    // Get the mouse movement
-    // const mouseX = (this.mouse.x * 2 - 1) * 0.1;
-    // const mouseY = (this.mouse.y * 2 - 1) * 0.1;
-
-    // Create a quaternion for rotating around the local axes
-    // const rotationX = new THREE.Quaternion().setFromAxisAngle(
-    //   new THREE.Vector3(0, 0, 1),
-    //   mouseY
-    // );
-    // const rotationY = new THREE.Quaternion().setFromAxisAngle(
-    //   new THREE.Vector3(0, 1, 0),
-    //   mouseX
-    // );
-
-    // Combine the rotations with the initial rotation
-    // const finalRotation = new THREE.Quaternion();
-    // finalRotation
-    //   .multiply(rotationX)
-    //   .multiply(rotationY)
-    //   .multiply(this.initialRotation);
-
-    // Apply the rotation to the camera
-    // this.instance.quaternion.copy(finalRotation);
   }
 }

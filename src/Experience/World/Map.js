@@ -1,8 +1,9 @@
 import * as THREE from "three";
+import { gsap } from "gsap";
 import Experience from "../Experience";
 
-import ElevationVertexShader from "../../shaders/elevation/vertex.glsl";
-import ElevationFragmentShader from "../../shaders/elevation/fragment.glsl";
+import elevationVertexShader from "../../shaders/elevation/vertex.glsl";
+import elevationFragmentShader from "../../shaders/elevation/fragment.glsl";
 
 import wireFrameVertexShader from "../../shaders/wireframe/vertex.glsl";
 import wireframeFragmentShader from "../../shaders/wireframe/fragment.glsl";
@@ -37,60 +38,31 @@ export default class Map {
     this.resource = this.resources.items.mapModel;
     this.maskTexture = this.resources.items[this.options.uMaskTexture].clone();
 
-    // this.setElevationMaterial();
+    this.setElevationMaterial();
     this.setWireframeMaterial();
     this.setModel();
+
+    this.setDebug();
   }
 
   setElevationMaterial() {
     this.elevationMaterial = new THREE.ShaderMaterial({
       uniforms: {
         uAlpha: { value: 1 },
-        uTerrainColor: { value: new THREE.Color(this.options.uTerrainColor) },
+        uTerrainColor: { value: new THREE.Color(this.options.uColorOne) },
         uLineColor: { value: new THREE.Color(this.options.uLineColor) },
         uContourFrequency: { value: 0.05 },
         uContourWidth: { value: 0.005 },
       },
-      vertexShader: ElevationVertexShader,
-      fragmentShader: ElevationFragmentShader,
+      vertexShader: elevationVertexShader,
+      fragmentShader: elevationFragmentShader,
     });
-
-    if (this.debug.active) {
-      this.debugFolder
-        .addColor(this.options, "uTerrainColor")
-        .name("Terrain Color")
-        .onChange(() => {
-          this.elevationMaterial.uniforms.uTerrainColor.value.set(
-            this.options.uTerrainColor
-          );
-        });
-      this.debugFolder
-        .addColor(this.options, "uLineColor")
-        .name("Line Color")
-        .onChange(() => {
-          this.elevationMaterial.uniforms.uLineColor.value.set(
-            this.options.uLineColor
-          );
-        });
-      this.debugFolder
-        .add(this.elevationMaterial.uniforms.uContourFrequency, "value")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .name("Contour Frequency");
-      this.debugFolder
-        .add(this.elevationMaterial.uniforms.uContourWidth, "value")
-        .min(0)
-        .max(0.05)
-        .step(0.001)
-        .name("Contour Width");
-    }
   }
 
   setWireframeMaterial() {
     this.wireFrameMaterial = new THREE.ShaderMaterial({
       uniforms: {
-        uAlpha: { value: 1 },
+        uAlpha: { value: this.options.uAlpha },
         uContourWidth: {
           value: 1,
         },
@@ -117,8 +89,79 @@ export default class Map {
       fragmentShader: wireframeFragmentShader,
       transparent: true,
     });
+  }
 
+  setModel() {
+    this.model = this.resource.scene.clone();
+
+    this.model.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.material = this.wireFrameMaterial;
+      }
+      if (child instanceof THREE.PerspectiveCamera && this.options.addButton) {
+        this.camera.debugFolder
+          .add(
+            {
+              button: () => {
+                gsap.fromTo(
+                  this.wireFrameMaterial.uniforms.uContourFrequency,
+                  {
+                    value: 1,
+                  },
+                  {
+                    duration: 3,
+                    value: 3.3,
+                    ease: "power4.inOut",
+                  }
+                );
+
+                this.camera.animateCameraPosition(
+                  child.position,
+                  child.rotation
+                );
+              },
+            },
+            "button"
+          )
+          .name(child.name);
+      }
+    });
+
+    this.model.position.y = this.options.offsetPosY;
+    this.scene.add(this.model);
+  }
+
+  setDebug() {
     if (this.debug.active) {
+      // this.debugFolder
+      //   .addColor(this.options, "uColorOne")
+      //   .name("Terrain Color")
+      //   .onChange(() => {
+      //     this.elevationMaterial.uniforms.uTerrainColor.value.set(
+      //       this.options.uColorOne
+      //     );
+      //   });
+      // this.debugFolder
+      //   .addColor(this.options, "uLineColor")
+      //   .name("Line Color")
+      //   .onChange(() => {
+      //     this.elevationMaterial.uniforms.uLineColor.value.set(
+      //       this.options.uLineColor
+      //     );
+      //   });
+      // this.debugFolder
+      //   .add(this.elevationMaterial.uniforms.uContourFrequency, "value")
+      //   .min(0)
+      //   .max(1)
+      //   .step(0.001)
+      //   .name("Contour Frequency");
+      this.debugFolder
+        .add(this.elevationMaterial.uniforms.uContourWidth, "value")
+        .min(0)
+        .max(0.05)
+        .step(0.001)
+        .name("Contour Width");
+
       this.debugFolder
         .add(this.wireFrameMaterial.uniforms.uAlpha, "value")
         .min(0)
@@ -178,30 +221,5 @@ export default class Map {
     }
   }
 
-  setModel() {
-    this.model = this.resource.scene.clone();
-
-    this.model.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.material = this.wireFrameMaterial;
-      }
-      if (child instanceof THREE.PerspectiveCamera && this.options.addButton) {
-        this.camera.setPositionAndRotation(
-          child.position,
-          child.rotation,
-          child.name
-        );
-      }
-    });
-
-    this.model.position.y = this.options.offsetPosY;
-    this.scene.add(this.model);
-  }
-
-  setDebug() {}
-
-  update() {
-    // map animation
-    // this.animation.mixer.update(this.time.delta * 0.001);
-  }
+  update() {}
 }

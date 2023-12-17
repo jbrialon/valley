@@ -24,9 +24,4 @@ export default [
     type: "texture",
     path: "/transition-mask.jpg",
   },
-  {
-    name: "disp2Texture",
-    type: "texture",
-    path: "/disp2.jpg",
-  },
 ];

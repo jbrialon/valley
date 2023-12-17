@@ -13,21 +13,23 @@ export default class World {
     this.resources.on("ready", () => {
       this.loaderOverlay = new Loader();
       // Setup
-      this.map = new Map({
+      this.mapOverlayOne = new Map({
         name: "Map Overlay",
+        uAlpha: 0,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
         uColorTwo: "#eda17f",
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "maskTexture2",
+        uMaskTexture: "maskTexture",
         offsetPosY: 0.001,
         addButton: false,
       });
 
       this.map = new Map({
         name: "Map",
+        uAlpha: 1,
         uLineColor: "#f4e2d6", // #74675e
         uColorOne: "#bca48f", // #6a5e52
         uColorTwo: "#eda17f",
