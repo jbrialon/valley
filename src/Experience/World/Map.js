@@ -8,8 +8,9 @@ import wireFrameVertexShader from "../../shaders/wireframe/vertex.glsl";
 import wireframeFragmentShader from "../../shaders/wireframe/fragment.glsl";
 
 export default class Map {
-  constructor() {
+  constructor(options) {
     this.experience = new Experience();
+    this.options = options;
     this.debug = this.experience.debug;
     this.scene = this.experience.scene;
     this.time = this.experience.time;
@@ -18,15 +19,6 @@ export default class Map {
     this.camera = this.experience.camera;
 
     // Options
-    this.options = {
-      uLineColor: "#f4e2d6", // #74675e
-      uColorOne: "#bca48f", // #6a5e52
-      uColorTwo: "#eda17f",
-      uColorThree: "#e45221",
-      uColorNumber: 1,
-      uContourFrequency: 3.3,
-    };
-
     // this.options = {
     //   uLineColor: "#53524c", // #74675e
     //   uColorOne: "#f4814a", // #6a5e52
@@ -37,12 +29,13 @@ export default class Map {
 
     // Debug
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Map");
+      this.debugFolder = this.debug.ui.addFolder(this.options.name);
+      this.debugFolder.close();
     }
 
     // Setup
     this.resource = this.resources.items.mapModel;
-    this.maskTexture = this.resources.items.noMaskTexture;
+    this.maskTexture = this.resources.items[this.options.uMaskTexture].clone();
 
     // this.setElevationMaterial();
     this.setWireframeMaterial();
@@ -186,34 +179,23 @@ export default class Map {
   }
 
   setModel() {
-    this.model = this.resource.scene;
+    this.model = this.resource.scene.clone();
 
     this.model.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.material = this.wireFrameMaterial;
       }
-      if (child instanceof THREE.PerspectiveCamera) {
-        this.addCameraButton(child.position, child.rotation);
+      if (child instanceof THREE.PerspectiveCamera && this.options.addButton) {
+        this.camera.setPositionAndRotation(
+          child.position,
+          child.rotation,
+          child.name
+        );
       }
     });
 
+    this.model.position.y = this.options.offsetPosY;
     this.scene.add(this.model);
-  }
-
-  addCameraButton(position, rotation) {
-    if (this.debug.active) {
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              this.camera.setPositionAndRotation(position, rotation);
-              console.log(position, rotation);
-            },
-          },
-          "button"
-        )
-        .name("Update Camera Angle");
-    }
   }
 
   setDebug() {}

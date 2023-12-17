@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { gsap } from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Experience from "./Experience";
 
@@ -14,11 +15,11 @@ export default class Camera {
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Camera");
-      this.debugFolder.close();
+      // this.debugFolder.close();
     }
 
     this.setInstance();
-    this.setOrbitControls();
+    // this.setOrbitControls();
 
     this.mouse = new THREE.Vector2();
     this.target = new THREE.Vector2();
@@ -33,12 +34,13 @@ export default class Camera {
       false
     );
 
-    this.setDebug();
+    // Debug
+    // this.setDebug();
   }
 
   setInstance() {
     this.instance = new THREE.PerspectiveCamera(
-      100,
+      75,
       this.sizes.width / this.sizes.height,
       0.1,
       100
@@ -58,16 +60,30 @@ export default class Camera {
     this.scene.add(this.instance);
   }
 
-  setPositionAndRotation(position, rotation) {
-    const rotationEuler = new THREE.Euler(
-      rotation._x,
-      rotation._y,
-      rotation._z,
-      "XYZ"
-    );
-    console.log(position, rotationEuler);
-    this.instance.position.set(position.x, position.y, position.z);
-    this.instance.rotation.set(rotation.x, rotation.y, rotation.z);
+  setPositionAndRotation(position, rotation, name) {
+    if (this.debug.active) {
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.instance.position.set(
+                position.x,
+                position.y + 1,
+                position.z
+              );
+              this.instance.rotation.set(rotation.x, rotation.y, rotation.z);
+
+              gsap.to(this.instance.position, {
+                y: position.y,
+                duration: 1,
+                ease: "power4.EaseInOut",
+              });
+            },
+          },
+          "button"
+        )
+        .name(name);
+    }
   }
 
   setOrbitControls() {

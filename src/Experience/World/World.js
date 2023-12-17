@@ -1,7 +1,6 @@
 import Experience from "../Experience";
 import Environment from "./Environment";
 import Map from "./Map";
-import Plane from "./Plane";
 
 export default class World {
   constructor() {
@@ -12,8 +11,31 @@ export default class World {
     // Wait for resources to be loaded
     this.resources.on("ready", () => {
       // Setup
-      this.plane = new Plane();
-      this.map = new Map();
+      this.map = new Map({
+        name: "Map Overlay",
+        uLineColor: "#53524c", // #74675e
+        uColorOne: "#f4814a", // #6a5e52
+        uColorTwo: "#eda17f",
+        uColorThree: "#e45221",
+        uColorNumber: 3,
+        uContourFrequency: 3.3,
+        uMaskTexture: "maskTexture",
+        offsetPosY: 0.001,
+        addButton: false,
+      });
+
+      this.map = new Map({
+        name: "Map",
+        uLineColor: "#f4e2d6", // #74675e
+        uColorOne: "#bca48f", // #6a5e52
+        uColorTwo: "#eda17f",
+        uColorThree: "#e45221",
+        uColorNumber: 1,
+        uContourFrequency: 3.3,
+        uMaskTexture: "noMaskTexture",
+        offsetPosY: 0,
+        addButton: true,
+      });
       this.environment = new Environment();
     });
   }

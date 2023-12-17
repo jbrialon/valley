@@ -1,5 +1,4 @@
 import glsl from "vite-plugin-glsl";
-import obfuscatorPlugin from "vite-plugin-javascript-obfuscator";
 
 export default {
   root: "src/",
@@ -14,12 +13,5 @@ export default {
     emptyOutDir: true,
     sourcemap: false,
   },
-  plugins: [
-    glsl(),
-    obfuscatorPlugin({
-      options: {
-        debugProtection: true,
-      },
-    }),
-  ],
+  plugins: [glsl()],
 };
