@@ -2,6 +2,7 @@ import Experience from "../Experience";
 import Environment from "./Environment";
 import Loader from "./Loader";
 import Map from "./Map";
+import Overlay from "./Overlay";
 
 export default class World {
   constructor() {
@@ -13,33 +14,35 @@ export default class World {
     this.resources.on("ready", () => {
       this.loaderOverlay = new Loader();
       // Setup
-      this.mapOverlayOne = new Map({
-        name: "Map Overlay",
+      this.mapOverlayOne = new Overlay({
+        name: "Map Overlay One",
         uAlpha: 0,
+        uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
         uColorTwo: "#eda17f",
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "maskTexture",
+        uMaskTexture: "maskTexture3",
         offsetPosY: 0.001,
-        addButton: false,
       });
 
-      this.map = new Map({
-        name: "Map",
-        uAlpha: 1,
-        uLineColor: "#f4e2d6", // #74675e
-        uColorOne: "#bca48f", // #6a5e52
+      this.mapOverlayTwo = new Overlay({
+        name: "Map Overlay Two",
+        uAlpha: 0,
+        uStrength: 0.5,
+        uLineColor: "#53524c", // #74675e
+        uColorOne: "#f4814a", // #6a5e52
         uColorTwo: "#eda17f",
         uColorThree: "#e45221",
-        uColorNumber: 1,
+        uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "",
-        offsetPosY: 0,
-        addButton: true,
+        uMaskTexture: "maskTexture3",
+        offsetPosY: 0.001,
       });
+
+      this.map = new Map();
       this.environment = new Environment();
 
       // Show Experience
@@ -49,5 +52,7 @@ export default class World {
 
   update() {
     if (this.map) this.map.update();
+    if (this.mapOverlayOne) this.mapOverlayOne.update();
+    if (this.mapOverlayTwo) this.mapOverlayOne.update();
   }
 }

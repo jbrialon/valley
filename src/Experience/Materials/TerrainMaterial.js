@@ -6,7 +6,10 @@ import terrainFragmentShader from "../../shaders/terrain/fragment.glsl";
 const terrainMaterial = (options) => {
   return new THREE.ShaderMaterial({
     uniforms: {
-      uAlpha: { value: options.uAlpha || 1 },
+      uAlpha: { value: options.uAlpha || 0 },
+      uStrength: {
+        value: options.uStrength || 0.5,
+      },
       uContourWidth: { value: options.uContourWidth || 1 },
       uColorNumber: { value: options.uColorNumber || 1 },
       uContourFrequency: { value: options.uContourFrequency || 1 },

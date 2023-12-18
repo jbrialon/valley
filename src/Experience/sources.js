@@ -15,6 +15,11 @@ export default [
     path: "/mask2.jpg",
   },
   {
+    name: "maskTexture3",
+    type: "texture",
+    path: "/mask3.jpg",
+  },
+  {
     name: "noMaskTexture",
     type: "texture",
     path: "/nomask.jpg",

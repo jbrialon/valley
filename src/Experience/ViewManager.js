@@ -29,7 +29,9 @@ export default class ViewManager extends EventEmitter {
           .add(
             {
               button: () => {
-                this.trigger("cameraPositionChanged", key);
+                if (key != "top") {
+                  this.trigger("cameraPositionChanged", key);
+                }
                 this.experience.camera.animateCameraPosition(key);
               },
             },

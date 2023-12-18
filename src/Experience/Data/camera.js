@@ -6,23 +6,24 @@ export default {
     position: new THREE.Vector3(0, 26, 0),
     rotation: new THREE.Vector3(0, -90, 0),
     target: new THREE.Vector3(0, 0, 0),
+    animate: false,
   },
-  Camera: {
-    // day One
+  day3: {
     position: new THREE.Vector3(21.5, 7.5, -8),
     rotation: new THREE.Vector3(-0.2, 0.12, 0.034),
     target: new THREE.Vector3(25, 7, -15),
+    animate: true,
   },
-  Camera001_1: {
-    // day Two
+  day2: {
     position: new THREE.Vector3(3.9, 3.3, -7.4),
     rotation: new THREE.Vector3(0.016, -0.84, -0.014),
     target: new THREE.Vector3(5, 4, -8.3),
+    animate: true,
   },
-  Camera002: {
-    // day Three
+  day1: {
     position: new THREE.Vector3(5.7, 4.8, -12.8),
     rotation: new THREE.Vector3(-0.95, -1.35, -0.94),
     target: new THREE.Vector3(7, 5.5, -12.9),
+    animate: true,
   },
 };

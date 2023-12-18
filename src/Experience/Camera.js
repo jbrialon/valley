@@ -23,7 +23,7 @@ export default class Camera {
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Camera");
-      // this.debugFolder.close();
+      this.debugFolder.close();
     }
 
     this.setInstance();
@@ -79,21 +79,29 @@ export default class Camera {
 
   animateCameraPosition(name) {
     const camData = camera[name];
-    this.instance.position.set(
-      camData.position.x,
-      camData.position.y + 1,
-      camData.position.z
-    );
-    this.instance.lookAt(camData.target.x, camData.target.y, camData.target.z);
+    if (camData) {
+      this.instance.position.set(
+        camData.position.x,
+        camData.position.y + 1,
+        camData.position.z
+      );
+      this.instance.lookAt(
+        camData.target.x,
+        camData.target.y,
+        camData.target.z
+      );
 
-    gsap.to(this.instance.position, {
-      y: camData.position.y,
-      duration: 1,
-      ease: "power4.EaseInOut",
-      onComplete: () => {
-        //this.options.animateCamera = true;
-      },
-    });
+      if (camData.animate) {
+        gsap.to(this.instance.position, {
+          y: camData.position.y,
+          duration: 1,
+          ease: "power4.EaseInOut",
+          onComplete: () => {
+            //this.options.animateCamera = true;
+          },
+        });
+      }
+    }
   }
   setOrbitControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
@@ -102,55 +110,6 @@ export default class Camera {
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolderPosition = this.debugFolder.addFolder("Position");
-      this.debugFolderPosition.close();
-      this.debugFolderPosition
-        .add(this.instance.position, "x")
-        .min(0)
-        .max(100)
-        .step(0.01);
-      this.debugFolderPosition
-        .add(this.instance.position, "y")
-        .min(0)
-        .max(100)
-        .step(0.01);
-      this.debugFolderPosition
-        .add(this.instance.position, "z")
-        .min(0)
-        .max(100)
-        .step(0.01);
-      this.debugFolderRotation = this.debugFolder.addFolder("Rotation");
-      this.debugFolderRotation.close();
-      this.debugFolderRotation
-        .add(this.instance.rotation, "x")
-        .min(0)
-        .max(360)
-        .step(0.01)
-        .onChange(() => {
-          this.instance.rotation.x = THREE.MathUtils.degToRad(
-            this.instance.rotation.x
-          );
-        });
-      this.debugFolderRotation
-        .add(this.instance.rotation, "y")
-        .min(0)
-        .max(360)
-        .step(0.01)
-        .onChange(() => {
-          this.instance.rotation.y = THREE.MathUtils.degToRad(
-            this.instance.rotation.y
-          );
-        });
-      this.debugFolderRotation
-        .add(this.instance.rotation, "z")
-        .min(0)
-        .max(360)
-        .step(0.01)
-        .onChange(() => {
-          this.instance.rotation.y = THREE.MathUtils.degToRad(
-            this.instance.rotation.z
-          );
-        });
     }
   }
 

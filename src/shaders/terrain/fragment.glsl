@@ -1,4 +1,5 @@
 uniform float uAlpha;
+uniform float uStrength;
 uniform float uContourWidth;
 uniform float uColorNumber;
 uniform float uContourFrequency;
@@ -15,7 +16,7 @@ void main() {
   float maskValue = texture2D(uMaskTexture, vUv).r;
 
   // Use the mask value to discard fragments
-  if (maskValue > 0.5) {
+  if (maskValue > uStrength || uAlpha == 0.0) {
       discard;
   }
   
