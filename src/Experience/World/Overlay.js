@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import Experience from "../Experience";
 
-import terrainMaterial from "../Materials/terrainMaterial";
+import terrainMaterial from "../Materials/TerrainMaterial";
 
 export default class Overlay {
   constructor(options) {
