@@ -11,7 +11,7 @@ export default class Overlay {
     this.debug = this.experience.debug;
     this.scene = this.experience.scene;
     this.time = this.experience.time;
-    this.manager = this.experience.viewManager;
+    this.manager = this.experience.Manager;
     this.resources = this.experience.resources;
 
     // Options

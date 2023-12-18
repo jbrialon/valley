@@ -9,7 +9,7 @@ import Debug from "./Utils/Debug.js";
 import Stats from "./Utils/Stats.js";
 
 import Camera from "./Camera.js";
-import ViewManager from "./ViewManager.js";
+import Manager from "./Manager.js";
 import Renderer from "./Renderer.js";
 
 import World from "./World/World.js";
@@ -39,7 +39,7 @@ export default class Experience {
     this.mouseEvents = new MouseEvents();
     this.time = new Time();
     this.scene = new THREE.Scene();
-    this.viewManager = new ViewManager();
+    this.Manager = new Manager();
     this.resources = new Resources(sources);
     this.camera = new Camera();
     this.renderer = new Renderer();

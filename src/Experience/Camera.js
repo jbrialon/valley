@@ -13,6 +13,7 @@ export default class Camera {
     this.canvas = this.experience.canvas;
     this.sizes = this.experience.sizes;
     this.mouseEvents = this.experience.mouseEvents;
+    this.manager = this.experience.Manager;
     this.scene = this.experience.scene;
     this.time = this.experience.time;
 
@@ -28,6 +29,11 @@ export default class Camera {
 
     this.setInstance();
     // this.setOrbitControls();
+
+    // Events
+    this.manager.on("cameraPositionChanged", (key) => {
+      this.animateCameraPosition(key);
+    });
 
     // Mouse Events
     this.mouseEvents.on("mousemove", () => {

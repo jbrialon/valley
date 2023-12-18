@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import Experience from "./Experience";
-import EventEmitter from "./Utils/EventEmitter";
+import Experience from "./Experience.js";
+import EventEmitter from "./Utils/EventEmitter.js";
 
 import camera from "./Data/camera.js";
 
-export default class ViewManager extends EventEmitter {
+export default class Manager extends EventEmitter {
   constructor() {
     super();
     this.experience = new Experience();
@@ -29,10 +29,7 @@ export default class ViewManager extends EventEmitter {
           .add(
             {
               button: () => {
-                if (key != "top") {
-                  this.trigger("cameraPositionChanged", key);
-                }
-                this.experience.camera.animateCameraPosition(key);
+                this.trigger("cameraPositionChanged", key);
               },
             },
             "button"
