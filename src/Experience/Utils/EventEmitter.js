@@ -95,7 +95,7 @@ export default class EventEmitter {
     return this;
   }
 
-  trigger(_name, _args) {
+  trigger(_name, ..._args) {
     // Errors
     if (typeof _name === "undefined" || _name === "") {
       console.warn("wrong name");
@@ -108,7 +108,7 @@ export default class EventEmitter {
     // Default args
     const args = !(_args instanceof Array) ? [] : _args;
 
-    // Resolve names (should on have one event)
+    // Resolve names (should only have one event)
     let name = this.resolveNames(_name);
 
     // Resolve name

@@ -36,7 +36,7 @@ export default class World {
         uColorThree: "#e45221",
         uColorNumber: 1,
         uContourFrequency: 3.3,
-        uMaskTexture: "noMaskTexture",
+        uMaskTexture: "",
         offsetPosY: 0,
         addButton: true,
       });

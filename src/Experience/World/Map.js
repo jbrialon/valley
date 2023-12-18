@@ -2,11 +2,7 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import Experience from "../Experience";
 
-import elevationVertexShader from "../../shaders/elevation/vertex.glsl";
-import elevationFragmentShader from "../../shaders/elevation/fragment.glsl";
-
-import wireFrameVertexShader from "../../shaders/wireframe/vertex.glsl";
-import wireframeFragmentShader from "../../shaders/wireframe/fragment.glsl";
+import terrainMaterial from "../Materials/terrainMaterial";
 
 export default class Map {
   constructor(options) {
@@ -15,9 +11,8 @@ export default class Map {
     this.debug = this.experience.debug;
     this.scene = this.experience.scene;
     this.time = this.experience.time;
+    this.manager = this.experience.viewManager;
     this.resources = this.experience.resources;
-
-    this.camera = this.experience.camera;
 
     // Options
     // this.options = {
@@ -28,6 +23,20 @@ export default class Map {
     //   uColorNumber: 3,
     // };
 
+    this.manager.on("cameraPositionChanged", (key) => {
+      gsap.fromTo(
+        this.terrainMaterial.uniforms.uContourFrequency,
+        {
+          value: 1,
+        },
+        {
+          duration: 3,
+          value: 3.3,
+          ease: "power4.inOut",
+        }
+      );
+    });
+
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder(this.options.name);
@@ -36,59 +45,27 @@ export default class Map {
 
     // Setup
     this.resource = this.resources.items.mapModel;
-    this.maskTexture = this.resources.items[this.options.uMaskTexture].clone();
+    this.maskTexture = this.options.uMaskTexture
+      ? this.resources.items[this.options.uMaskTexture].clone()
+      : "";
 
-    this.setElevationMaterial();
-    this.setWireframeMaterial();
+    this.terrainMaterial = terrainMaterial({
+      uAlpha: 1,
+      uContourWidth: 1,
+      uColorNumber: this.options.uColorNumber,
+      uContourFrequency: this.options.uContourFrequency,
+      uTerrainColor: this.options.uTerrainColor,
+      uLineColor: this.options.uLineColor,
+      uColorOne: this.options.uColorOne,
+      uColorTwo: this.options.uColorTwo,
+      uColorThree: this.options.uColorThree,
+      uMaskTexture: this.maskTexture,
+    });
+
     this.setModel();
 
+    // Debug
     this.setDebug();
-  }
-
-  setElevationMaterial() {
-    this.elevationMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uAlpha: { value: 1 },
-        uTerrainColor: { value: new THREE.Color(this.options.uColorOne) },
-        uLineColor: { value: new THREE.Color(this.options.uLineColor) },
-        uContourFrequency: { value: 0.05 },
-        uContourWidth: { value: 0.005 },
-      },
-      vertexShader: elevationVertexShader,
-      fragmentShader: elevationFragmentShader,
-    });
-  }
-
-  setWireframeMaterial() {
-    this.wireFrameMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uAlpha: { value: this.options.uAlpha },
-        uContourWidth: {
-          value: 1,
-        },
-        uColorNumber: {
-          value: this.options.uColorNumber,
-        },
-        uContourFrequency: {
-          value: this.options.uContourFrequency,
-        },
-        uTerrainColor: { value: new THREE.Color(this.options.uTerrainColor) },
-        uLineColor: { value: new THREE.Color(this.options.uLineColor) },
-        uColorOne: {
-          value: new THREE.Color(this.options.uColorOne),
-        },
-        uColorTwo: {
-          value: new THREE.Color(this.options.uColorTwo),
-        },
-        uColorThree: {
-          value: new THREE.Color(this.options.uColorThree),
-        },
-        uMaskTexture: { value: this.maskTexture },
-      },
-      vertexShader: wireFrameVertexShader,
-      fragmentShader: wireframeFragmentShader,
-      transparent: true,
-    });
   }
 
   setModel() {
@@ -96,34 +73,7 @@ export default class Map {
 
     this.model.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        child.material = this.wireFrameMaterial;
-      }
-      if (child instanceof THREE.PerspectiveCamera && this.options.addButton) {
-        this.camera.debugFolder
-          .add(
-            {
-              button: () => {
-                gsap.fromTo(
-                  this.wireFrameMaterial.uniforms.uContourFrequency,
-                  {
-                    value: 1,
-                  },
-                  {
-                    duration: 3,
-                    value: 3.3,
-                    ease: "power4.inOut",
-                  }
-                );
-
-                this.camera.animateCameraPosition(
-                  child.position,
-                  child.rotation
-                );
-              },
-            },
-            "button"
-          )
-          .name(child.name);
+        child.material = this.terrainMaterial;
       }
     });
 
@@ -155,33 +105,33 @@ export default class Map {
       //   .max(1)
       //   .step(0.001)
       //   .name("Contour Frequency");
-      this.debugFolder
-        .add(this.elevationMaterial.uniforms.uContourWidth, "value")
-        .min(0)
-        .max(0.05)
-        .step(0.001)
-        .name("Contour Width");
+      // this.debugFolder
+      //   .add(this.elevationMaterial.uniforms.uContourWidth, "value")
+      //   .min(0)
+      //   .max(0.05)
+      //   .step(0.001)
+      //   .name("Contour Width");
 
       this.debugFolder
-        .add(this.wireFrameMaterial.uniforms.uAlpha, "value")
+        .add(this.terrainMaterial.uniforms.uAlpha, "value")
         .min(0)
         .max(1)
         .step(0.01)
         .name("Opacity");
       this.debugFolder
-        .add(this.wireFrameMaterial.uniforms.uContourWidth, "value")
+        .add(this.terrainMaterial.uniforms.uContourWidth, "value")
         .min(0)
         .max(3)
         .step(0.001)
         .name("Contour Width");
       this.debugFolder
-        .add(this.wireFrameMaterial.uniforms.uContourFrequency, "value")
+        .add(this.terrainMaterial.uniforms.uContourFrequency, "value")
         .min(0.1)
         .max(20)
         .step(0.1)
         .name("Contour Frequency");
       this.debugFolder
-        .add(this.wireFrameMaterial.uniforms.uColorNumber, "value")
+        .add(this.terrainMaterial.uniforms.uColorNumber, "value")
         .min(1)
         .max(3)
         .step(1)
@@ -190,7 +140,7 @@ export default class Map {
         .addColor(this.options, "uColorOne")
         .name("Color One")
         .onChange(() => {
-          this.wireFrameMaterial.uniforms.uColorOne.value.set(
+          this.terrainMaterial.uniforms.uColorOne.value.set(
             this.options.uColorOne
           );
         });
@@ -198,7 +148,7 @@ export default class Map {
         .addColor(this.options, "uColorTwo")
         .name("Color Two")
         .onChange(() => {
-          this.wireFrameMaterial.uniforms.uColorTwo.value.set(
+          this.terrainMaterial.uniforms.uColorTwo.value.set(
             this.options.uColorTwo
           );
         });
@@ -206,7 +156,7 @@ export default class Map {
         .addColor(this.options, "uColorThree")
         .name("Color Two")
         .onChange(() => {
-          this.wireFrameMaterial.uniforms.uColorThree.value.set(
+          this.terrainMaterial.uniforms.uColorThree.value.set(
             this.options.uColorThree
           );
         });
@@ -214,7 +164,7 @@ export default class Map {
         .addColor(this.options, "uLineColor")
         .name("Line Color")
         .onChange(() => {
-          this.wireFrameMaterial.uniforms.uLineColor.value.set(
+          this.terrainMaterial.uniforms.uLineColor.value.set(
             this.options.uLineColor
           );
         });

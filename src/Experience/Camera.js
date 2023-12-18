@@ -3,6 +3,8 @@ import { gsap } from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Experience from "./Experience";
 
+import camera from "./Data/camera.js";
+
 export default class Camera {
   constructor() {
     this.experience = new Experience();
@@ -10,47 +12,42 @@ export default class Camera {
     this.debug = this.experience.debug;
     this.canvas = this.experience.canvas;
     this.sizes = this.experience.sizes;
+    this.mouseEvents = this.experience.mouseEvents;
     this.scene = this.experience.scene;
+    this.time = this.experience.time;
 
     this.options = {
-      position: new THREE.Vector3(0, 26, 0),
-      rotation: new THREE.Vector3(-90, 0, 0),
+      animateCamera: false,
     };
+
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Camera");
       // this.debugFolder.close();
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              console.log(this.instance.position, this.instance.rotation);
-            },
-          },
-          "button"
-        )
-        .name("Print camera value");
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              this.animateCameraPosition(
-                this.options.position,
-                this.options.rotation
-              );
-              this.instance.lookAt(0, 0, 0);
-            },
-          },
-          "button"
-        )
-        .name("camera to top");
     }
 
     this.setInstance();
     // this.setOrbitControls();
 
+    // Mouse Events
+    this.mouseEvents.on("mousemove", () => {
+      this.onMouseMove();
+    });
+    this.mouseEvents.on("wheel", () => {
+      this.onMouseWheel();
+    });
+
     // Debug
     this.setDebug();
+  }
+
+  onMouseMove(event) {
+    // this.mouseEvents.mouse.x = event.clientX - this.windowHalf.x;
+    // this.mouseEvents.mouse.y = event.clientY - this.windowHalf.x;
+  }
+
+  onMouseWheel() {
+    this.instance.translateZ(+this.mouseEvents.mouse.z * 0.1);
   }
 
   setInstance() {
@@ -62,36 +59,45 @@ export default class Camera {
     );
 
     this.instance.position.set(
-      this.options.position.x,
-      this.options.position.y,
-      this.options.position.z
+      camera.top.position.x,
+      camera.top.position.y,
+      camera.top.position.z
     );
     this.instance.rotation.set(
-      this.options.rotation.x,
-      this.options.rotation.y,
-      this.options.rotation.z
+      camera.top.rotation.x,
+      camera.top.rotation.y,
+      camera.top.rotation.z
     );
 
-    this.instance.lookAt(0, 0, 0);
+    this.instance.lookAt(
+      camera.top.rotation.x,
+      camera.top.rotation.y,
+      camera.top.rotation.z
+    );
     this.scene.add(this.instance);
   }
 
-  animateCameraPosition(position, rotation) {
-    this.instance.position.set(position.x, position.y + 1, position.z);
-    this.instance.rotation.set(rotation.x, rotation.y, rotation.z);
+  animateCameraPosition(name) {
+    const camData = camera[name];
+    this.instance.position.set(
+      camData.position.x,
+      camData.position.y + 1,
+      camData.position.z
+    );
+    this.instance.lookAt(camData.target.x, camData.target.y, camData.target.z);
 
     gsap.to(this.instance.position, {
-      y: position.y,
+      y: camData.position.y,
       duration: 1,
       ease: "power4.EaseInOut",
+      onComplete: () => {
+        //this.options.animateCamera = true;
+      },
     });
   }
   setOrbitControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
     this.controls.enableDamping = true;
-
-    // this.controls.minPolarAngle = THREE.MathUtils.degToRad(30);
-    // this.controls.maxPolarAngle = THREE.MathUtils.degToRad(90);
   }
 
   setDebug() {
@@ -155,5 +161,17 @@ export default class Camera {
 
   update() {
     if (this.controls) this.controls.update();
+
+    // this.target.x = (1 - this.mouse.x) * 0.0002;
+    // this.target.y = (1 - this.mouse.y) * 0.0002;
+
+    if (this.options.animateCamera) {
+      // Adjust the translation speed based on mouse position
+      // const speed = 1;
+      // const translateX = this.target.x * speed * (1 + Math.abs(this.mouse.x));
+      // const translateY = this.target.y * speed * (1 + Math.abs(this.mouse.y));
+      // console.log(translateX);
+      // this.instance.translateX(translateX);
+    }
   }
 }
