@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import Sizes from "./Utils/Sizes.js";
-import MouseEvents from "./Utils/MouseEvents.js";
+import InputEvents from "./Utils/InputEvents.js";
 
 import Time from "./Utils/Time.js";
 import Resources from "./Utils/Resources.js";
@@ -36,7 +36,7 @@ export default class Experience {
     this.debug = new Debug();
     this.stats = new Stats();
     this.sizes = new Sizes();
-    this.mouseEvents = new MouseEvents();
+    this.inputEvents = new InputEvents();
     this.time = new Time();
     this.scene = new THREE.Scene();
     this.Manager = new Manager();

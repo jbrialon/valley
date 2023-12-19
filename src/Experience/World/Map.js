@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import terrainMaterial from "../Materials/TerrainMaterial";
+import outlineMaterial from "../Materials/OutlineMaterials";
 
 export default class Map {
   constructor() {
@@ -67,6 +68,11 @@ export default class Map {
       uMaskTexture: null,
     });
 
+    this.markerMaterial = outlineMaterial({
+      uLinewidth: 0.3,
+      uColor: 0x992625,
+    });
+    this.lakeMaterial = new THREE.MeshBasicMaterial({ color: 0x6bae8d });
     this.setModel();
 
     // Debug
@@ -77,8 +83,13 @@ export default class Map {
     this.model = this.resource.scene.clone();
 
     this.model.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
+      if (child instanceof THREE.Mesh && child.name === "map") {
         child.material = this.terrainMaterial;
+      } else if (child instanceof THREE.Mesh && child.name.includes("Lake")) {
+        child.material = this.lakeMaterial;
+      } else if (child instanceof THREE.Mesh && child.name !== "Scene") {
+        child.material = this.markerMaterial;
+      } else if (child instanceof THREE.PerspectiveCamera) {
       }
     });
 

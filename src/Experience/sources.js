@@ -2,7 +2,7 @@ export default [
   {
     name: "mapModel",
     type: "gltfModel",
-    path: "/models/map/mapmarkersubnotextcamera8.glb",
+    path: "/models/map/map-marker.glb",
   },
   {
     name: "maskTexture",

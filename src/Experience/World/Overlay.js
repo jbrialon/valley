@@ -84,8 +84,12 @@ export default class Overlay {
     this.model = this.resource.scene.clone();
 
     this.model.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
+      if (child instanceof THREE.Mesh && child.name === "map") {
+        console.log(child.name);
+
         child.material = this.terrainMaterial;
+      } else if (child.name !== "Scene") {
+        child.visible = false;
       }
     });
 

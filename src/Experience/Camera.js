@@ -12,7 +12,7 @@ export default class Camera {
     this.debug = this.experience.debug;
     this.canvas = this.experience.canvas;
     this.sizes = this.experience.sizes;
-    this.mouseEvents = this.experience.mouseEvents;
+    this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.Manager;
     this.scene = this.experience.scene;
     this.time = this.experience.time;
@@ -36,24 +36,20 @@ export default class Camera {
     });
 
     // Mouse Events
-    this.mouseEvents.on("mousemove", () => {
+    this.inputEvents.on("mousemove", () => {
       this.onMouseMove();
     });
-    this.mouseEvents.on("wheel", () => {
+    this.inputEvents.on("wheel", () => {
       this.onMouseWheel();
+    });
+
+    // Keyboard Events
+    this.inputEvents.on("keydown", (keyCode) => {
+      this.onKeyDown(keyCode);
     });
 
     // Debug
     this.setDebug();
-  }
-
-  onMouseMove(event) {
-    // this.mouseEvents.mouse.x = event.clientX - this.windowHalf.x;
-    // this.mouseEvents.mouse.y = event.clientY - this.windowHalf.x;
-  }
-
-  onMouseWheel() {
-    this.instance.translateZ(+this.mouseEvents.mouse.z * 0.1);
   }
 
   setInstance() {
@@ -80,7 +76,65 @@ export default class Camera {
       camera.top.rotation.y,
       camera.top.rotation.z
     );
+
     this.scene.add(this.instance);
+  }
+
+  onMouseMove(event) {
+    // this.mouseEvents.mouse.x = event.clientX - this.windowHalf.x;
+    // this.mouseEvents.mouse.y = event.clientY - this.windowHalf.x;
+  }
+
+  onMouseWheel() {
+    if (this.inputEvents.mouse.z > 0) {
+      this.animateMove(new THREE.Vector3(0, 0, 1));
+    } else if (this.inputEvents.mouse.z < 0) {
+      this.animateMove(new THREE.Vector3(0, 0, -1));
+    }
+    //this.animateMove(direction);
+  }
+
+  animateMove(direction) {
+    direction.applyQuaternion(this.instance.quaternion); // Rotate to camera's orientation
+
+    const distanceToMove = 1;
+    const newPosition = this.instance.position
+      .clone()
+      .add(direction.multiplyScalar(distanceToMove));
+
+    gsap.to(this.instance.position, {
+      x: newPosition.x,
+      y: newPosition.y,
+      z: newPosition.z,
+      duration: 2, // Set the duration of the animation
+      ease: "power4.easeInOut",
+    });
+  }
+
+  onKeyDown(keyCode) {
+    const moveDistance = 0.1;
+    let direction = new THREE.Vector3(0, 0, 0);
+    switch (keyCode) {
+      case "ArrowUp":
+        direction = new THREE.Vector3(0, 1, 0);
+        this.animateMove(direction);
+        break;
+      case "ArrowDown":
+        direction = new THREE.Vector3(0, -1, 0);
+        this.animateMove(direction);
+        break;
+      case "ArrowLeft":
+        direction = new THREE.Vector3(-1, 0, 0);
+        this.animateMove(direction);
+        break;
+      case "ArrowRight":
+        direction = new THREE.Vector3(1, 0, 0);
+        this.animateMove(direction);
+        break;
+      case "Space":
+        console.log("Camera Position:", this.instance.position);
+        break;
+    }
   }
 
   animateCameraPosition(name) {
@@ -91,6 +145,7 @@ export default class Camera {
         camData.position.y + 1,
         camData.position.z
       );
+
       this.instance.lookAt(
         camData.target.x,
         camData.target.y,
