@@ -1,6 +1,10 @@
 uniform float uLinewidth;
+varying vec3 vNormal;
 
 void main() {
-    vec4 pos = modelViewMatrix * vec4( position + normal * 1.0, 1.0 );
-    gl_Position = projectionMatrix * pos;
+    vNormal = normal;
+    vec3 newPosition = position + normal * uLinewidth;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
 }
+
+

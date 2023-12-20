@@ -3,6 +3,7 @@ import * as THREE from "three";
 import Experience from "./Experience.js";
 
 import { TransformControls } from "three/addons/controls/TransformControls.js";
+import outlineMaterial from "./Materials/OutlineMaterials";
 
 export default class Helpers {
   constructor() {
@@ -52,6 +53,7 @@ export default class Helpers {
     // Create a new helper
     this.helper = this.createTargetHelper();
     this.helper.scale.set(0.5, 0.5, 0.5);
+
     // Set the helper's position in front of the camera
     const distance = 7; // Adjust the distance as needed
     const position = this.camera.position
@@ -66,14 +68,16 @@ export default class Helpers {
     // Add the helper to the scene and TransformControls
     this.scene.add(this.helper);
     this.transformControls.attach(this.helper);
-
-    // Optional: Set the initial position of the TransformControls
-    //this.transformControls.position.copy(helper.position);
   }
 
   createTargetHelper() {
     const geometry = new THREE.CapsuleGeometry(1, 1, 4, 8);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff00ff });
+    // const material = new THREE.MeshBasicMaterial({ color: 0xff00ff });
+    const material = outlineMaterial({
+      uLinewidth: 0.3,
+      uColor: 0xff00ff,
+    });
+
     return new THREE.Mesh(geometry, material);
   }
 
