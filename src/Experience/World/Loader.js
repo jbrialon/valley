@@ -17,9 +17,16 @@ export default class Loader {
       uColor: "#968677",
     };
 
-    this.maskTexture = this.resources.items.transitionTexture;
+    // Debug
+
+    if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("loader mask");
+      this.debugFolder.close();
+    }
 
     // Setup
+    this.maskTexture = this.resources.items.transitionTexture;
+
     this.setGeometry();
     this.setMaterial();
     this.setMesh();

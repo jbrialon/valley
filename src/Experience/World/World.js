@@ -12,7 +12,7 @@ export default class World {
 
     // Wait for resources to be loaded
     this.resources.on("ready", () => {
-      this.loaderOverlay = new Loader();
+      // this.loaderOverlay = new Loader();
       // Setup
       this.day1 = new Overlay({
         name: "day1",
@@ -46,7 +46,7 @@ export default class World {
       this.environment = new Environment();
 
       // Show Experience
-      this.loaderOverlay.hideLoader();
+      // this.loaderOverlay.hideLoader();
     });
   }
 

@@ -10,6 +10,7 @@ import Stats from "./Utils/Stats.js";
 
 import Camera from "./Camera.js";
 import Manager from "./Manager.js";
+import Helpers from "./Helpers.js";
 import Renderer from "./Renderer.js";
 
 import World from "./World/World.js";
@@ -42,6 +43,7 @@ export default class Experience {
     this.Manager = new Manager();
     this.resources = new Resources(sources);
     this.camera = new Camera();
+    this.helpers = new Helpers();
     this.renderer = new Renderer();
 
     // World
@@ -67,6 +69,7 @@ export default class Experience {
     this.stats.begin();
     this.camera.update();
     this.world.update();
+    this.helpers.update();
     this.renderer.update();
     this.stats.end();
   }
