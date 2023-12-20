@@ -33,7 +33,7 @@ export default class Map {
     //   uColorNumber: 3,
     // };
 
-    this.manager.on("cameraPositionChanged", (key) => {
+    this.manager.on("cameraPositionChanged", () => {
       gsap.fromTo(
         this.terrainMaterial.uniforms.uContourFrequency,
         {
@@ -72,6 +72,7 @@ export default class Map {
       uLinewidth: 0.3,
       uColor: 0x992625,
     });
+    this.markerMaterial = new THREE.MeshBasicMaterial({ color: 0x992625 });
     this.lakeMaterial = new THREE.MeshBasicMaterial({ color: 0x6bae8d });
     this.setModel();
 

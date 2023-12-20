@@ -14,8 +14,8 @@ export default class World {
     this.resources.on("ready", () => {
       this.loaderOverlay = new Loader();
       // Setup
-      this.mapOverlayOne = new Overlay({
-        name: "Map Overlay One",
+      this.day1 = new Overlay({
+        name: "day1",
         uAlpha: 0,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
@@ -24,12 +24,12 @@ export default class World {
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "maskTexture",
+        uMaskTexture: "maskDayOneTexture",
         offsetPosY: 0.001,
       });
 
-      this.mapOverlayTwo = new Overlay({
-        name: "Map Overlay Two",
+      this.day2 = new Overlay({
+        name: "day2",
         uAlpha: 0,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
@@ -38,7 +38,7 @@ export default class World {
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "maskTexture",
+        uMaskTexture: "maskDaytwoTexture",
         offsetPosY: 0.001,
       });
 

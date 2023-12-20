@@ -23,31 +23,6 @@ export default class Overlay {
     //   uColorNumber: 3,
     // };
 
-    this.manager.on("cameraPositionChanged", (key) => {
-      gsap.fromTo(
-        this.terrainMaterial.uniforms.uAlpha,
-        {
-          value: 0,
-        },
-        {
-          duration: 3,
-          value: 1,
-          ease: "power4.inOut",
-        }
-      );
-      gsap.fromTo(
-        this.terrainMaterial.uniforms.uStrength,
-        {
-          value: 0.3,
-        },
-        {
-          duration: 6,
-          value: 0.9,
-          ease: "power4.inOut",
-        }
-      );
-    });
-
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder(this.options.name);
@@ -75,7 +50,7 @@ export default class Overlay {
     });
 
     this.setModel();
-
+    this.setEventListener();
     // Debug
     this.setDebug();
   }
@@ -95,6 +70,37 @@ export default class Overlay {
 
     this.model.position.y = this.options.offsetPosY;
     this.scene.add(this.model);
+  }
+
+  setEventListener() {
+    this.manager.on("cameraPositionChanged", (key) => {
+      if (this.options.name === key) {
+        gsap.fromTo(
+          this.terrainMaterial.uniforms.uAlpha,
+          {
+            value: 0,
+          },
+          {
+            duration: 3,
+            value: 0.75,
+            ease: "power4.inOut",
+          }
+        );
+        // gsap.fromTo(
+        //   this.terrainMaterial.uniforms.uStrength,
+        //   {
+        //     value: 0.3,
+        //   },
+        //   {
+        //     duration: 6,
+        //     value: 0.9,
+        //     ease: "power4.inOut",
+        //   }
+        // );
+      } else {
+        this.terrainMaterial.uniforms.uAlpha.value = 0;
+      }
+    });
   }
 
   setDebug() {
