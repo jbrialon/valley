@@ -24,7 +24,7 @@ export default class World {
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "maskDayOneTexture",
+        uMaskTexture: "dayOneTexture",
         offsetPosY: 0.001,
       });
 
@@ -38,7 +38,7 @@ export default class World {
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "maskDaytwoTexture",
+        uMaskTexture: "daytwoTexture",
         offsetPosY: 0.001,
       });
 

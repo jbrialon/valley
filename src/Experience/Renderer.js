@@ -6,6 +6,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 
 export default class Renderer {
@@ -21,6 +22,9 @@ export default class Renderer {
     this.options = {
       clearColor: "#968677",
     };
+
+    // Setup
+    this.selectedObjects = [];
 
     // Debug
     if (this.debug.active) {
@@ -56,14 +60,9 @@ export default class Renderer {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(this.sizes.pixelRatio);
 
-    /**
-     * Post processing
-     */
-    this.depthTexture = new THREE.DepthTexture();
-
+    // Post Processing
     this.renderTarget = new THREE.WebGLRenderTarget(800, 600, {
       samples: this.sizes.pixelRatio === 1 ? 2 : 0,
-      depthTexture: this.depthTexture,
       depthBuffer: true,
     });
 
@@ -74,6 +73,13 @@ export default class Renderer {
     // Render Pass
     this.renderPass = new RenderPass(this.scene, this.camera.instance);
     this.effectComposer.addPass(this.renderPass);
+
+    // this.outlinePass = new OutlinePass(
+    //   new THREE.Vector2(this.sizes.width, this.sizes.height),
+    //   this.scene,
+    //   this.camera.instance
+    // );
+    // this.effectComposer.addPass(this.outlinePass);
 
     // Antialias Pass.
     this.effectFXAA = new ShaderPass(FXAAShader);
@@ -88,6 +94,14 @@ export default class Renderer {
     //   this.renderer.getPixelRatio() === 1 &&
     //   this.renderer.capabilities.isWebGL2;
     // this.effectComposer.addPass(this.smaaPass);
+  }
+
+  addSelectedObject(object) {
+    this.selectedObjects.push(object);
+    this.selectedObjects = this.selectedObjects.filter(function (element) {
+      return element !== undefined;
+    });
+    this.outlinePass.selectedObjects = this.selectedObjects;
   }
 
   resize() {

@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import terrainMaterial from "../Materials/TerrainMaterial";
-import outlineMaterial from "../Materials/OutlineMaterials";
+import toonMaterial from "../Materials/ToonMaterial.js";
 
 export default class Map {
   constructor() {
@@ -13,6 +13,7 @@ export default class Map {
     this.time = this.experience.time;
     this.manager = this.experience.Manager;
     this.resources = this.experience.resources;
+    this.renderer = this.experience.renderer;
 
     // Options
     this.options = {
@@ -55,6 +56,9 @@ export default class Map {
 
     // Setup
     this.resource = this.resources.items.mapModel;
+    this.gradientMap = this.resources.items.fiveToneToonTexture;
+    this.gradientMap.magFilter = THREE.NearestFilter;
+
     this.terrainMaterial = terrainMaterial({
       uAlpha: 1,
       uContourWidth: 1,
@@ -68,11 +72,10 @@ export default class Map {
       uMaskTexture: null,
     });
 
-    this.markerMaterial = outlineMaterial({
-      uLinewidth: 0.3,
-      uColor: 0x992625,
+    this.markerMaterial = toonMaterial({
+      color: 0x992625,
+      gradientMap: this.gradientMap,
     });
-    this.markerMaterial = new THREE.MeshBasicMaterial({ color: 0x992625 });
     this.lakeMaterial = new THREE.MeshBasicMaterial({ color: 0x6bae8d });
     this.setModel();
 
@@ -88,8 +91,13 @@ export default class Map {
         child.material = this.terrainMaterial;
       } else if (child instanceof THREE.Mesh && child.name.includes("Lake")) {
         child.material = this.lakeMaterial;
-      } else if (child instanceof THREE.Mesh && child.name !== "Scene") {
+      } else if (
+        child instanceof THREE.Mesh &&
+        child.name !== "Scene" &&
+        child !== undefined
+      ) {
         child.material = this.markerMaterial;
+        // this.renderer.addSelectedObject(child);
       } else if (child instanceof THREE.PerspectiveCamera) {
       }
     });

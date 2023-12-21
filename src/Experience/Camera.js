@@ -65,11 +65,11 @@ export default class Camera {
       camera.top.position.y,
       camera.top.position.z
     );
-    this.instance.rotation.set(
-      camera.top.rotation.x,
-      camera.top.rotation.y,
-      camera.top.rotation.z
-    );
+    // this.instance.rotation.set(
+    //   camera.top.rotation.x,
+    //   camera.top.rotation.y,
+    //   camera.top.rotation.z
+    // );
 
     this.instance.lookAt(
       camera.top.rotation.x,
@@ -116,19 +116,19 @@ export default class Camera {
     let direction = new THREE.Vector3(0, 0, 0);
     switch (keyCode) {
       case "ArrowUp":
-        direction = new THREE.Vector3(0, 1, 0);
+        direction = new THREE.Vector3(0, moveDistance, 0);
         this.animateMove(direction);
         break;
       case "ArrowDown":
-        direction = new THREE.Vector3(0, -1, 0);
+        direction = new THREE.Vector3(0, -moveDistance, 0);
         this.animateMove(direction);
         break;
       case "ArrowLeft":
-        direction = new THREE.Vector3(-1, 0, 0);
+        direction = new THREE.Vector3(-moveDistance, 0, 0);
         this.animateMove(direction);
         break;
       case "ArrowRight":
-        direction = new THREE.Vector3(1, 0, 0);
+        direction = new THREE.Vector3(moveDistance, 0, 0);
         this.animateMove(direction);
         break;
       case "Space":
@@ -142,7 +142,7 @@ export default class Camera {
     if (camData) {
       this.instance.position.set(
         camData.position.x,
-        camData.position.y + 1,
+        camData.position.y,
         camData.position.z
       );
 

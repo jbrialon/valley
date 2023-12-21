@@ -5,18 +5,23 @@ export default [
     path: "/models/map/map-marker.glb",
   },
   {
-    name: "maskDayOneTexture",
+    name: "dayOneTexture",
     type: "texture",
-    path: "/mask/day1.jpg",
+    path: "/textures/mask/mask-day-1.jpg",
   },
   {
-    name: "maskDaytwoTexture",
+    name: "daytwoTexture",
     type: "texture",
-    path: "/mask/mask.jpg",
+    path: "/textures/mask/mask-day-2.jpg",
   },
   {
-    name: "transitionTexture",
+    name: "threeToneToonTexture",
     type: "texture",
-    path: "/mask/transition-mask.jpg",
+    path: "/textures/toon/threeTone.jpg",
+  },
+  {
+    name: "fiveToneToonTexture",
+    type: "texture",
+    path: "/textures/toon/fiveTone.jpg",
   },
 ];

@@ -32,15 +32,26 @@ export default class Resources extends EventEmitter {
   }
 
   startLoading() {
+    console.log("e");
     for (const source of this.sources) {
       if (source.type === "gltfModel") {
-        this.loaders.gltfLoader.load(source.path, (file) => {
-          this.sourceLoaded(source, file);
-        });
+        this.loaders.gltfLoader.load(
+          source.path,
+          (file) => {
+            this.sourceLoaded(source, file);
+          },
+          (progress) => this.onProgress(progress),
+          (error) => this.onError(error)
+        );
       } else if (source.type === "texture") {
-        this.loaders.textureLoader.load(source.path, (file) => {
-          this.sourceLoaded(source, file);
-        });
+        this.loaders.textureLoader.load(
+          source.path,
+          (file) => {
+            this.sourceLoaded(source, file);
+          },
+          (progress) => this.onProgress(progress),
+          (error) => this.onError(error)
+        );
       }
     }
   }
@@ -52,5 +63,13 @@ export default class Resources extends EventEmitter {
     if (this.loaded === this.toLoad) {
       this.trigger("ready");
     }
+  }
+
+  onProgress(progress) {
+    console.log(progress);
+  }
+
+  onError(error) {
+    console.log(error);
   }
 }
