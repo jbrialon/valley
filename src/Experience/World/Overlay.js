@@ -51,8 +51,10 @@ export default class Overlay {
       uMaskTexture: this.maskTexture,
     });
 
+    // Setup
     this.setModel();
     this.setEventListener();
+
     // Debug
     this.setDebug();
   }
@@ -73,8 +75,11 @@ export default class Overlay {
   }
 
   setEventListener() {
-    this.manager.on("cameraPositionChanged", (key) => {
-      if (this.options.name === key) {
+    this.manager.on("onMarkerClick", (name) => {
+      console.log(name);
+
+      if (name === "Syabru_Besi" && this.options.name === "day1") {
+        console.log("one");
         gsap.fromTo(
           this.terrainMaterial.uniforms.uAlpha,
           {
@@ -86,6 +91,51 @@ export default class Overlay {
             ease: "power4.inOut",
           }
         );
+      }
+
+      if (name === "Pairo" && this.options.name === "day2") {
+        console.log("two");
+        gsap.fromTo(
+          this.terrainMaterial.uniforms.uAlpha,
+          {
+            value: 0,
+          },
+          {
+            duration: 3,
+            value: 0.75,
+            ease: "power4.inOut",
+          }
+        );
+      }
+      if (name === "Sing_Gomba" && this.options.name === "day3") {
+        console.log("one");
+        gsap.fromTo(
+          this.terrainMaterial.uniforms.uAlpha,
+          {
+            value: 0,
+          },
+          {
+            duration: 3,
+            value: 0.75,
+            ease: "power4.inOut",
+          }
+        );
+      }
+    });
+
+    this.manager.on("cameraPositionChanged", (key) => {
+      if (this.options.name === key) {
+        // gsap.fromTo(
+        //   this.terrainMaterial.uniforms.uAlpha,
+        //   {
+        //     value: 0,
+        //   },
+        //   {
+        //     duration: 3,
+        //     value: 0.75,
+        //     ease: "power4.inOut",
+        //   }
+        // );
         // gsap.fromTo(
         //   this.terrainMaterial.uniforms.uStrength,
         //   {
@@ -97,8 +147,8 @@ export default class Overlay {
         //     ease: "power4.inOut",
         //   }
         // );
-      } else {
-        this.terrainMaterial.uniforms.uAlpha.value = 0;
+        // } else {
+        //   this.terrainMaterial.uniforms.uAlpha.value = 0;
       }
     });
   }

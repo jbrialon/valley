@@ -68,6 +68,7 @@ export default class Renderer {
   }
 
   update() {
+    this.interactionManager.update();
     this.instance.render(this.scene, this.camera.instance);
   }
 }

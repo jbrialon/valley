@@ -38,8 +38,22 @@ export default class World {
         uColorThree: "#e45221",
         uColorNumber: 3,
         uContourFrequency: 3.3,
-        uMaskTexture: "daytwoTexture",
-        offsetPosY: 0.001,
+        uMaskTexture: "dayTwoTexture",
+        offsetPosY: 0.002,
+      });
+
+      this.day3 = new Overlay({
+        name: "day3",
+        uAlpha: 0,
+        uStrength: 0.5,
+        uLineColor: "#53524c", // #74675e
+        uColorOne: "#f4814a", // #6a5e52
+        uColorTwo: "#eda17f",
+        uColorThree: "#e45221",
+        uColorNumber: 3,
+        uContourFrequency: 3.3,
+        uMaskTexture: "dayThreeTexture",
+        offsetPosY: 0.003,
       });
 
       this.map = new Map();

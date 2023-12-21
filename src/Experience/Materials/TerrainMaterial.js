@@ -26,6 +26,7 @@ const terrainMaterial = (options) => {
     vertexShader: terrainVertexShader,
     fragmentShader: terrainFragmentShader,
     transparent: true,
+    side: THREE.DoubleSide,
   });
 };
 

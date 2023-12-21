@@ -65,7 +65,7 @@ export default class Resources extends EventEmitter {
   }
 
   onProgress(progress) {
-    console.log(progress);
+    // console.log(progress);
   }
 
   onError(error) {

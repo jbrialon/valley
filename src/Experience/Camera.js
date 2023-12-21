@@ -61,20 +61,21 @@ export default class Camera {
     );
 
     this.instance.position.set(
-      camera.top.position.x,
-      camera.top.position.y,
-      camera.top.position.z
+      camera.day1.position.x,
+      camera.day1.position.y,
+      camera.day1.position.z
     );
-    // this.instance.rotation.set(
-    //   camera.top.rotation.x,
-    //   camera.top.rotation.y,
-    //   camera.top.rotation.z
-    // );
+
+    this.instance.rotation.set(
+      camera.day1.rotation.x,
+      camera.day1.rotation.y,
+      camera.day1.rotation.z
+    );
 
     this.instance.lookAt(
-      camera.top.rotation.x,
-      camera.top.rotation.y,
-      camera.top.rotation.z
+      camera.day1.target.x,
+      camera.day1.target.y,
+      camera.day1.target.z
     );
 
     this.scene.add(this.instance);

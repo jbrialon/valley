@@ -31,7 +31,8 @@ void main() {
   float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, uContourWidth);
 
   float maskValue = texture2D(uMaskTexture, vUv).r;
-
+  // vec4 textureColor = texture2D(uMaskTexture, vUv);
+  
   // Use the mask value to discard fragments
   if (maskValue > uStrength || uAlpha == 0.0) {
       discard;

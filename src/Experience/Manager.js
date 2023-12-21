@@ -13,8 +13,6 @@ export default class Manager extends EventEmitter {
     this.renderer = this.experience.renderer;
     this.camera = this.experience.camera;
 
-    this.InteractionManager = this.experience.InteractionManager;
-
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("View Manager");
@@ -23,6 +21,27 @@ export default class Manager extends EventEmitter {
 
     // Debug
     this.setDebug();
+  }
+
+  addClickEventToMesh(mesh, clickHandlerFunction) {
+    if (!this.interactionManager) {
+      this.interactionManager = this.experience.renderer.interactionManager;
+    }
+
+    mesh.addEventListener("mouseover", (event) => {
+      document.body.style.cursor = "pointer";
+    });
+
+    mesh.addEventListener("mouseout", (event) => {
+      document.body.style.cursor = "default";
+    });
+
+    mesh.addEventListener("click", (event) => {
+      if (typeof clickHandlerFunction === "function") {
+        clickHandlerFunction(event);
+      }
+    });
+    this.interactionManager.add(mesh);
   }
 
   setDebug() {

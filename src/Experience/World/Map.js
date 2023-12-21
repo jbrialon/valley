@@ -14,7 +14,7 @@ export default class Map {
     this.time = this.experience.time;
     this.manager = this.experience.Manager;
     this.resources = this.experience.resources;
-    this.renderer = this.experience.renderer;
+    this.inputEvents = this.experience.inputEvents;
 
     // Options
     this.options = {
@@ -27,6 +27,7 @@ export default class Map {
       uColorThree: "#e45221",
       uColorNumber: 1,
       uContourFrequency: 3.3,
+      markerColor: 0x992625,
     };
 
     this.manager.on("cameraPositionChanged", () => {
@@ -96,7 +97,7 @@ export default class Map {
         child !== undefined
       ) {
         child.visible = false;
-        this.addMarkerToPosition(child.position);
+        this.addMarkerToPosition(child);
       } else if (child instanceof THREE.PerspectiveCamera) {
         // Camera position
       }
@@ -105,46 +106,65 @@ export default class Map {
     this.scene.add(this.model);
   }
 
-  addMarkerToPosition(position) {
+  addMarkerToPosition(marker) {
     const geometry = new THREE.OctahedronGeometry(1, 0);
-    const material = toonMaterial({
-      color: 0x992625,
-      gradientMap: this.gradientMap,
-    });
+    const material = this.markerMaterial.clone();
 
-    const marker = new THREE.Mesh(geometry, material);
-    marker.scale.set(0.05, 0.07, 0.05);
-    marker.position.set(position.x, position.y, position.z);
-    this.markers.push(marker);
-    this.scene.add(marker);
+    const markerMesh = new THREE.Mesh(geometry, material);
+    markerMesh.name = marker.name;
+    markerMesh.scale.set(0.075, 0.1, 0.075);
+    markerMesh.position.set(
+      marker.position.x,
+      marker.position.y,
+      marker.position.z
+    );
+    this.markers.push(markerMesh);
+    this.scene.add(markerMesh);
+    this.manager.addClickEventToMesh(markerMesh, this.onMarkerClick.bind(this));
   }
+
+  onMarkerClick(event) {
+    const marker = event.target;
+    const name = event.target.name;
+    // marker.material.color.set(0x59231f);
+    this.manager.trigger("onMarkerClick", name);
+  }
+
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder
+      this.debugFolderMarker = this.debugFolder.addFolder("Marker");
+      this.debugFolderMarker
+        .addColor(this.options, "markerColor")
+        .name("Marker Color")
+        .onChange(() => {
+          this.markerMaterial.color.set(this.options.markerColor);
+        });
+      this.debugFolderMap = this.debugFolder.addFolder("Map");
+      this.debugFolderMap
         .add(this.terrainMaterial.uniforms.uAlpha, "value")
         .min(0)
         .max(1)
         .step(0.01)
         .name("Alpha");
-      this.debugFolder
+      this.debugFolderMap
         .add(this.terrainMaterial.uniforms.uContourWidth, "value")
         .min(0)
         .max(3)
         .step(0.001)
         .name("Contour Width");
-      this.debugFolder
+      this.debugFolderMap
         .add(this.terrainMaterial.uniforms.uContourFrequency, "value")
         .min(0.1)
         .max(20)
         .step(0.1)
         .name("Contour Frequency");
-      // this.debugFolder
+      // this.debugFolderMap
       //   .add(this.terrainMaterial.uniforms.uColorNumber, "value")
       //   .min(1)
       //   .max(3)
       //   .step(1)
       //   .name("Color Number");
-      this.debugFolder
+      this.debugFolderMap
         .addColor(this.options, "uColorOne")
         .name("Color One")
         .onChange(() => {
@@ -152,7 +172,7 @@ export default class Map {
             this.options.uColorOne
           );
         });
-      // this.debugFolder
+      // this.debugFolderMap
       //   .addColor(this.options, "uColorTwo")
       //   .name("Color Two")
       //   .onChange(() => {
@@ -160,7 +180,7 @@ export default class Map {
       //       this.options.uColorTwo
       //     );
       //   });
-      // this.debugFolder
+      // this.debugFolderMap
       //   .addColor(this.options, "uColorThree")
       //   .name("Color Two")
       //   .onChange(() => {
@@ -168,7 +188,7 @@ export default class Map {
       //       this.options.uColorThree
       //     );
       //   });
-      this.debugFolder
+      this.debugFolderMap
         .addColor(this.options, "uLineColor")
         .name("Line Color")
         .onChange(() => {
