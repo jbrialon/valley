@@ -9,9 +9,9 @@ export default {
     animate: false,
   },
   day1: {
-    position: new THREE.Vector3(-6.4, 4.6, -6.3),
+    position: new THREE.Vector3(-5.96, 3.9, -7),
     rotation: new THREE.Vector3(-0.43, -0.13, -0.06),
-    target: new THREE.Vector3(0.5, 1.7, -8.3),
+    target: new THREE.Vector3(8.2, -1.4, -7),
     animate: true,
   },
   day2: {

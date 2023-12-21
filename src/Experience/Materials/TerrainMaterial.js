@@ -4,13 +4,14 @@ import terrainVertexShader from "../../shaders/terrain/vertex.glsl";
 import terrainFragmentShader from "../../shaders/terrain/fragment.glsl";
 
 const terrainMaterial = (options) => {
+  console.log(options.uPixelRatio);
   return new THREE.ShaderMaterial({
     uniforms: {
       uAlpha: { value: options.uAlpha || 0 },
       uStrength: {
         value: options.uStrength || 0.5,
       },
-      uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+      uPixelRatio: { value: options.uPixelRatio || 2 },
       uContourWidth: { value: options.uContourWidth || 1 },
       uColorNumber: { value: options.uColorNumber || 1 },
       uContourFrequency: { value: options.uContourFrequency || 1 },

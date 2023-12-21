@@ -28,7 +28,7 @@ void main() {
   float outputMin = 0.65;  // Desired minimum output
   float outputMax = 1.0;  // Desired maximum output
 
-  float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, outputMax);
+  float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, uContourWidth);
 
   float maskValue = texture2D(uMaskTexture, vUv).r;
 

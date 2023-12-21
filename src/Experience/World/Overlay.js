@@ -10,6 +10,7 @@ export default class Overlay {
     this.options = options;
     this.debug = this.experience.debug;
     this.scene = this.experience.scene;
+    this.sizes = this.experience.sizes;
     this.time = this.experience.time;
     this.manager = this.experience.Manager;
     this.resources = this.experience.resources;
@@ -38,6 +39,7 @@ export default class Overlay {
     this.terrainMaterial = terrainMaterial({
       uAlpha: this.options.uAlpha,
       uStrength: this.options.uStrength,
+      uPixelRatio: this.sizes.pixelRatio,
       uContourWidth: 1,
       uColorNumber: this.options.uColorNumber,
       uContourFrequency: this.options.uContourFrequency,
@@ -60,8 +62,6 @@ export default class Overlay {
 
     this.model.traverse((child) => {
       if (child instanceof THREE.Mesh && child.name === "map") {
-        console.log(child.name);
-
         child.material = this.terrainMaterial;
       } else if (child.name !== "Scene") {
         child.visible = false;

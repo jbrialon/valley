@@ -35,7 +35,6 @@ export default class Helpers {
       this.debugFolder.close();
     }
     this.setDebug();
-    this.addHelper();
   }
 
   onKeyDown(keyCode) {

@@ -10,6 +10,7 @@ export default class Map {
     this.experience = new Experience();
     this.debug = this.experience.debug;
     this.scene = this.experience.scene;
+    this.sizes = this.experience.sizes;
     this.time = this.experience.time;
     this.manager = this.experience.Manager;
     this.resources = this.experience.resources;
@@ -26,13 +27,6 @@ export default class Map {
       uColorNumber: 1,
       uContourFrequency: 3.3,
     };
-    // this.options = {
-    //   uLineColor: "#53524c", // #74675e
-    //   uColorOne: "#f4814a", // #6a5e52
-    //   uColorTwo: "#eda17f",
-    //   uColorThree: "#e45221",
-    //   uColorNumber: 3,
-    // };
 
     this.manager.on("cameraPositionChanged", () => {
       gsap.fromTo(
@@ -56,11 +50,13 @@ export default class Map {
 
     // Setup
     this.resource = this.resources.items.mapModel;
-    this.gradientMap = this.resources.items.fiveToneToonTexture;
+    this.gradientMap = this.resources.items.threeToneToonTexture;
     this.gradientMap.magFilter = THREE.NearestFilter;
 
     this.terrainMaterial = terrainMaterial({
       uAlpha: 1,
+      uStrength: 1,
+      uPixelRatio: this.sizes.pixelRatio,
       uContourWidth: 1,
       uColorNumber: this.options.uColorNumber,
       uContourFrequency: this.options.uContourFrequency,
@@ -96,7 +92,9 @@ export default class Map {
         child.name !== "Scene" &&
         child !== undefined
       ) {
+        child.visible = false;
         child.material = this.markerMaterial;
+        this.addMarkerToPosition(child.position);
         // this.renderer.addSelectedObject(child);
       } else if (child instanceof THREE.PerspectiveCamera) {
       }
@@ -105,6 +103,23 @@ export default class Map {
     this.scene.add(this.model);
   }
 
+  addMarkerToPosition(position) {
+    const geometry = new THREE.CapsuleGeometry(1, 1, 4, 8);
+    const material = toonMaterial({
+      color: 0x992625,
+      gradientMap: this.gradientMap,
+    });
+
+    // const material = new THREE.MeshToonMaterial({
+    //   color: 0x992625,
+    //   gradientMap: this.gradientMap,
+    // });
+
+    const marker = new THREE.Mesh(geometry, material);
+    marker.scale.set(0.05, 0.05, 0.05);
+    marker.position.set(position.x, position.y, position.z);
+    this.scene.add(marker);
+  }
   setDebug() {
     if (this.debug.active) {
       this.debugFolder

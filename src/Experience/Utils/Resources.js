@@ -32,7 +32,6 @@ export default class Resources extends EventEmitter {
   }
 
   startLoading() {
-    console.log("e");
     for (const source of this.sources) {
       if (source.type === "gltfModel") {
         this.loaders.gltfLoader.load(
