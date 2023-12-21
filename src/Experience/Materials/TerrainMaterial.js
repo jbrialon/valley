@@ -4,7 +4,6 @@ import terrainVertexShader from "../../shaders/terrain/vertex.glsl";
 import terrainFragmentShader from "../../shaders/terrain/fragment.glsl";
 
 const terrainMaterial = (options) => {
-  console.log(options.uPixelRatio);
   return new THREE.ShaderMaterial({
     uniforms: {
       uAlpha: { value: options.uAlpha || 0 },

@@ -13,9 +13,12 @@
     "vite-plugin-glsl": "^1.2.1"
   },
   "dependencies": {
-    "stats.js": "^0.17.0",
     "gsap": "^3.12.4",
+    "install": "^0.13.0",
     "lil-gui": "^0.17.0",
-    "three": "^0.159.0"
+    "npm": "^10.2.5",
+    "stats.js": "^0.17.0",
+    "three": "^0.159.0",
+    "three.interactive": "^1.7.0"
   }
 }

@@ -10,7 +10,10 @@ export default class Manager extends EventEmitter {
     this.experience = new Experience();
 
     this.debug = this.experience.debug;
+    this.renderer = this.experience.renderer;
     this.camera = this.experience.camera;
+
+    this.InteractionManager = this.experience.InteractionManager;
 
     // Debug
     if (this.debug.active) {

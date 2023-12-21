@@ -1,13 +1,6 @@
 import * as THREE from "three";
 import Experience from "./Experience";
-
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
-import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
-import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
+import { InteractionManager } from "three.interactive";
 
 export default class Renderer {
   constructor() {
@@ -24,7 +17,6 @@ export default class Renderer {
     };
 
     // Setup
-    this.selectedObjects = [];
 
     // Debug
     if (this.debug.active) {
@@ -39,10 +31,11 @@ export default class Renderer {
     }
 
     this.setInstance();
+    this.setInteractionManager();
   }
 
   setInstance() {
-    this.renderer = new THREE.WebGLRenderer({
+    this.instance = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
       powerPreference: "high-performance",
@@ -55,72 +48,26 @@ export default class Renderer {
     // this.instance.outputColorSpace = THREE.LinearSRGBColorSpace;
     // this.instance.shadowMap.enabled = true;
     // this.instance.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.renderer.setClearColor(this.options.clearColor);
+    this.instance.setClearColor(this.options.clearColor);
 
-    this.renderer.setSize(this.sizes.width, this.sizes.height);
-    this.renderer.setPixelRatio(this.sizes.pixelRatio);
-
-    // Post Processing
-    this.renderTarget = new THREE.WebGLRenderTarget(800, 600, {
-      samples: this.sizes.pixelRatio === 1 ? 2 : 0,
-      depthBuffer: true,
-    });
-
-    this.effectComposer = new EffectComposer(this.renderer, this.renderTarget);
-    this.effectComposer.setSize(this.sizes.width, this.sizes.height);
-    this.effectComposer.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
-
-    // Render Pass
-    this.renderPass = new RenderPass(this.scene, this.camera.instance);
-    this.effectComposer.addPass(this.renderPass);
-
-    // this.outlinePass = new OutlinePass(
-    //   new THREE.Vector2(this.sizes.width, this.sizes.height),
-    //   this.scene,
-    //   this.camera.instance
-    // );
-    // this.effectComposer.addPass(this.outlinePass);
-
-    // Antialias Pass.
-    this.effectFXAA = new ShaderPass(FXAAShader);
-    this.effectFXAA.uniforms["resolution"].value.set(
-      1 / this.sizes.width,
-      1 / this.sizes.height
-    );
-    this.effectComposer.addPass(this.effectFXAA);
-
-    // this.smaaPass = new SMAAPass();
-    // this.smaaPass.enabled =
-    //   this.renderer.getPixelRatio() === 1 &&
-    //   this.renderer.capabilities.isWebGL2;
-    // this.effectComposer.addPass(this.smaaPass);
+    this.instance.setSize(this.sizes.width, this.sizes.height);
+    this.instance.setPixelRatio(this.sizes.pixelRatio);
   }
 
-  addSelectedObject(object) {
-    this.selectedObjects.push(object);
-    this.selectedObjects = this.selectedObjects.filter(function (element) {
-      return element !== undefined;
-    });
-    this.outlinePass.selectedObjects = this.selectedObjects;
+  setInteractionManager() {
+    this.interactionManager = new InteractionManager(
+      this.instance,
+      this.camera.instance,
+      this.canvas
+    );
   }
 
   resize() {
-    this.renderer.setSize(this.sizes.width, this.sizes.height);
-    this.renderer.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
-
-    // Update effect composer
-    this.effectComposer.setSize(this.sizes.width, this.sizes.height);
-    this.effectComposer.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
-
-    this.effectFXAA.setSize(this.sizes.width, this.sizes.height);
-    this.effectFXAA.uniforms["resolution"].value.set(
-      1 / this.sizes.width,
-      1 / this.sizes.height
-    );
+    this.instance.setSize(this.sizes.width, this.sizes.height);
+    this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
   }
 
   update() {
-    this.effectComposer.render();
-    //this.renderer.render(this.scene, this.camera.instance);
+    this.instance.render(this.scene, this.camera.instance);
   }
 }

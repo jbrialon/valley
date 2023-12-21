@@ -20,6 +20,7 @@ export default class Map {
     this.options = {
       uAlpha: 1,
       uStrength: 0.5,
+      uContourFrequency: 1,
       uLineColor: "#f4e2d6", // #74675e
       uColorOne: "#bca48f", // #6a5e52
       uColorTwo: "#eda17f",
@@ -72,6 +73,7 @@ export default class Map {
       color: 0x992625,
       gradientMap: this.gradientMap,
     });
+    this.markers = [];
     this.lakeMaterial = new THREE.MeshBasicMaterial({ color: 0x6bae8d });
     this.setModel();
 
@@ -83,6 +85,7 @@ export default class Map {
     this.model = this.resource.scene.clone();
 
     this.model.traverse((child) => {
+      // TODO : should not all be in the same models
       if (child instanceof THREE.Mesh && child.name === "map") {
         child.material = this.terrainMaterial;
       } else if (child instanceof THREE.Mesh && child.name.includes("Lake")) {
@@ -93,10 +96,9 @@ export default class Map {
         child !== undefined
       ) {
         child.visible = false;
-        child.material = this.markerMaterial;
         this.addMarkerToPosition(child.position);
-        // this.renderer.addSelectedObject(child);
       } else if (child instanceof THREE.PerspectiveCamera) {
+        // Camera position
       }
     });
 
@@ -104,20 +106,16 @@ export default class Map {
   }
 
   addMarkerToPosition(position) {
-    const geometry = new THREE.CapsuleGeometry(1, 1, 4, 8);
+    const geometry = new THREE.OctahedronGeometry(1, 0);
     const material = toonMaterial({
       color: 0x992625,
       gradientMap: this.gradientMap,
     });
 
-    // const material = new THREE.MeshToonMaterial({
-    //   color: 0x992625,
-    //   gradientMap: this.gradientMap,
-    // });
-
     const marker = new THREE.Mesh(geometry, material);
-    marker.scale.set(0.05, 0.05, 0.05);
+    marker.scale.set(0.05, 0.07, 0.05);
     marker.position.set(position.x, position.y, position.z);
+    this.markers.push(marker);
     this.scene.add(marker);
   }
   setDebug() {
@@ -181,5 +179,9 @@ export default class Map {
     }
   }
 
-  update() {}
+  update() {
+    this.markers.forEach((marker) => {
+      marker.rotation.y += 0.0015 * this.time.delta;
+    });
+  }
 }
