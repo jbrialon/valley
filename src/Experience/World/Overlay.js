@@ -123,6 +123,20 @@ export default class Overlay {
           }
         );
       }
+      if (name === "Tserko_Ri" && this.options.name === "day4") {
+        console.log("one");
+        gsap.fromTo(
+          this.terrainMaterial.uniforms.uAlpha,
+          {
+            value: 0,
+          },
+          {
+            duration: 3,
+            value: 0.75,
+            ease: "power4.inOut",
+          }
+        );
+      }
     });
 
     this.manager.on("cameraPositionChanged", (key) => {

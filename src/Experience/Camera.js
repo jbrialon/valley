@@ -19,6 +19,7 @@ export default class Camera {
 
     this.options = {
       animateCamera: false,
+      activeCamera: "day1",
     };
 
     // Debug
@@ -27,11 +28,14 @@ export default class Camera {
       //this.debugFolder.close();
     }
 
+    // Setup
+    this.activeTween = null;
     this.setInstance();
     // this.setOrbitControls();
 
     // Events
     this.manager.on("cameraPositionChanged", (key) => {
+      this.activeTween.kill();
       this.animateCameraPosition(key);
     });
 
@@ -81,18 +85,46 @@ export default class Camera {
     this.scene.add(this.instance);
   }
 
-  onMouseMove(event) {
-    // this.mouseEvents.mouse.x = event.clientX - this.windowHalf.x;
-    // this.mouseEvents.mouse.y = event.clientY - this.windowHalf.x;
-  }
-
   onMouseWheel() {
     if (this.inputEvents.mouse.z > 0) {
       this.animateMove(new THREE.Vector3(0, 0, 1));
     } else if (this.inputEvents.mouse.z < 0) {
       this.animateMove(new THREE.Vector3(0, 0, -1));
     }
-    //this.animateMove(direction);
+  }
+
+  onMouseMove(event) {
+    // calculate the position of the mouse based with center as origin
+    const mouse = new THREE.Vector2(
+      this.inputEvents.mouse.x - this.sizes.width / 2,
+      this.inputEvents.mouse.y - this.sizes.height / 2
+    );
+
+    // normalize the mouse position
+    const position = new THREE.Vector2(
+      mouse.x / (this.sizes.width / 2),
+      mouse.y / (this.sizes.height / 2)
+    );
+
+    // Create a movement vector based on the mouse position
+    const movementVector = new THREE.Vector3(
+      position.x / 4,
+      position.y / -4,
+      0
+    );
+
+    // Apply the camera's current rotation to the movement vector
+    movementVector.applyQuaternion(this.instance.quaternion);
+
+    // Update the camera's position by adding the transformed movement vector
+    this.activeTween = gsap.to(this.instance.position, {
+      delay: 0.1,
+      x: camera[this.options.activeCamera].position.x + movementVector.x,
+      y: camera[this.options.activeCamera].position.y + movementVector.y,
+      z: camera[this.options.activeCamera].position.z + movementVector.z,
+      duration: 2,
+      ease: "power4.easeInOut",
+    });
   }
 
   animateMove(direction) {
@@ -134,11 +166,13 @@ export default class Camera {
         break;
       case "Space":
         console.log("Camera Position:", this.instance.position);
+        console.log("Camera World Position");
         break;
     }
   }
 
   animateCameraPosition(name) {
+    this.options.activeCamera = name;
     const camData = camera[name];
     if (camData) {
       this.instance.position.set(

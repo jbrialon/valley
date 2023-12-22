@@ -20,6 +20,11 @@ export default [
     path: "/textures/mask/mask-day-3.jpg",
   },
   {
+    name: "dayFourTexture",
+    type: "texture",
+    path: "/textures/mask/mask-day-4.jpg",
+  },
+  {
     name: "threeToneToonTexture",
     type: "texture",
     path: "/textures/toon/threeTone.jpg",

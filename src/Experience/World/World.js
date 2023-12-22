@@ -56,6 +56,20 @@ export default class World {
         offsetPosY: 0.003,
       });
 
+      this.day4 = new Overlay({
+        name: "day4",
+        uAlpha: 0,
+        uStrength: 0.5,
+        uLineColor: "#53524c", // #74675e
+        uColorOne: "#f4814a", // #6a5e52
+        uColorTwo: "#eda17f",
+        uColorThree: "#e45221",
+        uColorNumber: 3,
+        uContourFrequency: 3.3,
+        uMaskTexture: "dayFourTexture",
+        offsetPosY: 0.004,
+      });
+
       this.map = new Map();
       this.environment = new Environment();
 

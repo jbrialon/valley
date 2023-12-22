@@ -1,13 +1,6 @@
 import * as THREE from "three";
 
 export default {
-  top: {
-    // default position
-    position: new THREE.Vector3(15.2, 6.9, -3.9),
-    rotation: new THREE.Vector3(-120, 0, 0),
-    target: new THREE.Vector3(15.3, 7.3, -3.85),
-    animate: false,
-  },
   day1: {
     position: new THREE.Vector3(-5.96, 3.9, -7),
     rotation: new THREE.Vector3(-0.43, -0.13, -0.06),
