@@ -126,7 +126,6 @@ export default class Map {
   onMarkerClick(event) {
     const marker = event.target;
     const name = event.target.name;
-    // marker.material.color.set(0x59231f);
     this.manager.trigger("onMarkerClick", name);
   }
 

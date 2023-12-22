@@ -26,7 +26,9 @@ export default class Overlay {
 
     // Debug
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder(this.options.name);
+      this.debugFolder = this.debug.debugOverlayFolder.addFolder(
+        this.options.name
+      );
       this.debugFolder.close();
     }
 

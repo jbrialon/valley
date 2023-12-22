@@ -6,6 +6,9 @@ export default class Debug {
 
     if (this.active) {
       this.ui = new dat.GUI();
+
+      this.debugOverlayFolder = this.ui.addFolder("Overlays");
+      this.debugOverlayFolder.close();
     }
   }
 }

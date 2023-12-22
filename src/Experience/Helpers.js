@@ -17,8 +17,8 @@ export default class Helpers {
     this.resources = this.experience.resources;
 
     // Setup
-    this.gradientMap = this.resources.items.fiveToneToonTexture;
-    // this.gradientMap.magFilter = THREE.NearestFilter;
+    this.DirectionalLightHelper = null;
+    this.gradientMap = null;
 
     this.transformControls = new TransformControls(this.camera, this.canvas);
     this.transformControls.enabled = true;
@@ -56,7 +56,6 @@ export default class Helpers {
   addHelper() {
     // Create a new helper
     this.helper = this.createTargetHelper();
-    this.helper.scale.set(0.5, 0.5, 0.5);
 
     // Set the helper's position in front of the camera
     const distance = 7; // Adjust the distance as needed
@@ -75,18 +74,18 @@ export default class Helpers {
   }
 
   createTargetHelper() {
+    if (!this.gradientMap) {
+      this.gradientMap = this.resources.items.fiveToneToonTexture;
+      this.gradientMap.magFilter = THREE.NearestFilter;
+    }
     const geometry = new THREE.CapsuleGeometry(1, 1, 4, 8);
     const material = toonMaterial({
-      color: 0x992625,
+      color: 0x599fd3,
       gradientMap: this.gradientMap,
     });
-
-    // const material = new THREE.MeshToonMaterial({
-    //   color: 0x992625,
-    //   gradientMap: this.gradientMap,
-    // });
-
-    return new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.scale.set(0.25, 0.5, 0.25);
+    return mesh;
   }
 
   setDebug() {
@@ -120,6 +119,21 @@ export default class Helpers {
           "button"
         )
         .name("Look At Helper");
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              const sunLight = this.experience.world.environment.sunLight;
+              this.DirectionalLightHelper = new THREE.DirectionalLightHelper(
+                sunLight,
+                5
+              );
+              this.scene.add(this.DirectionalLightHelper);
+            },
+          },
+          "button"
+        )
+        .name("Show Light Helper");
     }
   }
 

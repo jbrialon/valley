@@ -23,8 +23,8 @@ export default class Camera {
 
     // Debug
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Camera");
-      this.debugFolder.close();
+      //this.debugFolder = this.debug.ui.addFolder("Camera");
+      //this.debugFolder.close();
     }
 
     this.setInstance();
@@ -49,7 +49,7 @@ export default class Camera {
     });
 
     // Debug
-    this.setDebug();
+    //this.setDebug();
   }
 
   setInstance() {
