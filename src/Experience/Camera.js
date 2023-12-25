@@ -40,16 +40,15 @@ export default class Camera {
     this.manager.on("cameraMoveToNextDay", () => {
       const currentDay = scenes.day1;
       const nextDay = scenes.day2;
-      console.log(nextDay.position);
 
-      gsap.to(this.instance.position, {
+      gsap.to(this.cameraParent.position, {
         duration: 10,
         motionPath: {
           path: [
             {
-              x: this.instance.position.x,
-              y: this.instance.position.y,
-              z: this.instance.position.z,
+              x: currentDay.position.x,
+              y: currentDay.position.y,
+              z: currentDay.position.z,
             },
             {
               x: nextDay.position.x,
@@ -83,6 +82,7 @@ export default class Camera {
   }
 
   setInstance() {
+    this.cameraParent = new THREE.Group();
     this.instance = new THREE.PerspectiveCamera(
       75,
       this.sizes.width / this.sizes.height,
@@ -90,7 +90,7 @@ export default class Camera {
       100
     );
 
-    this.instance.position.set(
+    this.cameraParent.position.set(
       scenes.day1.position.x,
       scenes.day1.position.y,
       scenes.day1.position.z
@@ -107,8 +107,8 @@ export default class Camera {
       scenes.day1.target.y,
       scenes.day1.target.z
     );
-
-    this.scene.add(this.instance);
+    this.scene.add(this.cameraParent);
+    this.cameraParent.add(this.instance);
   }
 
   onMouseWheel() {
@@ -146,9 +146,9 @@ export default class Camera {
       // Update the camera's position by adding the transformed movement vector
       gsap.to(this.instance.position, {
         delay: 0.1,
-        x: scenes[this.options.activeCamera].position.x + movementVector.x,
-        y: scenes[this.options.activeCamera].position.y + movementVector.y,
-        z: scenes[this.options.activeCamera].position.z + movementVector.z,
+        x: 0 + movementVector.x,
+        y: 0 + movementVector.y,
+        z: 0 + movementVector.z,
         duration: 2,
         ease: "power4.easeInOut",
       });
@@ -159,11 +159,11 @@ export default class Camera {
     direction.applyQuaternion(this.instance.quaternion); // Rotate to camera's orientation
 
     const distanceToMove = 1;
-    const newPosition = this.instance.position
+    const newPosition = this.cameraParent.position
       .clone()
       .add(direction.multiplyScalar(distanceToMove));
 
-    gsap.to(this.instance.position, {
+    gsap.to(this.cameraParent.position, {
       x: newPosition.x,
       y: newPosition.y,
       z: newPosition.z,
@@ -203,7 +203,7 @@ export default class Camera {
     this.options.activeCamera = name;
     const scene = scenes[name];
     if (scene) {
-      this.instance.position.set(
+      this.cameraParent.position.set(
         scene.position.x,
         scene.position.y + 1,
         scene.position.z
@@ -212,7 +212,7 @@ export default class Camera {
       this.instance.lookAt(scene.target.x, scene.target.y, scene.target.z);
 
       if (scene.animate) {
-        gsap.to(this.instance.position, {
+        gsap.to(this.cameraParent.position, {
           y: scene.position.y,
           duration: 1,
           ease: "power4.EaseInOut",
