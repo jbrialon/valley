@@ -35,6 +35,7 @@ export default class Helpers {
       this.debugFolder.close();
     }
     this.setDebug();
+    // this.addAxesHelper();
   }
 
   onKeyDown(keyCode) {
@@ -53,8 +54,8 @@ export default class Helpers {
     }
   }
 
-  addHelper() {
-    // Create a new helper
+  addTargetHelper() {
+    // Create a new target helper
     this.helper = this.createTargetHelper();
 
     // Set the helper's position in front of the camera
@@ -88,6 +89,12 @@ export default class Helpers {
     return mesh;
   }
 
+  addAxesHelper() {
+    this.axesHelper = new THREE.AxesHelper(400);
+    this.axesHelper.position.y = 5;
+    this.scene.add(this.axesHelper);
+  }
+
   setDebug() {
     if (this.debug.active) {
       this.debugFolder
@@ -95,7 +102,7 @@ export default class Helpers {
           {
             button: () => {
               if (!this.helper) {
-                this.addHelper();
+                this.addTargetHelper();
               } else {
                 this.transformControls.detach();
                 this.scene.remove(this.helper);

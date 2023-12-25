@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import terrainMaterial from "../Materials/TerrainMaterial";
+import scenes from "../Data/scenes.js";
 
 export default class Overlay {
   constructor(options) {
@@ -24,10 +25,12 @@ export default class Overlay {
     //   uColorNumber: 3,
     // };
 
+    this.overlayData = scenes[this.options.name];
+
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.debugOverlayFolder.addFolder(
-        this.options.name
+        this.overlayData.name ? this.overlayData.name : this.options.name
       );
       this.debugFolder.close();
     }
@@ -78,80 +81,19 @@ export default class Overlay {
 
   setEventListener() {
     this.manager.on("onMarkerClick", (name) => {
-      console.log(name);
-
       if (name === "Syabru_Besi" && this.options.name === "day1") {
-        console.log("one");
-        gsap.fromTo(
-          this.terrainMaterial.uniforms.uAlpha,
-          {
-            value: 0,
-          },
-          {
-            duration: 3,
-            value: 0.75,
-            ease: "power4.inOut",
-          }
-        );
-      }
-
-      if (name === "Pairo" && this.options.name === "day2") {
-        console.log("two");
-        gsap.fromTo(
-          this.terrainMaterial.uniforms.uAlpha,
-          {
-            value: 0,
-          },
-          {
-            duration: 3,
-            value: 0.75,
-            ease: "power4.inOut",
-          }
-        );
-      }
-      if (name === "Sing_Gomba" && this.options.name === "day3") {
-        console.log("one");
-        gsap.fromTo(
-          this.terrainMaterial.uniforms.uAlpha,
-          {
-            value: 0,
-          },
-          {
-            duration: 3,
-            value: 0.75,
-            ease: "power4.inOut",
-          }
-        );
-      }
-      if (name === "Tserko_Ri" && this.options.name === "day4") {
-        console.log("one");
-        gsap.fromTo(
-          this.terrainMaterial.uniforms.uAlpha,
-          {
-            value: 0,
-          },
-          {
-            duration: 3,
-            value: 0.75,
-            ease: "power4.inOut",
-          }
-        );
+        this.revealOverlay();
+      } else if (name === "Pairo" && this.options.name === "day2") {
+        this.revealOverlay();
+      } else if (name === "Sing_Gomba" && this.options.name === "day3") {
+        this.revealOverlay();
+      } else if (name === "Tserko_Ri" && this.options.name === "day4") {
+        this.revealOverlay();
       }
     });
 
     this.manager.on("cameraPositionChanged", (key) => {
       if (this.options.name === key) {
-        // gsap.fromTo(
-        //   this.terrainMaterial.uniforms.uAlpha,
-        //   {
-        //     value: 0,
-        //   },
-        //   {
-        //     duration: 3,
-        //     value: 0.75,
-        //     ease: "power4.inOut",
-        //   }
-        // );
         // gsap.fromTo(
         //   this.terrainMaterial.uniforms.uStrength,
         //   {
@@ -167,6 +109,20 @@ export default class Overlay {
         //   this.terrainMaterial.uniforms.uAlpha.value = 0;
       }
     });
+  }
+
+  revealOverlay() {
+    gsap.fromTo(
+      this.terrainMaterial.uniforms.uAlpha,
+      {
+        value: 0,
+      },
+      {
+        duration: 3,
+        value: 0.75,
+        ease: "power4.inOut",
+      }
+    );
   }
 
   setDebug() {

@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Experience from "./Experience";
 
-import camera from "./Data/camera.js";
+import scenes from "./Data/scenes.js";
 
 export default class Camera {
   constructor() {
@@ -18,7 +18,6 @@ export default class Camera {
     this.time = this.experience.time;
 
     this.options = {
-      animateCamera: false,
       activeCamera: "day1",
     };
 
@@ -29,14 +28,41 @@ export default class Camera {
     }
 
     // Setup
-    this.activeTween = null;
+    this.isAnimated = false;
     this.setInstance();
     // this.setOrbitControls();
 
     // Events
     this.manager.on("cameraPositionChanged", (key) => {
-      this.activeTween.kill();
       this.animateCameraPosition(key);
+    });
+
+    this.manager.on("cameraMoveToNextDay", () => {
+      const currentDay = scenes.day1;
+      const nextDay = scenes.day2;
+      console.log(nextDay.position);
+
+      gsap.to(this.instance.position, {
+        duration: 10,
+        motionPath: {
+          path: [
+            {
+              x: this.instance.position.x,
+              y: this.instance.position.y,
+              z: this.instance.position.z,
+            },
+            {
+              x: nextDay.position.x,
+              y: nextDay.position.y,
+              z: nextDay.position.z,
+            },
+          ],
+        },
+        ease: "power1.inOut",
+        onComplete: () => {
+          this.options.activeCamera = "day2";
+        },
+      });
     });
 
     // Mouse Events
@@ -65,21 +91,21 @@ export default class Camera {
     );
 
     this.instance.position.set(
-      camera.day1.position.x,
-      camera.day1.position.y,
-      camera.day1.position.z
+      scenes.day1.position.x,
+      scenes.day1.position.y,
+      scenes.day1.position.z
     );
 
     this.instance.rotation.set(
-      camera.day1.rotation.x,
-      camera.day1.rotation.y,
-      camera.day1.rotation.z
+      scenes.day1.rotation.x,
+      scenes.day1.rotation.y,
+      scenes.day1.rotation.z
     );
 
     this.instance.lookAt(
-      camera.day1.target.x,
-      camera.day1.target.y,
-      camera.day1.target.z
+      scenes.day1.target.x,
+      scenes.day1.target.y,
+      scenes.day1.target.z
     );
 
     this.scene.add(this.instance);
@@ -93,38 +119,40 @@ export default class Camera {
     }
   }
 
-  onMouseMove(event) {
-    // calculate the position of the mouse based with center as origin
-    const mouse = new THREE.Vector2(
-      this.inputEvents.mouse.x - this.sizes.width / 2,
-      this.inputEvents.mouse.y - this.sizes.height / 2
-    );
+  onMouseMove() {
+    if (!this.isAnimated) {
+      // calculate the position of the mouse based with center as origin
+      const mouse = new THREE.Vector2(
+        this.inputEvents.mouse.x - this.sizes.width / 2,
+        this.inputEvents.mouse.y - this.sizes.height / 2
+      );
 
-    // normalize the mouse position
-    const position = new THREE.Vector2(
-      mouse.x / (this.sizes.width / 2),
-      mouse.y / (this.sizes.height / 2)
-    );
+      // normalize the mouse position
+      const position = new THREE.Vector2(
+        mouse.x / (this.sizes.width / 2),
+        mouse.y / (this.sizes.height / 2)
+      );
 
-    // Create a movement vector based on the mouse position
-    const movementVector = new THREE.Vector3(
-      position.x / 4,
-      position.y / -4,
-      0
-    );
+      // Create a movement vector based on the mouse position
+      const movementVector = new THREE.Vector3(
+        position.x / 4,
+        position.y / -4,
+        0
+      );
 
-    // Apply the camera's current rotation to the movement vector
-    movementVector.applyQuaternion(this.instance.quaternion);
+      // Apply the camera's current rotation to the movement vector
+      movementVector.applyQuaternion(this.instance.quaternion);
 
-    // Update the camera's position by adding the transformed movement vector
-    this.activeTween = gsap.to(this.instance.position, {
-      delay: 0.1,
-      x: camera[this.options.activeCamera].position.x + movementVector.x,
-      y: camera[this.options.activeCamera].position.y + movementVector.y,
-      z: camera[this.options.activeCamera].position.z + movementVector.z,
-      duration: 2,
-      ease: "power4.easeInOut",
-    });
+      // Update the camera's position by adding the transformed movement vector
+      gsap.to(this.instance.position, {
+        delay: 0.1,
+        x: scenes[this.options.activeCamera].position.x + movementVector.x,
+        y: scenes[this.options.activeCamera].position.y + movementVector.y,
+        z: scenes[this.options.activeCamera].position.z + movementVector.z,
+        duration: 2,
+        ease: "power4.easeInOut",
+      });
+    }
   }
 
   animateMove(direction) {
@@ -166,39 +194,36 @@ export default class Camera {
         break;
       case "Space":
         console.log("Camera Position:", this.instance.position);
-        console.log("Camera World Position");
         break;
     }
   }
 
   animateCameraPosition(name) {
+    this.isAnimated = true;
     this.options.activeCamera = name;
-    const camData = camera[name];
-    if (camData) {
+    const scene = scenes[name];
+    if (scene) {
       this.instance.position.set(
-        camData.position.x,
-        camData.position.y,
-        camData.position.z
+        scene.position.x,
+        scene.position.y + 1,
+        scene.position.z
       );
 
-      this.instance.lookAt(
-        camData.target.x,
-        camData.target.y,
-        camData.target.z
-      );
+      this.instance.lookAt(scene.target.x, scene.target.y, scene.target.z);
 
-      if (camData.animate) {
+      if (scene.animate) {
         gsap.to(this.instance.position, {
-          y: camData.position.y,
+          y: scene.position.y,
           duration: 1,
           ease: "power4.EaseInOut",
           onComplete: () => {
-            //this.options.animateCamera = true;
+            this.isAnimated = false;
           },
         });
       }
     }
   }
+
   setOrbitControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
     this.controls.enableDamping = true;
@@ -216,17 +241,5 @@ export default class Camera {
 
   update() {
     if (this.controls) this.controls.update();
-
-    // this.target.x = (1 - this.mouse.x) * 0.0002;
-    // this.target.y = (1 - this.mouse.y) * 0.0002;
-
-    if (this.options.animateCamera) {
-      // Adjust the translation speed based on mouse position
-      // const speed = 1;
-      // const translateX = this.target.x * speed * (1 + Math.abs(this.mouse.x));
-      // const translateY = this.target.y * speed * (1 + Math.abs(this.mouse.y));
-      // console.log(translateX);
-      // this.instance.translateX(translateX);
-    }
   }
 }

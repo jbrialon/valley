@@ -2,12 +2,14 @@ import * as THREE from "three";
 
 export default {
   day1: {
+    name: "Syabru_Besi",
     position: new THREE.Vector3(-5.96, 3.9, -7),
     rotation: new THREE.Vector3(-0.43, -0.13, -0.06),
     target: new THREE.Vector3(8.2, -1.4, -7),
     animate: true,
   },
   day2: {
+    name: "Pairo",
     position: new THREE.Vector3(3.11, 6.44, -8.85),
     rotation: new THREE.Vector3(-0.6, -0.6, -0.4),
     target: new THREE.Vector3(8, 4.7, -11),
@@ -20,12 +22,14 @@ export default {
     animate: true,
   },
   day4: {
+    name: "Tserko_Ri",
     position: new THREE.Vector3(21.5, 7.5, -8),
     rotation: new THREE.Vector3(-0.2, 0.12, 0.034),
     target: new THREE.Vector3(25, 7, -15),
     animate: true,
   },
   day7: {
+    name: "Sing_Gomba",
     position: new THREE.Vector3(-4.4, 5.5, 1.2),
     rotation: new THREE.Vector3(-0.2, 0.12, 0.034),
     target: new THREE.Vector3(-2.2, 4.6, -0.9),

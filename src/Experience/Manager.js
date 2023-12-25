@@ -2,7 +2,7 @@ import * as THREE from "three";
 import Experience from "./Experience.js";
 import EventEmitter from "./Utils/EventEmitter.js";
 
-import camera from "./Data/camera.js";
+import scenes from "./Data/scenes.js";
 
 export default class Manager extends EventEmitter {
   constructor() {
@@ -46,7 +46,7 @@ export default class Manager extends EventEmitter {
 
   setDebug() {
     if (this.debug.active) {
-      Object.entries(camera).forEach(([key, value]) => {
+      Object.entries(scenes).forEach(([key, value]) => {
         this.debugFolder
           .add(
             {
@@ -56,8 +56,19 @@ export default class Manager extends EventEmitter {
             },
             "button"
           )
-          .name(key);
+          .name(value.name ? value.name : key);
       });
+
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.trigger("cameraMoveToNextDay");
+            },
+          },
+          "button"
+        )
+        .name("camera dolly");
     }
   }
 
