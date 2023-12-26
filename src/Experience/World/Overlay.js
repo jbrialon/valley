@@ -110,7 +110,7 @@ export default class Overlay {
       },
       {
         duration: 3,
-        value: 0.75,
+        value: 1,
         ease: "power4.inOut",
       }
     );

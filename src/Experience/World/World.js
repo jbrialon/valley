@@ -23,7 +23,7 @@ export default class World {
         uColorTwo: "#eda17f",
         uColorThree: "#e45221",
         uColorNumber: 2,
-        uContourFrequency: 3.3,
+        uContourFrequency: 2.7,
         uMaskTexture: "dayOneTexture",
         offsetPosY: 0.001,
       });
@@ -37,7 +37,7 @@ export default class World {
         uColorTwo: "#eda17f",
         uColorThree: "#e45221",
         uColorNumber: 2,
-        uContourFrequency: 3.3,
+        uContourFrequency: 2.7,
         uMaskTexture: "dayTwoTexture",
         offsetPosY: 0.002,
       });
@@ -51,7 +51,7 @@ export default class World {
         uColorTwo: "#eda17f",
         uColorThree: "#e45221",
         uColorNumber: 2,
-        uContourFrequency: 3.3,
+        uContourFrequency: 2.7,
         uMaskTexture: "dayThreeTexture",
         offsetPosY: 0.003,
       });
@@ -65,7 +65,7 @@ export default class World {
         uColorTwo: "#eda17f",
         uColorThree: "#e45221",
         uColorNumber: 2,
-        uContourFrequency: 3.3,
+        uContourFrequency: 2.7,
         uMaskTexture: "dayFourTexture",
         offsetPosY: 0.004,
       });

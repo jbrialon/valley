@@ -26,7 +26,7 @@ export default class Map {
       uColorTwo: "#eda17f",
       uColorThree: "#e45221",
       uColorNumber: 1,
-      uContourFrequency: 3.3,
+      uContourFrequency: 2.7,
       markerColor: 0x992625,
     };
 
@@ -133,6 +133,9 @@ export default class Map {
         .name("Marker Color")
         .onChange(() => {
           this.markerMaterial.color.set(this.options.markerColor);
+          this.markers.forEach((marker) => {
+            marker.material.color = new THREE.Color(this.options.markerColor);
+          });
         });
       this.debugFolderMap = this.debugFolder.addFolder("Map");
       this.debugFolderMap
@@ -153,12 +156,6 @@ export default class Map {
         .max(20)
         .step(0.1)
         .name("Contour Frequency");
-      // this.debugFolderMap
-      //   .add(this.terrainMaterial.uniforms.uColorNumber, "value")
-      //   .min(1)
-      //   .max(3)
-      //   .step(1)
-      //   .name("Color Number");
       this.debugFolderMap
         .addColor(this.options, "uColorOne")
         .name("Color One")
@@ -167,22 +164,6 @@ export default class Map {
             this.options.uColorOne
           );
         });
-      // this.debugFolderMap
-      //   .addColor(this.options, "uColorTwo")
-      //   .name("Color Two")
-      //   .onChange(() => {
-      //     this.terrainMaterial.uniforms.uColorTwo.value.set(
-      //       this.options.uColorTwo
-      //     );
-      //   });
-      // this.debugFolderMap
-      //   .addColor(this.options, "uColorThree")
-      //   .name("Color Two")
-      //   .onChange(() => {
-      //     this.terrainMaterial.uniforms.uColorThree.value.set(
-      //       this.options.uColorThree
-      //     );
-      //   });
       this.debugFolderMap
         .addColor(this.options, "uLineColor")
         .name("Line Color")
