@@ -14,12 +14,6 @@ export default class Manager extends EventEmitter {
     this.camera = this.experience.camera;
 
     // Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("View Manager");
-      // this.debugFolder.close();
-    }
-
-    // Debug
     this.setDebug();
   }
 
@@ -46,6 +40,9 @@ export default class Manager extends EventEmitter {
 
   setDebug() {
     if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("View Manager");
+      this.debugFolder.close();
+
       Object.entries(scenes).forEach(([key, value]) => {
         this.debugFolder
           .add(

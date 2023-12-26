@@ -33,10 +33,6 @@ export default class Helpers {
     });
 
     // Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Helpers");
-      this.debugFolder.close();
-    }
     this.setDebug();
     // this.addAxesHelper();
   }
@@ -100,6 +96,9 @@ export default class Helpers {
 
   setDebug() {
     if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("Helpers");
+      this.debugFolder.close();
+
       this.debugFolder
         .add(
           {
