@@ -11,7 +11,7 @@ export default class Helpers {
 
     this.debug = this.experience.debug;
     this.inputEvents = this.experience.inputEvents;
-    this.camera = this.experience.camera.instance;
+    this.camera = this.experience.camera;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
     this.resources = this.experience.resources;
@@ -20,7 +20,10 @@ export default class Helpers {
     this.DirectionalLightHelper = null;
     this.gradientMap = null;
 
-    this.transformControls = new TransformControls(this.camera, this.canvas);
+    this.transformControls = new TransformControls(
+      this.camera.instance,
+      this.canvas
+    );
     this.transformControls.enabled = true;
     this.scene.add(this.transformControls);
 
@@ -59,11 +62,11 @@ export default class Helpers {
     this.helper = this.createTargetHelper();
 
     // Set the helper's position in front of the camera
-    const distance = 7; // Adjust the distance as needed
-    const position = this.camera.position
+    const distance = 7;
+    const position = this.camera.cameraParent.position
       .clone()
       .add(
-        this.camera
+        this.camera.instance
           .getWorldDirection(new THREE.Vector3())
           .multiplyScalar(distance)
       );
@@ -85,7 +88,7 @@ export default class Helpers {
       gradientMap: this.gradientMap,
     });
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.set(0.25, 0.5, 0.25);
+    mesh.scale.set(0.25, 0.35, 0.25);
     return mesh;
   }
 
@@ -118,7 +121,7 @@ export default class Helpers {
           {
             button: () => {
               if (this.helper) {
-                this.camera.lookAt(this.helper.position);
+                this.camera.instance.lookAt(this.helper.position);
                 console.log("Helper Position:", this.helper.position);
               }
             },

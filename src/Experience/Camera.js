@@ -23,56 +23,39 @@ export default class Camera {
 
     // Setup
     this.isAnimated = false;
+    this.scrollProgress = 0;
+
     this.setInstance();
     this.initEvents();
     // this.setOrbitControls();
 
-    this.tl = gsap.timeline();
-    this.tl.pause();
-    this.tl.to(this.cameraParent.position, {
-      duration: 10,
-      delay: 0.1,
-      motionPath: {
-        path: [
-          {
-            x: -5.96,
-            y: 3.9,
-            z: -7,
-          },
-          {
-            x: 0.077,
-            y: 1.88 + 2,
-            z: -7.69,
-          },
-          {
-            x: 2.16,
-            y: 2.04 + 2,
-            z: -7.95,
-          },
-          {
-            x: 5.69,
-            y: 2.64 + 2,
-            z: -8.74,
-          },
-        ],
-      },
-      ease: "power4.EaseInOut",
-    });
-
-    const curve = new THREE.CatmullRomCurve3([
+    this.curve = new THREE.CatmullRomCurve3([
       new THREE.Vector3(-5.96, 3.9, -7),
       new THREE.Vector3(0.077, 1.88 + 2, -7.69),
       new THREE.Vector3(2.16, 2.04 + 2, -7.95),
-      new THREE.Vector3(5.69, 2.64 + 2, -8.74),
+      new THREE.Vector3(5.7, 2.64 + 2, -8.74),
+      new THREE.Vector3(6.89, 3.32 + 2, -11.13),
+      new THREE.Vector3(8.9, 3.15 + 2, -13.56),
+      new THREE.Vector3(12.28, 3.33 + 2, -15.1),
+      new THREE.Vector3(15.63, 3.61 + 2, -15.47),
+      new THREE.Vector3(20.86, 3.87 + 2, -14.74),
     ]);
 
-    const points = curve.getPoints(50);
+    const points = this.curve.getPoints(50);
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
     const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
     const curveObject = new THREE.Line(geometry, material);
     this.scene.add(curveObject);
+
+    // this.fakeCamera = new THREE.Mesh(
+    //   new THREE.BoxGeometry(1, 1, 1),
+    //   new THREE.MeshNormalMaterial()
+    // );
+    // this.fakeCamera.scale.set(0.75, 0.5, 0.5);
+    // this.fakeCamera.position.set(0.077, 1.88 + 2, -7.69);
+    // this.scene.add(this.fakeCamera);
 
     // Debug
     this.setDebug();
@@ -101,7 +84,6 @@ export default class Camera {
       scenes.day1.target.y,
       scenes.day1.target.z
     );
-    this.scrollProgress = 0;
   }
 
   initEvents() {
@@ -151,16 +133,31 @@ export default class Camera {
   }
 
   onMouseWheel() {
-    console.log(this.scrollProgress);
-    // TODO: Limit mouse movements
-    if (this.inputEvents.mouse.z > 0) {
-      this.scrollProgress += 0.0005;
-      // this.animateMove(new THREE.Vector3(0, 0, 1));
-    } else if (this.inputEvents.mouse.z) {
-      this.scrollProgress -= 0.0005;
-      // this.animateMove(new THREE.Vector3(0, 0, -1));
+    if (this.scrollProgress >= 0) {
+      const position = this.curve.getPointAt(this.scrollProgress);
+      this.cameraParent.position.copy(position);
+
+      let delta = 0.025;
+      if (this.inputEvents.mouse.z < 0) {
+        delta = -0.025;
+      }
+
+      const targetScrollProgress = this.scrollProgress + delta;
+      const clampedScrollProgress = Math.max(
+        0,
+        Math.min(targetScrollProgress, 1)
+      );
+
+      gsap.to(this, {
+        duration: 1,
+        scrollProgress: clampedScrollProgress,
+        ease: "power2.EaseInOut", // You can choose a different ease function
+        onUpdate: () => {
+          const newPosition = this.curve.getPointAt(this.scrollProgress);
+          this.cameraParent.position.copy(newPosition);
+        },
+      });
     }
-    this.tl.progress(this.scrollProgress);
   }
 
   onMouseMove() {

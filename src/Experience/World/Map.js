@@ -118,6 +118,7 @@ export default class Map {
 
   onMarkerClick(event) {
     const marker = event.target;
+    console.log(marker.position);
     const name = marker.name;
     this.manager.trigger("onMarkerClick", name);
   }
