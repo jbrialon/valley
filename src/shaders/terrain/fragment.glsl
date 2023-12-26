@@ -39,8 +39,7 @@ void main() {
   }
   
   // Pick a coordinate to visualize in a grid
-  // float coord = length(vUv) * 200.0; 
-  // float coord = length(vVertex.xz) * uContourFrequency;
+  // float coord = length(vUv.xy) * 400.0; 
   float coord = length(vVertex.xz) * uContourFrequency;
 
   // Compute anti-aliased world-space grid lines

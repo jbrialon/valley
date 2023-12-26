@@ -22,7 +22,7 @@ export default class Map {
       uStrength: 0.5,
       uContourFrequency: 1,
       uLineColor: "#f4e2d6", // #74675e
-      uColorOne: "#bca48f", // #6a5e52
+      uColorOne: "#697f73", // #6a5e52
       uColorTwo: "#eda17f",
       uColorThree: "#e45221",
       uColorNumber: 1,
@@ -43,12 +43,6 @@ export default class Map {
         }
       );
     });
-
-    // Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Map");
-      this.debugFolder.close();
-    }
 
     // Setup
     this.resource = this.resources.items.mapModel;
@@ -109,7 +103,6 @@ export default class Map {
   addMarkerToPosition(marker) {
     const geometry = new THREE.OctahedronGeometry(1, 0);
     const material = this.markerMaterial.clone();
-
     const markerMesh = new THREE.Mesh(geometry, material);
     markerMesh.name = marker.name;
     markerMesh.scale.set(0.075, 0.1, 0.075);
@@ -125,12 +118,15 @@ export default class Map {
 
   onMarkerClick(event) {
     const marker = event.target;
-    const name = event.target.name;
+    const name = marker.name;
     this.manager.trigger("onMarkerClick", name);
   }
 
   setDebug() {
     if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("Map");
+      this.debugFolder.close();
+
       this.debugFolderMarker = this.debugFolder.addFolder("Marker");
       this.debugFolderMarker
         .addColor(this.options, "markerColor")

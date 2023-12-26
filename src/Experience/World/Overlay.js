@@ -25,17 +25,8 @@ export default class Overlay {
     //   uColorNumber: 3,
     // };
 
-    this.overlayData = scenes[this.options.name];
-
-    // Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.debugOverlayFolder.addFolder(
-        this.overlayData.name ? this.overlayData.name : this.options.name
-      );
-      this.debugFolder.close();
-    }
-
     // Setup
+    this.overlayData = scenes[this.options.name];
     this.resource = this.resources.items.mapModel;
     this.maskTexture = this.options.uMaskTexture
       ? this.resources.items[this.options.uMaskTexture].clone()
@@ -58,7 +49,7 @@ export default class Overlay {
 
     // Setup
     this.setModel();
-    this.setEventListener();
+    this.initEvents();
 
     // Debug
     this.setDebug();
@@ -79,7 +70,7 @@ export default class Overlay {
     this.scene.add(this.model);
   }
 
-  setEventListener() {
+  initEvents() {
     this.manager.on("onMarkerClick", (name) => {
       if (name === "Syabru_Besi" && this.options.name === "day1") {
         this.revealOverlay();
@@ -127,6 +118,11 @@ export default class Overlay {
 
   setDebug() {
     if (this.debug.active) {
+      this.debugFolder = this.debug.debugOverlayFolder.addFolder(
+        this.overlayData.name ? this.overlayData.name : this.options.name
+      );
+      this.debugFolder.close();
+
       this.debugFolder
         .add(this.terrainMaterial.uniforms.uAlpha, "value")
         .min(0)

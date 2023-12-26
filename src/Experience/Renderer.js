@@ -13,10 +13,8 @@ export default class Renderer {
 
     // Options
     this.options = {
-      clearColor: "#968677",
+      clearColor: "#b9a998",
     };
-
-    // Setup
 
     // Debug
     if (this.debug.active) {
@@ -30,6 +28,7 @@ export default class Renderer {
         });
     }
 
+    // Setup
     this.setInstance();
     this.setInteractionManager();
   }

@@ -21,20 +21,92 @@ export default class Camera {
       activeCamera: "day1",
     };
 
-    // Debug
-    if (this.debug.active) {
-      //this.debugFolder = this.debug.ui.addFolder("Camera");
-      //this.debugFolder.close();
-    }
-
     // Setup
     this.isAnimated = false;
     this.setInstance();
+    this.initEvents();
     // this.setOrbitControls();
 
-    // Events
+    this.tl = gsap.timeline();
+    this.tl.pause();
+    this.tl.to(this.cameraParent.position, {
+      duration: 10,
+      delay: 0.1,
+      motionPath: {
+        path: [
+          {
+            x: -5.96,
+            y: 3.9,
+            z: -7,
+          },
+          {
+            x: 0.077,
+            y: 1.88 + 2,
+            z: -7.69,
+          },
+          {
+            x: 2.16,
+            y: 2.04 + 2,
+            z: -7.95,
+          },
+          {
+            x: 5.69,
+            y: 2.64 + 2,
+            z: -8.74,
+          },
+        ],
+      },
+      ease: "power4.EaseInOut",
+    });
+
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-5.96, 3.9, -7),
+      new THREE.Vector3(0.077, 1.88 + 2, -7.69),
+      new THREE.Vector3(2.16, 2.04 + 2, -7.95),
+      new THREE.Vector3(5.69, 2.64 + 2, -8.74),
+    ]);
+
+    const points = curve.getPoints(50);
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+    const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+    const curveObject = new THREE.Line(geometry, material);
+    this.scene.add(curveObject);
+
+    // Debug
+    this.setDebug();
+  }
+
+  setInstance() {
+    this.cameraParent = new THREE.Group();
+    this.instance = new THREE.PerspectiveCamera(
+      75,
+      this.sizes.width / this.sizes.height,
+      0.1,
+      100
+    );
+
+    this.cameraParent.position.set(
+      scenes.day1.position.x,
+      scenes.day1.position.y,
+      scenes.day1.position.z
+    );
+
+    this.scene.add(this.cameraParent);
+    this.cameraParent.add(this.instance);
+
+    this.instance.lookAt(
+      scenes.day1.target.x,
+      scenes.day1.target.y,
+      scenes.day1.target.z
+    );
+    this.scrollProgress = 0;
+  }
+
+  initEvents() {
     this.manager.on("cameraPositionChanged", (key) => {
-      this.animateCameraPosition(key);
+      this.updateCameraPosition(key);
     });
 
     this.manager.on("cameraMoveToNextDay", () => {
@@ -76,47 +148,19 @@ export default class Camera {
     this.inputEvents.on("keydown", (keyCode) => {
       this.onKeyDown(keyCode);
     });
-
-    // Debug
-    //this.setDebug();
-  }
-
-  setInstance() {
-    this.cameraParent = new THREE.Group();
-    this.instance = new THREE.PerspectiveCamera(
-      75,
-      this.sizes.width / this.sizes.height,
-      0.1,
-      100
-    );
-
-    this.cameraParent.position.set(
-      scenes.day1.position.x,
-      scenes.day1.position.y,
-      scenes.day1.position.z
-    );
-
-    this.instance.rotation.set(
-      scenes.day1.rotation.x,
-      scenes.day1.rotation.y,
-      scenes.day1.rotation.z
-    );
-
-    this.instance.lookAt(
-      scenes.day1.target.x,
-      scenes.day1.target.y,
-      scenes.day1.target.z
-    );
-    this.scene.add(this.cameraParent);
-    this.cameraParent.add(this.instance);
   }
 
   onMouseWheel() {
+    console.log(this.scrollProgress);
+    // TODO: Limit mouse movements
     if (this.inputEvents.mouse.z > 0) {
-      this.animateMove(new THREE.Vector3(0, 0, 1));
-    } else if (this.inputEvents.mouse.z < 0) {
-      this.animateMove(new THREE.Vector3(0, 0, -1));
+      this.scrollProgress += 0.0005;
+      // this.animateMove(new THREE.Vector3(0, 0, 1));
+    } else if (this.inputEvents.mouse.z) {
+      this.scrollProgress -= 0.0005;
+      // this.animateMove(new THREE.Vector3(0, 0, -1));
     }
+    this.tl.progress(this.scrollProgress);
   }
 
   onMouseMove() {
@@ -146,9 +190,9 @@ export default class Camera {
       // Update the camera's position by adding the transformed movement vector
       gsap.to(this.instance.position, {
         delay: 0.1,
-        x: 0 + movementVector.x,
-        y: 0 + movementVector.y,
-        z: 0 + movementVector.z,
+        x: movementVector.x,
+        y: movementVector.y,
+        z: movementVector.z,
         duration: 2,
         ease: "power4.easeInOut",
       });
@@ -156,7 +200,8 @@ export default class Camera {
   }
 
   animateMove(direction) {
-    direction.applyQuaternion(this.instance.quaternion); // Rotate to camera's orientation
+    // Rotate to camera's orientation
+    direction.applyQuaternion(this.instance.quaternion);
 
     const distanceToMove = 1;
     const newPosition = this.cameraParent.position
@@ -198,7 +243,7 @@ export default class Camera {
     }
   }
 
-  animateCameraPosition(name) {
+  updateCameraPosition(name) {
     this.isAnimated = true;
     this.options.activeCamera = name;
     const scene = scenes[name];
@@ -231,6 +276,8 @@ export default class Camera {
 
   setDebug() {
     if (this.debug.active) {
+      //this.debugFolder = this.debug.ui.addFolder("Camera");
+      //this.debugFolder.close();
     }
   }
 
