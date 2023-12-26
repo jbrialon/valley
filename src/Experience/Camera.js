@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Experience from "./Experience";
 
 import scenes from "./Data/scenes.js";
+import paths from "./Data/paths.js";
 
 export default class Camera {
   constructor() {
@@ -28,34 +29,6 @@ export default class Camera {
     this.setInstance();
     this.initEvents();
     // this.setOrbitControls();
-
-    this.curve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-5.96, 3.9, -7),
-      new THREE.Vector3(0.077, 1.88 + 2, -7.69),
-      new THREE.Vector3(2.16, 2.04 + 2, -7.95),
-      new THREE.Vector3(5.7, 2.64 + 2, -8.74),
-      new THREE.Vector3(6.89, 3.32 + 2, -11.13),
-      new THREE.Vector3(8.9, 3.15 + 2, -13.56),
-      new THREE.Vector3(12.28, 3.33 + 2, -15.1),
-      new THREE.Vector3(15.63, 3.61 + 2, -15.47),
-      new THREE.Vector3(20.86, 3.87 + 2, -14.74),
-    ]);
-
-    const points = this.curve.getPoints(50);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-    const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-
-    const curveObject = new THREE.Line(geometry, material);
-    this.scene.add(curveObject);
-
-    // this.fakeCamera = new THREE.Mesh(
-    //   new THREE.BoxGeometry(1, 1, 1),
-    //   new THREE.MeshNormalMaterial()
-    // );
-    // this.fakeCamera.scale.set(0.75, 0.5, 0.5);
-    // this.fakeCamera.position.set(0.077, 1.88 + 2, -7.69);
-    // this.scene.add(this.fakeCamera);
 
     // Debug
     this.setDebug();
@@ -84,6 +57,78 @@ export default class Camera {
       scenes.day1.target.y,
       scenes.day1.target.z
     );
+  }
+
+  setPaths() {
+    this.cameraCurve = new THREE.CatmullRomCurve3(paths.camera);
+
+    paths.camera.forEach((point, index) => {
+      const curvePoint = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshNormalMaterial()
+      );
+      curvePoint.position.set(point.x, point.y, point.z);
+      curvePoint.scale.set(0.1, 0.1, 0.1);
+      curvePoint.visible = this.debug.active;
+      this.scene.add(curvePoint);
+
+      this.manager.addClickEventToMesh(curvePoint, () => {
+        console.log(index, point);
+      });
+    });
+
+    const cameraPoints = this.cameraCurve.getPoints(50);
+    const cameraGeometry = new THREE.BufferGeometry().setFromPoints(
+      cameraPoints
+    );
+
+    const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+    const cameraCurveMesh = new THREE.Line(cameraGeometry, material);
+    cameraCurveMesh.visible = this.debug.active;
+    this.scene.add(cameraCurveMesh);
+
+    this.targetCurve = new THREE.CatmullRomCurve3(paths.target);
+
+    paths.target.forEach((point, index) => {
+      const curvePoint = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshNormalMaterial()
+      );
+      curvePoint.position.set(point.x, point.y, point.z);
+      curvePoint.scale.set(0.1, 0.1, 0.1);
+      curvePoint.visible = this.debug.active;
+      this.scene.add(curvePoint);
+
+      this.manager.addClickEventToMesh(curvePoint, () => {
+        console.log(index, point);
+      });
+    });
+
+    const targetPoints = this.targetCurve.getPoints(50);
+    const targetGeometry = new THREE.BufferGeometry().setFromPoints(
+      targetPoints
+    );
+
+    const targetCurveMesh = new THREE.Line(
+      targetGeometry,
+      new THREE.LineBasicMaterial({ color: 0x599fd3 })
+    );
+    targetCurveMesh.visible = this.debug.active;
+    this.scene.add(targetCurveMesh);
+
+    this.fakeTarget = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 4, 4),
+      new THREE.MeshNormalMaterial()
+    );
+    this.fakeTarget.scale.set(0.1, 0.1, 0.1);
+    this.fakeTarget.position.set(
+      paths.target[0].x,
+      paths.target[0].y,
+      paths.target[0].z
+    );
+    this.fakeTarget.visible = this.debug.active;
+    this.scene.add(this.fakeTarget);
   }
 
   initEvents() {
@@ -134,9 +179,6 @@ export default class Camera {
 
   onMouseWheel() {
     if (this.scrollProgress >= 0) {
-      const position = this.curve.getPointAt(this.scrollProgress);
-      this.cameraParent.position.copy(position);
-
       let delta = 0.025;
       if (this.inputEvents.mouse.z < 0) {
         delta = -0.025;
@@ -151,10 +193,17 @@ export default class Camera {
       gsap.to(this, {
         duration: 1,
         scrollProgress: clampedScrollProgress,
-        ease: "power2.EaseInOut", // You can choose a different ease function
+        ease: "power2.EaseInOut",
         onUpdate: () => {
-          const newPosition = this.curve.getPointAt(this.scrollProgress);
+          const newPosition = this.cameraCurve.getPointAt(this.scrollProgress);
+          const newPosition2 = this.targetCurve.getPointAt(this.scrollProgress);
+          this.fakeTarget.position.copy(newPosition2);
           this.cameraParent.position.copy(newPosition);
+          this.instance.lookAt(
+            this.fakeTarget.position.x,
+            this.fakeTarget.position.y,
+            this.fakeTarget.position.z
+          );
         },
       });
     }

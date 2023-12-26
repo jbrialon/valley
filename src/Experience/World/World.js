@@ -8,11 +8,13 @@ export default class World {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
+    this.camera = this.experience.camera;
     this.resources = this.experience.resources;
 
     // Wait for resources to be loaded
     this.resources.on("ready", () => {
       // this.loaderOverlay = new Loader();
+
       // Setup
       this.day1 = new Overlay({
         name: "day1",
@@ -73,6 +75,8 @@ export default class World {
       this.map = new Map();
       this.environment = new Environment();
 
+      // TODO: move this logic elsewhere
+      this.camera.setPaths();
       // Show Experience
       // this.loaderOverlay.hideLoader();
     });
@@ -80,7 +84,5 @@ export default class World {
 
   update() {
     if (this.map) this.map.update();
-    if (this.mapOverlayOne) this.mapOverlayOne.update();
-    if (this.mapOverlayTwo) this.mapOverlayOne.update();
   }
 }
