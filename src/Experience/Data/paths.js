@@ -7,7 +7,7 @@ export default {
     new THREE.Vector3(2.16, 4.04, -7.95),
     new THREE.Vector3(5.7, 4.64, -8.74),
     new THREE.Vector3(7, 5.34, -13),
-    new THREE.Vector3(8.9, 5.15, -13.56),
+    new THREE.Vector3(8.9, 5.3, -14),
     new THREE.Vector3(12.28, 5.33, -15.1),
     new THREE.Vector3(15.63, 5.61, -15.47),
     new THREE.Vector3(20.86, 5.87, -14.74),
@@ -15,9 +15,13 @@ export default {
     new THREE.Vector3(21.5, 7.5, -8),
   ],
   target: [
-    new THREE.Vector3(8.2, -1.4, -7),
+    new THREE.Vector3(
+      0.0774543285369873,
+      1.8803753852844238,
+      -7.694965839385986
+    ),
     new THREE.Vector3(8.14, 4.13, -12.8),
-    new THREE.Vector3(17.84, 5.51, -14.4),
+    new THREE.Vector3(17.84, 5.51, -19),
     new THREE.Vector3(25, 5, -15),
   ],
 };
