@@ -13,7 +13,7 @@ export default class Renderer {
 
     // Options
     this.options = {
-      clearColor: "#b9a998",
+      backgroundColor: "#b9a998",
     };
 
     // Debug
@@ -21,10 +21,10 @@ export default class Renderer {
       this.debugFolder = this.debug.ui.addFolder("World");
       this.debugFolder.close();
       this.debugFolder
-        .addColor(this.options, "clearColor")
+        .addColor(this.options, "backgroundColor")
         .name("Background Color")
         .onChange(() => {
-          this.instance.setClearColor(this.options.clearColor);
+          document.body.style.backgroundColor = this.options.backgroundColor;
         });
     }
 
@@ -38,6 +38,7 @@ export default class Renderer {
       canvas: this.canvas,
       antialias: true,
       powerPreference: "high-performance",
+      alpha: true,
     });
 
     // TODO: try to understand that
@@ -47,7 +48,7 @@ export default class Renderer {
     // this.instance.outputColorSpace = THREE.LinearSRGBColorSpace;
     // this.instance.shadowMap.enabled = true;
     // this.instance.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.instance.setClearColor(this.options.clearColor);
+    // this.instance.setClearColor(this.options.clearColor);
 
     this.instance.setSize(this.sizes.width, this.sizes.height);
     this.instance.setPixelRatio(this.sizes.pixelRatio);

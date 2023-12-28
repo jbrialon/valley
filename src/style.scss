@@ -1,0 +1,67 @@
+@font-face {
+  font-family: "cartograph_cfbold_italic";
+  src: url("/fonts/cartographcf-bolditalic-webfont.woff2") format("woff2"),
+    url("/fonts/cartographcf-bolditalic-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  &:before,
+  &:after {
+    box-sizing: inherit;
+  }
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+body {
+  background-color: #b9a998;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.webgl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+  z-index: 10;
+}
+
+#app {
+  .title {
+    font-family: "cartograph_cfbold_italic";
+    pointer-events: none;
+    font-size: 13vw;
+    line-height: 1.2;
+    font-weight: 300;
+    text-align: center;
+    letter-spacing: 0.55vw;
+  }
+
+  .text {
+    position: absolute;
+    top: 1vw;
+    left: 2vw;
+    color: #f4e2d6;
+    opacity: 1;
+  }
+
+  .text-front {
+    z-index: 20;
+    -moz-text-stroke-color: #f4e2d6;
+    -webkit-text-stroke-color: #f4e2d6;
+    -moz-text-stroke-width: 0.085vw;
+    -webkit-text-stroke-width: 0.085vw;
+    -moz-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
