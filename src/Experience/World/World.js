@@ -2,6 +2,7 @@ import Experience from "../Experience";
 import Environment from "./Environment";
 import Loader from "./Loader";
 import Map from "./Map";
+import Markers from "./Markers";
 import Overlay from "./Overlay";
 
 export default class World {
@@ -73,6 +74,7 @@ export default class World {
       });
 
       this.map = new Map();
+      this.markers = new Markers();
       this.environment = new Environment();
 
       // TODO: move this logic elsewhere
@@ -84,5 +86,6 @@ export default class World {
 
   update() {
     if (this.map) this.map.update();
+    if (this.markers) this.markers.update();
   }
 }

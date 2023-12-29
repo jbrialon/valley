@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import terrainMaterial from "../Materials/TerrainMaterial";
-import toonMaterial from "../Materials/ToonMaterial.js";
 
 export default class Map {
   constructor() {
@@ -46,9 +45,6 @@ export default class Map {
 
     // Setup
     this.resource = this.resources.items.mapModel;
-    this.gradientMap = this.resources.items.threeToneToonTexture;
-    this.gradientMap.magFilter = THREE.NearestFilter;
-
     this.terrainMaterial = terrainMaterial({
       uAlpha: 1,
       uStrength: 1,
@@ -63,12 +59,6 @@ export default class Map {
       uColorThree: this.options.uColorThree,
       uMaskTexture: null,
     });
-
-    this.markerMaterial = toonMaterial({
-      color: 0x992625,
-      gradientMap: this.gradientMap,
-    });
-    this.markers = [];
     this.lakeMaterial = new THREE.MeshBasicMaterial({ color: 0x6bae8d });
     this.setModel();
 
@@ -91,36 +81,24 @@ export default class Map {
         child !== undefined
       ) {
         child.visible = false;
-        this.addMarkerToPosition(child);
+        // this.printMarkerData(child);
       } else if (child instanceof THREE.PerspectiveCamera) {
         // Camera position
+        child.visible = false;
       }
     });
 
     this.scene.add(this.model);
   }
 
-  addMarkerToPosition(marker) {
-    const geometry = new THREE.OctahedronGeometry(1, 0);
-    const material = this.markerMaterial.clone();
-    const markerMesh = new THREE.Mesh(geometry, material);
-    markerMesh.name = marker.name;
-    markerMesh.scale.set(0.075, 0.1, 0.075);
-    markerMesh.position.set(
-      marker.position.x,
-      marker.position.y,
-      marker.position.z
+  printMarkerData(marker) {
+    console.log(
+      `{name: '${
+        marker.name
+      }', position: new THREE.Vector3(${marker.position.x.toFixed(
+        2
+      )},${marker.position.y.toFixed(2)},${marker.position.z.toFixed(2)})}`
     );
-    this.markers.push(markerMesh);
-    this.scene.add(markerMesh);
-    this.manager.addClickEventToMesh(markerMesh, this.onMarkerClick.bind(this));
-  }
-
-  onMarkerClick(event) {
-    const marker = event.target;
-    console.log(marker.position);
-    const name = marker.name;
-    this.manager.trigger("onMarkerClick", name);
   }
 
   setDebug() {
@@ -176,9 +154,5 @@ export default class Map {
     }
   }
 
-  update() {
-    this.markers.forEach((marker) => {
-      marker.rotation.y += 0.0015 * this.time.delta;
-    });
-  }
+  update() {}
 }

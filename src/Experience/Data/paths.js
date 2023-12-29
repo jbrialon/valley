@@ -15,11 +15,7 @@ export default {
     new THREE.Vector3(21.5, 7.5, -8),
   ],
   target: [
-    new THREE.Vector3(
-      0.0774543285369873,
-      1.8803753852844238,
-      -7.694965839385986
-    ),
+    new THREE.Vector3(0.077, 1.9, -7.76),
     new THREE.Vector3(8.14, 4.13, -12.8),
     new THREE.Vector3(17.84, 5.51, -19),
     new THREE.Vector3(25, 5, -15),
