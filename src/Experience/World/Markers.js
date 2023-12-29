@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import markers from "../Data/markers.js";
@@ -17,18 +16,16 @@ export default class Markers {
 
     // Options
     this.options = {
-      uColor: 0x992625,
+      color: 0x992625,
     };
-    // Debug
-    if (this.debug.active) {
-      //   this.debugFolder = this.debug.ui.addFolder("markers");
-      //   this.debugFolder.close();
-    }
 
     // Setup
     this.markers = [];
     this.setMaterial();
     this.setMarkers();
+
+    // Debug
+    this.setDebug();
   }
 
   setMarkers() {
@@ -59,7 +56,7 @@ export default class Markers {
     this.gradientMap.magFilter = THREE.NearestFilter;
 
     this.material = toonMaterial({
-      color: this.options.uColor,
+      color: this.options.color,
       gradientMap: this.gradientMap,
     });
   }
@@ -69,6 +66,23 @@ export default class Markers {
     console.log(marker.position);
     const name = marker.name;
     this.manager.trigger("onMarkerClick", name);
+  }
+
+  setDebug() {
+    if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("Markers");
+      this.debugFolder.close();
+
+      this.debugFolder
+        .addColor(this.options, "color")
+        .name("Marker Color")
+        .onChange(() => {
+          this.material.color.set(this.options.color);
+          this.markers.forEach((marker) => {
+            marker.material.color = new THREE.Color(this.options.color);
+          });
+        });
+    }
   }
 
   update() {

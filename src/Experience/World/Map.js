@@ -26,7 +26,6 @@ export default class Map {
       uColorThree: "#e45221",
       uColorNumber: 1,
       uContourFrequency: 2.7,
-      markerColor: 0x992625,
     };
 
     this.manager.on("cameraPositionChanged", () => {
@@ -106,16 +105,6 @@ export default class Map {
       this.debugFolder = this.debug.ui.addFolder("Map");
       this.debugFolder.close();
 
-      this.debugFolderMarker = this.debugFolder.addFolder("Marker");
-      this.debugFolderMarker
-        .addColor(this.options, "markerColor")
-        .name("Marker Color")
-        .onChange(() => {
-          this.markerMaterial.color.set(this.options.markerColor);
-          this.markers.forEach((marker) => {
-            marker.material.color = new THREE.Color(this.options.markerColor);
-          });
-        });
       this.debugFolderMap = this.debugFolder.addFolder("Map");
       this.debugFolderMap
         .add(this.terrainMaterial.uniforms.uAlpha, "value")
