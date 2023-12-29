@@ -9,9 +9,9 @@ export default [
   { name: "Kyanjin_Gompa", position: new THREE.Vector3(20.67, 3.93, -15.35) },
   {
     name: "Kyanjin_Gompa_Cheese_Factory",
-    position: new THREE.Vector3(20.86, 3.87, -14.75),
+    position: new THREE.Vector3(20.86, 3.97, -14.75),
   },
-  { name: "Tserko_Ri", position: new THREE.Vector3(24.69, 5.04, -15.29) },
+  { name: "Tserko_Ri", position: new THREE.Vector3(24.69, 5.14, -15.29) },
   { name: "Kyanjin_Ri", position: new THREE.Vector3(21.39, 4.39, -15.85) },
   { name: "Thulo_Syabru", position: new THREE.Vector3(-2.1, 2.29, -6.49) },
   { name: "Sing_Gomba", position: new THREE.Vector3(-4.36, 3.37, -2.28) },

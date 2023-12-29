@@ -22,7 +22,7 @@ export default class World {
       // Setup
       this.day1 = new Overlay({
         name: "day1",
-        uAlpha: 1,
+        uAlpha: 0,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
@@ -31,13 +31,14 @@ export default class World {
         uColorNumber: 2,
         uContourFrequency: 2.7,
         uMaskTexture: "dayOneTexture",
-        uCirclePos: new THREE.Vector2(0.14, 0.41),
+        uCirclePos: new THREE.Vector2(0.14, 0.417),
+        uCircleRadius: 3,
         offsetPosY: 0.001,
       });
 
       this.day2 = new Overlay({
         name: "day2",
-        uAlpha: 1,
+        uAlpha: 0,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
@@ -47,12 +48,13 @@ export default class World {
         uContourFrequency: 2.7,
         uMaskTexture: "dayTwoTexture",
         uCirclePos: new THREE.Vector2(0.02, 0.356),
+        uCircleRadius: 3,
         offsetPosY: 0.002,
       });
 
       this.day3 = new Overlay({
         name: "day3",
-        uAlpha: 1,
+        uAlpha: 0,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
@@ -62,6 +64,7 @@ export default class World {
         uContourFrequency: 2.7,
         uMaskTexture: "dayFourTexture",
         uCirclePos: new THREE.Vector2(-0.705, 0.696),
+        uCircleRadius: 3,
         offsetPosY: 0.003,
       });
 

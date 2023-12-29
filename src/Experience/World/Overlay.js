@@ -27,6 +27,7 @@ export default class Overlay {
     // };
 
     // Setup
+    this.isActive = false;
     this.overlayData = scenes[this.options.name];
     this.resource = this.resources.items.mapModel;
     this.maskTexture = this.options.uMaskTexture
@@ -46,6 +47,7 @@ export default class Overlay {
       uColorThree: this.options.uColorThree,
       uCirclePos: this.options.uCirclePos,
       uMaskTexture: this.maskTexture,
+      uCircleRadius: this.options.uCircleRadius,
     });
 
     // Setup
@@ -104,17 +106,60 @@ export default class Overlay {
   }
 
   revealOverlay() {
-    gsap.fromTo(
-      this.terrainMaterial.uniforms.uAlpha,
-      {
-        value: 0,
-      },
-      {
-        duration: 3,
-        value: 1,
-        ease: "power4.inOut",
-      }
-    );
+    if (this.isActive) {
+      gsap.fromTo(
+        this.terrainMaterial.uniforms.uCircleRadius,
+        {
+          value: this.options.uCircleRadius,
+        },
+        {
+          duration: 3,
+          value: 0,
+          ease: "power4.inOut",
+        }
+      );
+      gsap.fromTo(
+        this.terrainMaterial.uniforms.uAlpha,
+        {
+          value: 1,
+        },
+        {
+          duration: 3,
+          value: 0,
+          ease: "power4.inOut",
+
+          onStart: () => {
+            this.isActive = false;
+          },
+        }
+      );
+    } else {
+      gsap.fromTo(
+        this.terrainMaterial.uniforms.uCircleRadius,
+        {
+          value: 0,
+        },
+        {
+          duration: 3,
+          value: this.options.uCircleRadius,
+          ease: "power4.inOut",
+        }
+      );
+      gsap.fromTo(
+        this.terrainMaterial.uniforms.uAlpha,
+        {
+          value: 0,
+        },
+        {
+          duration: 3,
+          value: 1,
+          ease: "power4.inOut",
+          onStart: () => {
+            this.isActive = true;
+          },
+        }
+      );
+    }
   }
 
   setDebug() {
@@ -202,9 +247,9 @@ export default class Overlay {
         .name("Position Y");
       this.debugCircleFolder
         .add(this.terrainMaterial.uniforms.uCircleRadius, "value")
-        .min(0.0001)
-        .max(0.001)
-        .step(0.00001)
+        .min(1)
+        .max(20)
+        .step(0.0001)
         .name("Circle Radius");
       this.debugCircleFolder
         .add(this.terrainMaterial.uniforms.uNoiseIntensity, "value")
@@ -216,6 +261,6 @@ export default class Overlay {
   }
 
   update() {
-    this.terrainMaterial.uniforms.uTime.value = this.time.elapsedTime * 0.035;
+    this.terrainMaterial.uniforms.uTime.value = this.time.elapsedTime * 0.015;
   }
 }

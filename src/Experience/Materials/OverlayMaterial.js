@@ -20,7 +20,7 @@ const overlayMaterial = (options) => {
       uColorThree: { value: new THREE.Color(options.uColorThree || "#0000ff") },
       uMaskTexture: { value: options.uMaskTexture || null },
       uCircleRadius: {
-        value: 0.0005,
+        value: options.uCircleRadius || 3,
       },
       uTime: { value: 0 },
       uNoiseIntensity: { value: 140 },

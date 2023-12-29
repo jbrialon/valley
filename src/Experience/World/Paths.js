@@ -20,6 +20,7 @@ export default class Paths {
     // Setup
     this.setPaths();
     this.setControls();
+
     // Debug
     this.setDebug();
   }
@@ -68,9 +69,11 @@ export default class Paths {
       curvePoint.visible = this.debug.active;
       this.scene.add(curvePoint);
 
-      this.manager.addClickEventToMesh(curvePoint, () => {
-        this.transformControls.attach(curvePoint);
-      });
+      if (this.debug.active) {
+        this.manager.addClickEventToMesh(curvePoint, () => {
+          this.transformControls.attach(curvePoint);
+        });
+      }
     });
 
     this.targetPoints = this.targetCurve.getPoints(50);
@@ -100,42 +103,44 @@ export default class Paths {
   }
 
   setControls() {
-    this.transformControls.addEventListener("dragging-changed", (event) => {
-      if (!event.value) {
-        const transformedPoint = this.transformControls.object;
-        const index = transformedPoint.index;
-        const type = transformedPoint.type;
-        if (type === "camera") {
-          paths.camera[index] = new THREE.Vector3(
-            transformedPoint.position.x,
-            transformedPoint.position.y,
-            transformedPoint.position.z
-          );
-          this.cameraCurve = new THREE.CatmullRomCurve3(paths.camera);
-          this.cameraPoints = this.cameraCurve.getPoints(50);
-          this.cameraGeometry = new THREE.BufferGeometry().setFromPoints(
-            this.cameraPoints
-          );
+    if (this.debug.active) {
+      this.transformControls.addEventListener("dragging-changed", (event) => {
+        if (!event.value) {
+          const transformedPoint = this.transformControls.object;
+          const index = transformedPoint.index;
+          const type = transformedPoint.type;
+          if (type === "camera") {
+            paths.camera[index] = new THREE.Vector3(
+              transformedPoint.position.x,
+              transformedPoint.position.y,
+              transformedPoint.position.z
+            );
+            this.cameraCurve = new THREE.CatmullRomCurve3(paths.camera);
+            this.cameraPoints = this.cameraCurve.getPoints(50);
+            this.cameraGeometry = new THREE.BufferGeometry().setFromPoints(
+              this.cameraPoints
+            );
 
-          this.cameraCurveMesh.geometry = this.cameraGeometry;
-        } else if (type === "target") {
-          paths.target[index] = new THREE.Vector3(
-            transformedPoint.position.x,
-            transformedPoint.position.y,
-            transformedPoint.position.z
-          );
-          this.targetCurve = new THREE.CatmullRomCurve3(paths.target);
-          this.targetPoints = this.targetCurve.getPoints(50);
-          this.targetGeometry = new THREE.BufferGeometry().setFromPoints(
-            this.targetPoints
-          );
+            this.cameraCurveMesh.geometry = this.cameraGeometry;
+          } else if (type === "target") {
+            paths.target[index] = new THREE.Vector3(
+              transformedPoint.position.x,
+              transformedPoint.position.y,
+              transformedPoint.position.z
+            );
+            this.targetCurve = new THREE.CatmullRomCurve3(paths.target);
+            this.targetPoints = this.targetCurve.getPoints(50);
+            this.targetGeometry = new THREE.BufferGeometry().setFromPoints(
+              this.targetPoints
+            );
 
-          this.targetCurveMesh.geometry = this.targetGeometry;
+            this.targetCurveMesh.geometry = this.targetGeometry;
+          }
+          console.log("New Point Position: ", index, transformedPoint.position);
         }
-        console.log("New Point Position: ", index, transformedPoint.position);
-      }
-      this.camera.setPaths();
-    });
+        this.camera.setPaths();
+      });
+    }
   }
 
   setDebug() {

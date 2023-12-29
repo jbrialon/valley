@@ -24,7 +24,7 @@ export default class Helpers {
       this.camera.instance,
       this.canvas
     );
-    this.transformControls.enabled = true;
+    this.transformControls.enabled = false;
     this.scene.add(this.transformControls);
 
     // Keyboard Events
@@ -98,6 +98,8 @@ export default class Helpers {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Helpers");
       this.debugFolder.close();
+
+      this.transformControls.enabled = true;
 
       this.debugFolder
         .add(

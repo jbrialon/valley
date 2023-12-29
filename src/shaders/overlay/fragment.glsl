@@ -135,7 +135,7 @@ void main() {
   vec2 circlePos = vUv + (uCirclePos * 0.5) - vec2(0.5);
     // this 1.5 should be adapted by the ratio of the model we apply the material to 
     // circlePos.x = circlePos.x * 1.5;
-	float c = circle(circlePos, uCircleRadius, 2.) * 2.5;
+	float c = circle(circlePos, (uCircleRadius / 10000.0), 2.) * 2.5;
 
 	float offx = vUv.x + sin(vUv.y + uTime * .1);
 	float offy = vUv.y - uTime * 0.1 - cos(uTime * .001) * .01;
