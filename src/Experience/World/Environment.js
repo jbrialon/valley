@@ -17,6 +17,9 @@ export default class Environment {
     // Setup
     // this.setAmbientLight();
     this.setSunLight();
+
+    // Debug
+    // this.setDebug();
   }
 
   setAmbientLight() {
@@ -28,8 +31,13 @@ export default class Environment {
     this.sunLight = new THREE.DirectionalLight(0xffffff, 4);
     this.sunLight.position.set(8, 9, 6);
     this.scene.add(this.sunLight);
+  }
 
+  setDebug() {
     if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("Environment");
+      this.debugFolder.close();
+
       this.debugFolder
         .add(this.sunLight, "intensity")
         .name("sunLightIntensity")

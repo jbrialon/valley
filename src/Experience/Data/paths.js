@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 export default {
   camera: [
-    new THREE.Vector3(-5.96, 3.9, -7),
+    new THREE.Vector3(-6.09, 2.61, -7.66),
     new THREE.Vector3(0.077, 3.88, -7.69),
     new THREE.Vector3(2.16, 4.04, -7.95),
     new THREE.Vector3(5.7, 4.64, -8.74),

@@ -186,7 +186,14 @@ export default class Camera {
         this.animateMove(direction);
         break;
       case "Space":
-        console.log("Camera Position:", this.instance.position);
+        console.log(
+          "Camera Position:",
+          `new THREE.Vector3(${this.cameraParent.position.x.toFixed(
+            2
+          )},${this.cameraParent.position.y.toFixed(
+            2
+          )},${this.cameraParent.position.z.toFixed(2)})`
+        );
         break;
     }
   }

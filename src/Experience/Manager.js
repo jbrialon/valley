@@ -38,8 +38,8 @@ export default class Manager extends EventEmitter {
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("View Manager");
-      this.debugFolder.close();
+      // this.debugFolder = this.debug.ui.addFolder("View Manager");
+      // this.debugFolder.close();
     }
   }
 

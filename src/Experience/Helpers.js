@@ -121,7 +121,14 @@ export default class Helpers {
             button: () => {
               if (this.helper) {
                 this.camera.instance.lookAt(this.helper.position);
-                console.log("Helper Position:", this.helper.position);
+                console.log(
+                  "Helper Position:",
+                  `new THREE.Vector3(${this.helper.position.x.toFixed(
+                    2
+                  )},${this.helper.position.y.toFixed(
+                    2
+                  )},${this.helper.position.z.toFixed(2)})`
+                );
               }
             },
           },
