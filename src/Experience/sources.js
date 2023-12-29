@@ -2,7 +2,7 @@ export default [
   {
     name: "mapModel",
     type: "gltfModel",
-    path: "/models/map/map-marker.glb",
+    path: "/models/map/map.glb",
   },
   {
     name: "dayOneTexture",

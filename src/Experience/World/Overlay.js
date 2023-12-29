@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import Experience from "../Experience";
 
-import terrainMaterial from "../Materials/TerrainMaterial";
+import overlayMaterial from "../Materials/OverlayMaterial";
+
 import scenes from "../Data/scenes.js";
 
 export default class Overlay {
@@ -32,18 +33,18 @@ export default class Overlay {
       ? this.resources.items[this.options.uMaskTexture].clone()
       : "";
 
-    this.terrainMaterial = terrainMaterial({
+    this.terrainMaterial = overlayMaterial({
       uAlpha: this.options.uAlpha,
       uStrength: this.options.uStrength,
       uPixelRatio: this.sizes.pixelRatio,
       uContourWidth: 1,
       uColorNumber: this.options.uColorNumber,
       uContourFrequency: this.options.uContourFrequency,
-      uTerrainColor: this.options.uTerrainColor,
       uLineColor: this.options.uLineColor,
       uColorOne: this.options.uColorOne,
       uColorTwo: this.options.uColorTwo,
       uColorThree: this.options.uColorThree,
+      uCirclePos: this.options.uCirclePos,
       uMaskTexture: this.maskTexture,
     });
 
@@ -78,7 +79,7 @@ export default class Overlay {
         this.revealOverlay();
       } else if (name === "Sing_Gomba" && this.options.name === "day3") {
         this.revealOverlay();
-      } else if (name === "Tserko_Ri" && this.options.name === "day4") {
+      } else if (name === "Tserko_Ri" && this.options.name === "day3") {
         this.revealOverlay();
       }
     });
@@ -185,8 +186,36 @@ export default class Overlay {
             this.options.uLineColor
           );
         });
+
+      this.debugCircleFolder = this.debugFolder.addFolder("Circle");
+      this.debugCircleFolder
+        .add(this.terrainMaterial.uniforms.uCirclePos.value, "x")
+        .min(-1)
+        .max(1)
+        .step(0.001)
+        .name("Position X");
+      this.debugCircleFolder
+        .add(this.terrainMaterial.uniforms.uCirclePos.value, "y")
+        .min(-1)
+        .max(1)
+        .step(0.0001)
+        .name("Position Y");
+      this.debugCircleFolder
+        .add(this.terrainMaterial.uniforms.uCircleRadius, "value")
+        .min(0.0001)
+        .max(0.001)
+        .step(0.00001)
+        .name("Circle Radius");
+      this.debugCircleFolder
+        .add(this.terrainMaterial.uniforms.uNoiseIntensity, "value")
+        .min(10)
+        .max(200)
+        .step(0.01)
+        .name("Intensity");
     }
   }
 
-  update() {}
+  update() {
+    this.terrainMaterial.uniforms.uTime.value = this.time.elapsedTime * 0.035;
+  }
 }

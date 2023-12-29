@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 import Experience from "../Experience";
 import Environment from "./Environment";
 import Loader from "./Loader";
@@ -20,7 +22,7 @@ export default class World {
       // Setup
       this.day1 = new Overlay({
         name: "day1",
-        uAlpha: 0,
+        uAlpha: 1,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
@@ -29,12 +31,13 @@ export default class World {
         uColorNumber: 2,
         uContourFrequency: 2.7,
         uMaskTexture: "dayOneTexture",
+        uCirclePos: new THREE.Vector2(0.14, 0.41),
         offsetPosY: 0.001,
       });
 
       this.day2 = new Overlay({
         name: "day2",
-        uAlpha: 0,
+        uAlpha: 1,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
@@ -43,26 +46,13 @@ export default class World {
         uColorNumber: 2,
         uContourFrequency: 2.7,
         uMaskTexture: "dayTwoTexture",
+        uCirclePos: new THREE.Vector2(0.02, 0.356),
         offsetPosY: 0.002,
       });
 
       this.day3 = new Overlay({
         name: "day3",
-        uAlpha: 0,
-        uStrength: 0.5,
-        uLineColor: "#53524c", // #74675e
-        uColorOne: "#f4814a", // #6a5e52
-        uColorTwo: "#eda17f",
-        uColorThree: "#e45221",
-        uColorNumber: 2,
-        uContourFrequency: 2.7,
-        uMaskTexture: "dayThreeTexture",
-        offsetPosY: 0.003,
-      });
-
-      this.day4 = new Overlay({
-        name: "day4",
-        uAlpha: 0,
+        uAlpha: 1,
         uStrength: 0.5,
         uLineColor: "#53524c", // #74675e
         uColorOne: "#f4814a", // #6a5e52
@@ -71,7 +61,8 @@ export default class World {
         uColorNumber: 2,
         uContourFrequency: 2.7,
         uMaskTexture: "dayFourTexture",
-        offsetPosY: 0.004,
+        uCirclePos: new THREE.Vector2(-0.705, 0.696),
+        offsetPosY: 0.003,
       });
 
       this.map = new Map();
@@ -87,6 +78,9 @@ export default class World {
 
   update() {
     if (this.map) this.map.update();
+    if (this.day1) this.day1.update();
+    if (this.day2) this.day2.update();
+    if (this.day3) this.day3.update();
     if (this.markers) this.markers.update();
   }
 }

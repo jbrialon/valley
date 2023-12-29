@@ -51,12 +51,10 @@ export default class Map {
       uContourWidth: 1,
       uColorNumber: this.options.uColorNumber,
       uContourFrequency: this.options.uContourFrequency,
-      uTerrainColor: this.options.uTerrainColor,
       uLineColor: this.options.uLineColor,
       uColorOne: this.options.uColorOne,
       uColorTwo: this.options.uColorTwo,
       uColorThree: this.options.uColorThree,
-      uMaskTexture: null,
     });
     this.lakeMaterial = new THREE.MeshBasicMaterial({ color: 0x6bae8d });
     this.setModel();

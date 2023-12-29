@@ -7,7 +7,6 @@ uniform vec3 uLineColor;
 uniform vec3 uColorOne;
 uniform vec3 uColorTwo;
 uniform vec3 uColorThree;
-uniform sampler2D uMaskTexture;
 uniform float uPixelRatio;
 
 varying vec2 vUv;
@@ -29,14 +28,6 @@ void main() {
   float outputMax = 1.0;  // Desired maximum output
 
   float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, uContourWidth);
-
-  float maskValue = texture2D(uMaskTexture, vUv).r;
-  // vec4 textureColor = texture2D(uMaskTexture, vUv);
-  
-  // Use the mask value to discard fragments
-  if (maskValue > uStrength || uAlpha == 0.0) {
-      discard;
-  }
   
   // Pick a coordinate to visualize in a grid
   // float coord = length(vUv.xy) * 400.0; 
