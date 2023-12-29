@@ -3,6 +3,7 @@ import Environment from "./Environment";
 import Loader from "./Loader";
 import Map from "./Map";
 import Markers from "./Markers";
+import Paths from "./Paths";
 import Overlay from "./Overlay";
 
 export default class World {
@@ -75,9 +76,9 @@ export default class World {
 
       this.map = new Map();
       this.markers = new Markers();
+      this.paths = new Paths();
       this.environment = new Environment();
 
-      // TODO: move this logic elsewhere
       this.camera.setPaths();
       // Show Experience
       // this.loaderOverlay.hideLoader();
