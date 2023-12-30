@@ -18,7 +18,10 @@ export default class InputEvents extends EventEmitter {
     });
 
     window.addEventListener("wheel", (event) => {
-      this.mouse.z = event.deltaY;
+      var delta = event.deltaY || -event.wheelDelta || event.detail;
+      delta = delta / (event.deltaMode === 1 ? 3 : 100);
+
+      this.mouse.z = delta;
       this.trigger("wheel");
     });
 

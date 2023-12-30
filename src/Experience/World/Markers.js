@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import markers from "../Data/markers.js";
@@ -9,6 +10,7 @@ export default class Markers {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
+    this.sizes = this.experience.sizes;
     this.debug = this.experience.debug;
     this.time = this.experience.time;
     this.manager = this.experience.Manager;
@@ -26,6 +28,16 @@ export default class Markers {
 
     // Debug
     this.setDebug();
+  }
+
+  setMaterial() {
+    this.gradientMap = this.resources.items.threeToneToonTexture;
+    this.gradientMap.magFilter = THREE.NearestFilter;
+
+    this.material = toonMaterial({
+      color: this.options.color,
+      gradientMap: this.gradientMap,
+    });
   }
 
   setMarkers() {
@@ -48,26 +60,50 @@ export default class Markers {
         markerMesh,
         this.onMarkerClick.bind(this)
       );
-    });
-  }
 
-  setMaterial() {
-    this.gradientMap = this.resources.items.threeToneToonTexture;
-    this.gradientMap.magFilter = THREE.NearestFilter;
-
-    this.material = toonMaterial({
-      color: this.options.color,
-      gradientMap: this.gradientMap,
+      this.manager.addHoverEventToMesh(
+        markerMesh,
+        this.onMarkerHover.bind(this),
+        this.onMarkerOut.bind(this)
+      );
     });
   }
 
   onMarkerClick(event) {
     const marker = event.target;
-    console.log(marker.position);
     const name = marker.name;
+    this.bounce(marker);
     this.manager.trigger("onMarkerClick", name);
   }
 
+  onMarkerHover(event) {
+    const marker = event.target;
+    const name = marker.name;
+    this.manager.trigger("onMarkerHover", name);
+  }
+
+  onMarkerOut(event) {
+    const marker = event.target;
+    const name = marker.name;
+    this.manager.trigger("onMarkerOut", name);
+  }
+
+  bounce(marker) {
+    const bounceStrength = 0.05;
+
+    gsap.to(marker.position, {
+      y: `+=${bounceStrength}`,
+      duration: 0.75,
+      ease: "power2.out",
+      onComplete: () => {
+        gsap.to(marker.position, {
+          y: "-=" + bounceStrength,
+          duration: 0.5,
+          ease: "bounce.out",
+        });
+      },
+    });
+  }
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Markers");

@@ -4,7 +4,7 @@ import Experience from "../Experience";
 
 import overlayMaterial from "../Materials/OverlayMaterial";
 
-import scenes from "../Data/scenes.js";
+import markers from "../Data/markers.js";
 
 export default class Overlay {
   constructor(options) {
@@ -18,17 +18,24 @@ export default class Overlay {
     this.resources = this.experience.resources;
 
     // Options
-    // this.options = {
-    //   uLineColor: "#53524c", // #74675e
-    //   uColorOne: "#f4814a", // #6a5e52
-    //   uColorTwo: "#eda17f",
-    //   uColorThree: "#e45221",
-    //   uColorNumber: 3,
-    // };
+    this.options = {
+      uAlpha: 0,
+      uStrength: 0.5,
+      uLineColor: "#53524c", // #74675e
+      uColorOne: "#f4814a", // #6a5e52
+      uColorTwo: "#eda17f",
+      uColorThree: "#e45221",
+      uColorNumber: 2,
+      uContourWidth: 1,
+      uContourFrequency: 2.7,
+      uMaskTexture: "dayOneTexture",
+      uCirclePos: new THREE.Vector2(0.14, 0.417),
+      uCircleRadius: 3,
+      offsetPosY: 0.001,
+    };
 
     // Setup
-    this.isActive = false;
-    this.overlayData = scenes[this.options.name];
+    this.activeMarker = null;
     this.resource = this.resources.items.mapModel;
     this.maskTexture = this.options.uMaskTexture
       ? this.resources.items[this.options.uMaskTexture].clone()
@@ -38,7 +45,7 @@ export default class Overlay {
       uAlpha: this.options.uAlpha,
       uStrength: this.options.uStrength,
       uPixelRatio: this.sizes.pixelRatio,
-      uContourWidth: 1,
+      uContourWidth: this.options.uContourWidth,
       uColorNumber: this.options.uColorNumber,
       uContourFrequency: this.options.uContourFrequency,
       uLineColor: this.options.uLineColor,
@@ -75,98 +82,100 @@ export default class Overlay {
 
   initEvents() {
     this.manager.on("onMarkerClick", (name) => {
-      if (name === "Syabru_Besi" && this.options.name === "day1") {
-        this.revealOverlay();
-      } else if (name === "Pairo" && this.options.name === "day2") {
-        this.revealOverlay();
-      } else if (name === "Sing_Gomba" && this.options.name === "day3") {
-        this.revealOverlay();
-      } else if (name === "Tserko_Ri" && this.options.name === "day3") {
-        this.revealOverlay();
-      }
+      this.revealOverlay(name);
     });
 
-    this.manager.on("cameraPositionChanged", (key) => {
-      if (this.options.name === key) {
-        // gsap.fromTo(
-        //   this.terrainMaterial.uniforms.uStrength,
-        //   {
-        //     value: 0.3,
-        //   },
-        //   {
-        //     duration: 6,
-        //     value: 0.9,
-        //     ease: "power4.inOut",
-        //   }
-        // );
-        // } else {
-        //   this.terrainMaterial.uniforms.uAlpha.value = 0;
-      }
+    this.manager.on("onMarkerHover", (name) => {
+      // console.log(name);
+    });
+
+    this.manager.on("onMarkerOut", (name) => {
+      // console.log(name);
     });
   }
 
-  revealOverlay() {
-    if (this.isActive) {
-      gsap.fromTo(
-        this.terrainMaterial.uniforms.uCircleRadius,
-        {
-          value: this.options.uCircleRadius,
-        },
-        {
-          duration: 3,
-          value: 0,
-          ease: "power4.inOut",
-        }
-      );
-      gsap.fromTo(
-        this.terrainMaterial.uniforms.uAlpha,
-        {
-          value: 1,
-        },
-        {
-          duration: 3,
-          value: 0,
-          ease: "power4.inOut",
+  revealOverlay(name) {
+    const timeline = gsap.timeline();
+    const marker = this.getMarkerByName(name);
 
-          onStart: () => {
-            this.isActive = false;
+    if (this.activeMarker) {
+      timeline
+        .add("hide")
+        .fromTo(
+          this.terrainMaterial.uniforms.uCircleRadius,
+          {
+            value: this.options.uCircleRadius,
           },
-        }
-      );
-    } else {
-      gsap.fromTo(
+          {
+            duration: 0.5,
+            value: 0,
+            ease: "power4.inOut",
+            onStart: () => {
+              // not setting to the right value
+              this.options.uCircleRadius = marker.overlayRadius;
+            },
+          },
+          "hide"
+        )
+        .fromTo(
+          this.terrainMaterial.uniforms.uAlpha,
+          {
+            value: 1,
+          },
+          {
+            duration: 0.5,
+            value: 0,
+            ease: "power4.inOut",
+          },
+          "hide"
+        );
+    }
+
+    timeline
+      .add("reveal")
+      .fromTo(
         this.terrainMaterial.uniforms.uCircleRadius,
         {
           value: 0,
         },
         {
-          duration: 3,
+          duration: 1.5,
           value: this.options.uCircleRadius,
           ease: "power4.inOut",
-        }
-      );
-      gsap.fromTo(
+          onStart: () => {
+            this.activeMarker = marker.name;
+            this.options.uCirclePos = marker.overlayPosition;
+            this.options.uCircleRadius = marker.overlayRadius;
+
+            this.terrainMaterial.uniforms.uCirclePos.value.x =
+              this.options.uCirclePos.x;
+            this.terrainMaterial.uniforms.uCirclePos.value.y =
+              this.options.uCirclePos.y;
+          },
+        },
+        "reveal"
+      )
+      .fromTo(
         this.terrainMaterial.uniforms.uAlpha,
         {
           value: 0,
         },
         {
-          duration: 3,
+          duration: 1.5,
           value: 1,
           ease: "power4.inOut",
-          onStart: () => {
-            this.isActive = true;
-          },
-        }
+        },
+        "reveal"
       );
-    }
+  }
+
+  getMarkerByName(name) {
+    return markers.find((marker) => marker.name === name);
   }
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder = this.debug.debugOverlayFolder.addFolder(
-        this.overlayData.name ? this.overlayData.name : this.options.name
-      );
+      this.debugFolder = this.debug.debugOverlayFolder.addFolder("Overlay");
       this.debugFolder.close();
 
       this.debugFolder
@@ -237,7 +246,7 @@ export default class Overlay {
         .add(this.terrainMaterial.uniforms.uCirclePos.value, "x")
         .min(-1)
         .max(1)
-        .step(0.001)
+        .step(0.0001)
         .name("Position X");
       this.debugCircleFolder
         .add(this.terrainMaterial.uniforms.uCirclePos.value, "y")
