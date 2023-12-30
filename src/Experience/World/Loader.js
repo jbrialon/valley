@@ -39,13 +39,13 @@ export default class Loader {
           value: 1,
         },
         uCircleRadius: {
-          value: 16,
+          value: 14.5,
         },
         uColor: { value: new THREE.Color(this.options.uColor) },
 
         uTime: { value: 0 },
         uCirclePos: {
-          value: new THREE.Vector2(-1.05, 1.05),
+          value: new THREE.Vector2(-1, 1),
         },
       },
       vertexShader: vertexShader,
@@ -59,12 +59,15 @@ export default class Loader {
   }
 
   hideLoader() {
+    this.hasLoader = true;
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 0,
       duration: 4,
       ease: "expo.in",
       onComplete: () => {
-        // this.destroy();
+        if (!this.debug.active) {
+          this.destroy();
+        }
       },
     });
   }
@@ -77,7 +80,7 @@ export default class Loader {
           {
             button: () => {
               gsap.to(this.material.uniforms.uCircleRadius, {
-                value: 16,
+                value: 14.5,
                 duration: 1.5,
                 ease: "power4.inOut",
               });
@@ -90,14 +93,7 @@ export default class Loader {
         .add(
           {
             button: () => {
-              gsap.to(this.material.uniforms.uCircleRadius, {
-                value: 0,
-                duration: 1.5,
-                ease: "power4.inOut",
-                onComplete: () => {
-                  // this.destroy();
-                },
-              });
+              this.hideLoader();
             },
           },
           "button"

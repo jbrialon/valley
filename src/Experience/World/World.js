@@ -16,7 +16,7 @@ export default class World {
     this.resources = this.experience.resources;
 
     // Wait for resources to be loaded
-    this.loaderOverlay = new Loader();
+    this.loader = new Loader();
 
     this.resources.on("ready", () => {
       // Setup
@@ -28,12 +28,13 @@ export default class World {
 
       this.camera.setPaths();
       // Show Experience
-      this.loaderOverlay.hideLoader();
+      this.loader.hideLoader();
     });
   }
 
   update() {
     if (this.map) this.map.update();
+    if (this.loader) this.loader.update();
     if (this.overlay) this.overlay.update();
     if (this.markers) this.markers.update();
   }

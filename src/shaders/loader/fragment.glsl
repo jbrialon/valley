@@ -128,7 +128,7 @@ void main() {
 	float offx = vUv.x + sin(vUv.y + uTime * .1);
 	float offy = vUv.y - uTime * 0.1 - cos(uTime * .001) * .01;
 
-	float n = snoise3(vec3(offx, offy, uTime * 0.1) * (intensity)- intensity / 2.0) - 1.0;
+	float n = snoise3(vec3(offx, offy, uTime * 0.1) * (intensity)- intensity / 1.5) - 1.0;
 
 	float finalMask = smoothstep(0.4, 0.5, n + pow(c, 2.));
 

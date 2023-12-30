@@ -101,11 +101,8 @@ export default class Overlay {
     if (this.activeMarker) {
       timeline
         .add("hide")
-        .fromTo(
+        .to(
           this.terrainMaterial.uniforms.uCircleRadius,
-          {
-            value: this.options.uCircleRadius,
-          },
           {
             duration: 0.5,
             value: 0,
@@ -117,11 +114,8 @@ export default class Overlay {
           },
           "hide"
         )
-        .fromTo(
+        .to(
           this.terrainMaterial.uniforms.uAlpha,
-          {
-            value: 1,
-          },
           {
             duration: 0.5,
             value: 0,
@@ -133,13 +127,11 @@ export default class Overlay {
 
     timeline
       .add("reveal")
-      .fromTo(
+      .to(
         this.terrainMaterial.uniforms.uCircleRadius,
         {
-          value: 0,
-        },
-        {
           duration: 1.5,
+          delay: !this.activeMarker ? 0.5 : 0,
           value: this.options.uCircleRadius,
           ease: "power4.inOut",
           onStart: () => {
@@ -155,12 +147,10 @@ export default class Overlay {
         },
         "reveal"
       )
-      .fromTo(
+      .to(
         this.terrainMaterial.uniforms.uAlpha,
         {
-          value: 0,
-        },
-        {
+          delay: !this.activeMarker ? 0.5 : 0,
           duration: 1.5,
           value: 1,
           ease: "power4.inOut",
