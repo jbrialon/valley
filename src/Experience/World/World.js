@@ -16,9 +16,9 @@ export default class World {
     this.resources = this.experience.resources;
 
     // Wait for resources to be loaded
-    this.resources.on("ready", () => {
-      // this.loaderOverlay = new Loader();
+    this.loaderOverlay = new Loader();
 
+    this.resources.on("ready", () => {
       // Setup
       this.overlay = new Overlay();
       this.map = new Map();
@@ -28,7 +28,7 @@ export default class World {
 
       this.camera.setPaths();
       // Show Experience
-      // this.loaderOverlay.hideLoader();
+      this.loaderOverlay.hideLoader();
     });
   }
 

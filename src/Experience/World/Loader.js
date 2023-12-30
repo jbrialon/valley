@@ -9,6 +9,7 @@ export default class Loader {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
+    this.time = this.experience.time;
     this.debug = this.experience.debug;
     this.resources = this.experience.resources;
 
@@ -17,66 +18,120 @@ export default class Loader {
       uColor: "#968677",
     };
 
-    // Debug
-
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("loader mask");
-      this.debugFolder.close();
-    }
-
     // Setup
-    this.maskTexture = this.resources.items.transitionTexture;
-
     this.setGeometry();
     this.setMaterial();
     this.setMesh();
+
+    // Debug
+    // this.setDebug();
   }
 
   setGeometry() {
-    this.geometry = new THREE.PlaneGeometry(2, 2, 32, 32);
+    this.geometry = new THREE.PlaneGeometry(2, 2, 1, 1);
   }
 
   setMaterial() {
     this.material = new THREE.ShaderMaterial({
       transparent: true,
       uniforms: {
-        uAlpha: { value: 1 },
-        uColor: { value: new THREE.Color(this.options.uColor) },
-        uMaskTexture: { value: this.maskTexture },
-        uStrength: {
+        uAlpha: {
           value: 1,
+        },
+        uCircleRadius: {
+          value: 16,
+        },
+        uColor: { value: new THREE.Color(this.options.uColor) },
+
+        uTime: { value: 0 },
+        uCirclePos: {
+          value: new THREE.Vector2(-1.05, 1.05),
         },
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
     });
-
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("loader mask");
-      this.debugFolder
-        .add(this.material.uniforms.uStrength, "value")
-        .min(0)
-        .max(1)
-        .step(0.01)
-        .name("blend");
-    }
   }
 
   setMesh() {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    // this.mesh.rotation.x = -Math.PI * 0.5;
     this.scene.add(this.mesh);
   }
 
   hideLoader() {
-    gsap.to(this.material.uniforms.uStrength, {
-      duration: 3,
+    gsap.to(this.material.uniforms.uCircleRadius, {
       value: 0,
-      ease: "power4.inOut",
+      duration: 4,
+      ease: "expo.in",
       onComplete: () => {
         // this.destroy();
       },
     });
+  }
+
+  setDebug() {
+    if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("Loader");
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              gsap.to(this.material.uniforms.uCircleRadius, {
+                value: 16,
+                duration: 1.5,
+                ease: "power4.inOut",
+              });
+            },
+          },
+          "button"
+        )
+        .name("show Loader");
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              gsap.to(this.material.uniforms.uCircleRadius, {
+                value: 0,
+                duration: 1.5,
+                ease: "power4.inOut",
+                onComplete: () => {
+                  // this.destroy();
+                },
+              });
+            },
+          },
+          "button"
+        )
+        .name("hide Loader");
+      this.debugFolder
+        .add(this.material.uniforms.uAlpha, "value")
+        .min(0)
+        .max(1)
+        .step(0.001)
+        .name("opacity");
+      this.debugFolder
+        .add(this.material.uniforms.uCircleRadius, "value")
+        .min(0)
+        .max(20)
+        .step(0.001)
+        .name("circle radius");
+      this.debugFolder
+        .add(this.material.uniforms.uCirclePos.value, "x")
+        .min(-1)
+        .max(1)
+        .step(0.001)
+        .name("pos x");
+      this.debugFolder
+        .add(this.material.uniforms.uCirclePos.value, "y")
+        .min(-1)
+        .max(1)
+        .step(0.001)
+        .name("pos y");
+    }
+  }
+
+  update() {
+    this.material.uniforms.uTime.value = this.time.elapsedTime * 0.15;
   }
 
   destroy() {
