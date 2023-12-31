@@ -18,13 +18,16 @@ export default class Markers {
 
     // Options
     this.options = {
-      color: 0x992625,
+      defaultColor: "#992625",
+      mountainColor: "#442a19",
+      secondaryColor: "#599fd3",
     };
 
     // Setup
     this.markers = [];
     this.setMaterial();
     this.setMarkers();
+    this.initEvents();
 
     // Debug
     this.setDebug();
@@ -35,28 +38,44 @@ export default class Markers {
     this.gradientMap.magFilter = THREE.NearestFilter;
 
     this.material = toonMaterial({
-      color: this.options.color,
+      color: this.options.defaultColor,
       gradientMap: this.gradientMap,
+      transparent: true,
+      opacity: 0,
+    });
+
+    this.secondaryMaterial = toonMaterial({
+      color: this.options.secondaryColor,
+      gradientMap: this.gradientMap,
+      transparent: true,
+      opacity: 0,
+    });
+
+    this.mountainMaterial = toonMaterial({
+      color: this.options.mountainColor,
+      gradientMap: this.gradientMap,
+      transparent: true,
+      opacity: 0,
     });
   }
 
   setMarkers() {
     markers.forEach((marker) => {
-      const material = this.material.clone();
+      let material = this.material;
       let geometry = new THREE.OctahedronGeometry(1, 0);
       let scale = new THREE.Vector3(0.075, 0.1, 0.075);
       let rotation = new THREE.Vector3(0, 0, 0);
 
-      if (marker.type === "restaurant") {
+      if (marker.type === "secondary") {
         geometry = new THREE.ConeGeometry(1, 2, 4, 1);
-        material.color.set("#599fd3");
         scale = new THREE.Vector3(0.05, 0.05, 0.05);
+        material = this.secondaryMaterial;
         rotation = new THREE.Vector3(0, 0, Math.PI);
       }
 
       if (marker.type === "mountain") {
         geometry = new THREE.ConeGeometry(1, 2, 6, 1);
-        material.color.set("#442a19");
+        material = this.mountainMaterial;
         scale = new THREE.Vector3(0.075, 0.05, 0.075);
         rotation = new THREE.Vector3(0, 0, 0);
       }
@@ -123,26 +142,81 @@ export default class Markers {
       },
     });
   }
+
+  initEvents() {
+    this.manager.on("loaded", () => {
+      this.markers.forEach((marker, index) => {
+        gsap.to(marker.material, {
+          duration: 2,
+          opacity: 1,
+          ease: "power4.inOut",
+        });
+
+        gsap.fromTo(
+          marker.position,
+          { y: marker.position.y + 0.1 },
+          {
+            duration: 2,
+            y: marker.position.y,
+            ease: "power4.inOut",
+          }
+        );
+      });
+    });
+  }
+
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Markers");
       this.debugFolder.close();
 
       this.debugFolder
-        .addColor(this.options, "color")
-        .name("Marker Color")
+        .addColor(this.options, "defaultColor")
+        .name("Main Color")
         .onChange(() => {
-          this.material.color.set(this.options.color);
-          this.markers.forEach((marker) => {
-            marker.material.color = new THREE.Color(this.options.color);
-          });
+          // this.material.color.set(this.options.defaultColor);
+          this.markers
+            .filter((marker) => marker.type === "main")
+            .forEach((marker) => {
+              marker.material.color = new THREE.Color(
+                this.options.defaultColor
+              );
+            });
+        });
+      this.debugFolder
+        .addColor(this.options, "secondaryColor")
+        .name("Secondary Color")
+        .onChange(() => {
+          // this.material.color.set(this.options.secondaryColor);
+          this.markers
+            .filter((marker) => marker.type === "secondary")
+            .forEach((marker) => {
+              marker.material.color = new THREE.Color(
+                this.options.secondaryColor
+              );
+            });
+        });
+      this.debugFolder
+        .addColor(this.options, "mountainColor")
+        .name("Mountain Color")
+        .onChange(() => {
+          // this.material.color.set(this.options.mountainColor);
+          this.markers
+            .filter((marker) => marker.type === "mountain")
+            .forEach((marker) => {
+              marker.material.color = new THREE.Color(
+                this.options.mountainColor
+              );
+            });
         });
     }
   }
 
   update() {
     this.markers.forEach((marker) => {
-      marker.rotation.y += 0.0015 * this.time.delta;
+      const rotationSpeed = Math.random() * 0.005;
+
+      marker.rotation.y += rotationSpeed * this.time.delta;
     });
   }
 }

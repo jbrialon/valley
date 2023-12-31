@@ -11,7 +11,7 @@ export default class Loader {
     this.scene = this.experience.scene;
     this.time = this.experience.time;
     this.debug = this.experience.debug;
-    this.resources = this.experience.resources;
+    this.manager = this.experience.Manager;
 
     // Options
     this.options = {
@@ -65,6 +65,7 @@ export default class Loader {
       duration: 4,
       ease: "expo.in",
       onComplete: () => {
+        this.manager.trigger("loaded");
         if (!this.debug.active) {
           this.destroy();
         }

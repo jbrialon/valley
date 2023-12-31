@@ -24,7 +24,8 @@ export default class Renderer {
         .addColor(this.options, "backgroundColor")
         .name("Background Color")
         .onChange(() => {
-          document.body.style.backgroundColor = this.options.backgroundColor;
+          this.instance.setClearColor(this.options.backgroundColor);
+          // document.body.style.backgroundColor = this.options.backgroundColor;
         });
     }
 
@@ -38,7 +39,7 @@ export default class Renderer {
       canvas: this.canvas,
       antialias: true,
       powerPreference: "high-performance",
-      alpha: true,
+      alpha: false,
     });
 
     // TODO: try to understand that
@@ -48,7 +49,7 @@ export default class Renderer {
     // this.instance.outputColorSpace = THREE.LinearSRGBColorSpace;
     // this.instance.shadowMap.enabled = true;
     // this.instance.shadowMap.type = THREE.PCFSoftShadowMap;
-    // this.instance.setClearColor(this.options.clearColor);
+    this.instance.setClearColor(this.options.backgroundColor);
 
     this.instance.setSize(this.sizes.width, this.sizes.height);
     this.instance.setPixelRatio(this.sizes.pixelRatio);
