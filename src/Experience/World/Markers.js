@@ -41,17 +41,36 @@ export default class Markers {
   }
 
   setMarkers() {
-    this.geometry = new THREE.OctahedronGeometry(1, 0);
-
     markers.forEach((marker) => {
-      const markerMesh = new THREE.Mesh(this.geometry, this.material);
+      const material = this.material.clone();
+      let geometry = new THREE.OctahedronGeometry(1, 0);
+      let scale = new THREE.Vector3(0.075, 0.1, 0.075);
+      let rotation = new THREE.Vector3(0, 0, 0);
+
+      if (marker.type === "restaurant") {
+        geometry = new THREE.ConeGeometry(1, 2, 4, 1);
+        material.color.set("#599fd3");
+        scale = new THREE.Vector3(0.05, 0.05, 0.05);
+        rotation = new THREE.Vector3(0, 0, Math.PI);
+      }
+
+      if (marker.type === "mountain") {
+        geometry = new THREE.ConeGeometry(1, 2, 6, 1);
+        material.color.set("#442a19");
+        scale = new THREE.Vector3(0.075, 0.05, 0.075);
+        rotation = new THREE.Vector3(0, 0, 0);
+      }
+
+      const markerMesh = new THREE.Mesh(geometry, material);
       markerMesh.name = marker.name;
-      markerMesh.scale.set(0.075, 0.1, 0.075);
+      markerMesh.type = marker.type;
       markerMesh.position.set(
         marker.position.x,
         marker.position.y,
         marker.position.z
       );
+      markerMesh.scale.set(scale.x, scale.y, scale.z);
+      markerMesh.rotation.set(rotation.x, rotation.y, rotation.z);
 
       this.markers.push(markerMesh);
       this.scene.add(markerMesh);
