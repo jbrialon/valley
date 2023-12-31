@@ -15,10 +15,10 @@ varying vec3 vVertex;
 // THREE.MathUtils.mapLinear but in glsl
 float mapRangeClamped(float value, float inMin, float inMax, float outMin, float outMax) {
     // Map the value linearly to the target range
-    float mappedValue = (value - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;
+  float mappedValue = (value - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;
 
     // Clamp the mapped value to ensure it's within the target range
-    return clamp(mappedValue, outMin, outMax);
+  return clamp(mappedValue, outMin, outMax);
 }
 
 void main() {
@@ -28,7 +28,7 @@ void main() {
   float outputMax = 1.0;  // Desired maximum output
 
   float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, uContourWidth);
-  
+
   // Pick a coordinate to visualize in a grid
   // float coord = length(vUv.xy) * 400.0; 
   float coord = length(vVertex.xz) * uContourFrequency;
@@ -41,7 +41,7 @@ void main() {
 
   // Adjust color based on whether it's a grid line or not
   vec3 color;
-  if (isGridLine) {
+  if(isGridLine) {
     color = uLineColor;
   } else {
     float gridCellColor = mod(coord, uColorNumber);
