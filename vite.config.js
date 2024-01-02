@@ -13,5 +13,9 @@ export default {
     emptyOutDir: true,
     sourcemap: false,
   },
-  plugins: [glsl()],
+  plugins: [
+    glsl({
+      compress: true, // Compress output shader code
+    }),
+  ],
 };

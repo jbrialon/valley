@@ -1,10 +1,5 @@
-@font-face {
-  font-family: "cartograph_cfbold_italic";
-  src: url("/fonts/cartographcf-bolditalic-webfont.woff2") format("woff2"),
-    url("/fonts/cartographcf-bolditalic-webfont.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
+@import "fonts";
+@import "loader";
 
 * {
   margin: 0;

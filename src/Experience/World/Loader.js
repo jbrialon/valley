@@ -19,6 +19,7 @@ export default class Loader {
     };
 
     // Setup
+    this.loader = document.querySelectorAll(".js-loader");
     this.setGeometry();
     this.setMaterial();
     this.setMesh();
@@ -70,6 +71,12 @@ export default class Loader {
           this.destroy();
         }
       },
+    });
+    gsap.to(this.loader, {
+      autoAlpha: 0,
+      duration: 2,
+      ease: "expo.in",
+      delay: 1,
     });
   }
 
