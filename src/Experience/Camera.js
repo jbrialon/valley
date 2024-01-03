@@ -13,7 +13,7 @@ export default class Camera {
     this.canvas = this.experience.canvas;
     this.sizes = this.experience.sizes;
     this.inputEvents = this.experience.inputEvents;
-    this.manager = this.experience.Manager;
+    this.manager = this.experience.manager;
     this.scene = this.experience.scene;
     this.time = this.experience.time;
 
@@ -26,7 +26,6 @@ export default class Camera {
     this.cameraCurve = null;
     this.targetCurve = null;
     this.fakeTarget = null;
-    this.title = document.querySelectorAll(".js-title");
     this.setInstance();
     this.initEvents();
     // this.setOrbitControls();
@@ -108,6 +107,12 @@ export default class Camera {
             this.fakeTarget.position.y,
             this.fakeTarget.position.z
           );
+        },
+        onStart: () => {
+          this.manager.trigger("onScrollStart");
+        },
+        onComplete: () => {
+          this.manager.trigger("onScrollComplete");
         },
       });
     }

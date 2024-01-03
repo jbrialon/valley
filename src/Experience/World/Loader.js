@@ -11,7 +11,7 @@ export default class Loader {
     this.scene = this.experience.scene;
     this.time = this.experience.time;
     this.debug = this.experience.debug;
-    this.manager = this.experience.Manager;
+    this.manager = this.experience.manager;
 
     // Options
     this.options = {

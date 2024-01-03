@@ -1,5 +1,3 @@
-import * as THREE from "three";
-
 import Experience from "../Experience";
 import Environment from "./Environment";
 import Loader from "./Loader";
@@ -7,6 +5,8 @@ import Map from "./Map";
 import Markers from "./Markers";
 import Paths from "./Paths";
 import Overlay from "./Overlay";
+import Tutorial from "./Tutorial";
+import Card from "./Card";
 
 export default class World {
   constructor() {
@@ -25,8 +25,10 @@ export default class World {
       this.markers = new Markers();
       this.paths = new Paths();
       this.environment = new Environment();
-
+      this.tutorial = new Tutorial();
+      this.card = new Card();
       this.camera.setPaths();
+
       // Show Experience
       this.loader.hideLoader();
     });
@@ -37,5 +39,6 @@ export default class World {
     if (this.loader) this.loader.update();
     if (this.overlay) this.overlay.update();
     if (this.markers) this.markers.update();
+    if (this.card) this.card.update();
   }
 }

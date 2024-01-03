@@ -8,12 +8,6 @@ export default class Environment {
     this.resources = this.experience.resources;
     this.debug = this.experience.debug;
 
-    // Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Environment");
-      this.debugFolder.close();
-    }
-
     // Setup
     // this.setAmbientLight();
     this.setSunLight();

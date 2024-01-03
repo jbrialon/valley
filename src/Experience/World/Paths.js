@@ -10,7 +10,7 @@ export default class Paths {
     this.scene = this.experience.scene;
     this.debug = this.experience.debug;
     this.time = this.experience.time;
-    this.manager = this.experience.Manager;
+    this.manager = this.experience.manager;
     this.camera = this.experience.camera;
     this.transformControls = this.experience.helpers.transformControls;
 

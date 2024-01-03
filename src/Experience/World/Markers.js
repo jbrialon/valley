@@ -13,11 +13,13 @@ export default class Markers {
     this.sizes = this.experience.sizes;
     this.debug = this.experience.debug;
     this.time = this.experience.time;
-    this.manager = this.experience.Manager;
+    this.manager = this.experience.manager;
+    this.camera = this.experience.camera;
     this.resources = this.experience.resources;
 
     // Options
     this.options = {
+      range: 4.5,
       defaultColor: "#992625",
       mountainColor: "#442a19",
       secondaryColor: "#599fd3",
@@ -61,7 +63,7 @@ export default class Markers {
 
   setMarkers() {
     markers.forEach((marker) => {
-      let material = this.material;
+      let material = this.material.clone();
       let geometry = new THREE.OctahedronGeometry(1, 0);
       let scale = new THREE.Vector3(0.075, 0.1, 0.075);
       let rotation = new THREE.Vector3(0, 0, 0);
@@ -69,13 +71,13 @@ export default class Markers {
       if (marker.type === "secondary") {
         geometry = new THREE.ConeGeometry(1, 2, 4, 1);
         scale = new THREE.Vector3(0.05, 0.05, 0.05);
-        material = this.secondaryMaterial;
+        material = this.secondaryMaterial.clone();
         rotation = new THREE.Vector3(0, 0, Math.PI);
       }
 
       if (marker.type === "mountain") {
         geometry = new THREE.ConeGeometry(1, 2, 6, 1);
-        material = this.mountainMaterial;
+        material = this.mountainMaterial.clone();
         scale = new THREE.Vector3(0.075, 0.05, 0.075);
         rotation = new THREE.Vector3(0, 0, 0);
       }
@@ -88,6 +90,7 @@ export default class Markers {
         marker.position.y,
         marker.position.z
       );
+      markerMesh.visible = false;
       markerMesh.scale.set(scale.x, scale.y, scale.z);
       markerMesh.rotation.set(rotation.x, rotation.y, rotation.z);
 
@@ -130,7 +133,7 @@ export default class Markers {
     const bounceStrength = 0.05;
 
     gsap.to(marker.position, {
-      y: `+=${bounceStrength}`,
+      y: "+=" + bounceStrength,
       duration: 0.75,
       ease: "power2.out",
       onComplete: () => {
@@ -145,24 +148,55 @@ export default class Markers {
 
   initEvents() {
     this.manager.on("loaded", () => {
-      this.markers.forEach((marker, index) => {
-        gsap.to(marker.material, {
+      this.markers.forEach((marker) => {
+        if (this.isMarkerInRange(marker)) {
+          this.showMarkerInRange(marker);
+        }
+      });
+    });
+
+    this.manager.on("onScrollComplete", () => {
+      this.markers.forEach((marker) => {
+        if (this.isMarkerInRange(marker)) {
+          this.showMarkerInRange(marker);
+        }
+      });
+    });
+  }
+
+  isMarkerInRange(marker) {
+    const distance = marker.position.distanceTo(
+      this.camera.cameraParent.position
+    );
+
+    return distance < this.options.range;
+  }
+
+  showMarkerInRange(marker) {
+    if (!marker.visible) {
+      marker.visible = true;
+
+      gsap.fromTo(
+        marker.material,
+        {
+          opacity: 0,
+        },
+        {
           duration: 2,
           opacity: 1,
           ease: "power4.inOut",
-        });
-
-        gsap.fromTo(
-          marker.position,
-          { y: marker.position.y + 0.1 },
-          {
-            duration: 2,
-            y: marker.position.y,
-            ease: "power4.inOut",
-          }
-        );
-      });
-    });
+        }
+      );
+      gsap.fromTo(
+        marker.position,
+        { y: marker.position.y + 0.15 },
+        {
+          duration: 2,
+          y: marker.position.y,
+          ease: "power4.inOut",
+        }
+      );
+    }
   }
 
   setDebug() {
@@ -216,7 +250,9 @@ export default class Markers {
     this.markers.forEach((marker) => {
       const rotationSpeed = Math.random() * 0.005;
 
-      marker.rotation.y += rotationSpeed * this.time.delta;
+      if (marker.visible) {
+        marker.rotation.y += rotationSpeed * this.time.delta;
+      }
     });
   }
 }

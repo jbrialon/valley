@@ -11,7 +11,7 @@ export default class Map {
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.time = this.experience.time;
-    this.manager = this.experience.Manager;
+    this.manager = this.experience.manager;
     this.resources = this.experience.resources;
     this.inputEvents = this.experience.inputEvents;
 

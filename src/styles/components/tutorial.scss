@@ -1,0 +1,19 @@
+.tutorial {
+  position: fixed;
+  z-index: 30;
+  top: 35px;
+  font-family: "cartograph_cfbold_italic";
+  pointer-events: none;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 300;
+  text-align: center;
+  width: 100%;
+  color: #f4e2d6;
+  opacity: 0;
+
+  .step {
+    position: absolute;
+    width: 100%;
+  }
+}

@@ -40,7 +40,7 @@ export default class Experience {
     this.inputEvents = new InputEvents();
     this.time = new Time();
     this.scene = new THREE.Scene();
-    this.Manager = new Manager();
+    this.manager = new Manager();
     this.resources = new Resources(sources);
     this.camera = new Camera();
     this.helpers = new Helpers();
