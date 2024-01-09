@@ -16,7 +16,7 @@ export default class World {
     this.resources = this.experience.resources;
 
     // Wait for resources to be loaded
-    this.loader = new Loader();
+    // this.loader = new Loader();
 
     this.resources.on("ready", () => {
       // Setup
@@ -25,12 +25,12 @@ export default class World {
       this.markers = new Markers();
       this.paths = new Paths();
       this.environment = new Environment();
-      this.tutorial = new Tutorial();
-      this.card = new Card();
+      // this.tutorial = new Tutorial();
+      // this.card = new Card();
       this.camera.setPaths();
 
       // Show Experience
-      this.loader.hideLoader();
+      // this.loader.hideLoader();
     });
   }
 

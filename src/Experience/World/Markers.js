@@ -120,13 +120,13 @@ export default class Markers {
   onMarkerHover(event) {
     const marker = event.target;
     const name = marker.name;
-    this.manager.trigger("onMarkerHover", name);
+    // this.manager.trigger("onMarkerHover", name);
   }
 
   onMarkerOut(event) {
     const marker = event.target;
     const name = marker.name;
-    this.manager.trigger("onMarkerOut", name);
+    // this.manager.trigger("onMarkerOut", name);
   }
 
   bounce(marker) {
