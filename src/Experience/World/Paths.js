@@ -37,6 +37,7 @@ export default class Paths {
       curvePoint.index = index;
       curvePoint.type = "camera";
       curvePoint.visible = this.debug.active;
+      curvePoint.name = `path.camera.curvepoint.${index}`;
       this.scene.add(curvePoint);
 
       this.manager.addClickEventToMesh(curvePoint, () => {
@@ -67,10 +68,12 @@ export default class Paths {
       curvePoint.index = index;
       curvePoint.type = "target";
       curvePoint.visible = this.debug.active;
+      curvePoint.name = `path.target.curvepoint.${index}`;
       this.scene.add(curvePoint);
 
       if (this.debug.active) {
         this.manager.addClickEventToMesh(curvePoint, () => {
+          console.log("e");
           this.transformControls.attach(curvePoint);
         });
       }
