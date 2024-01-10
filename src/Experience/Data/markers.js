@@ -2,30 +2,9 @@ import * as THREE from "three";
 
 export default [
   {
-    name: "Lama_Hotel",
-    position: new THREE.Vector3(5.7, 2.65, -8.74),
-    overlayPosition: new THREE.Vector2(-0.143, 0.4014), // OK
-    overlayRadius: 3,
-    type: "main",
-  },
-  {
     name: "Syabru_Besi",
     position: new THREE.Vector3(-4.29, 1.56, -9.07),
     overlayPosition: new THREE.Vector2(0.14, 0.417), // OK
-    overlayRadius: 3,
-    type: "main",
-  },
-  {
-    name: "Bamboo",
-    position: new THREE.Vector3(2.17, 2.34, -7.96),
-    overlayPosition: new THREE.Vector2(-0.0557, 0.3692), // OK
-    overlayRadius: 3,
-    type: "secondary",
-  },
-  {
-    name: "Langtang",
-    position: new THREE.Vector3(15.63, 3.62, -15.48),
-    overlayPosition: new THREE.Vector2(-0.4366, 0.7101), // OK
     overlayRadius: 3,
     type: "main",
   },
@@ -35,6 +14,27 @@ export default [
     overlayPosition: new THREE.Vector2(0.02, 0.356), // OK
     overlayRadius: 3,
     type: "secondary",
+  },
+  {
+    name: "Bamboo",
+    position: new THREE.Vector3(2.17, 2.34, -7.96),
+    overlayPosition: new THREE.Vector2(-0.0557, 0.3692), // OK
+    overlayRadius: 3,
+    type: "secondary",
+  },
+  {
+    name: "Lama_Hotel",
+    position: new THREE.Vector3(5.7, 2.65, -8.74),
+    overlayPosition: new THREE.Vector2(-0.143, 0.4014), // OK
+    overlayRadius: 3,
+    type: "main",
+  },
+  {
+    name: "Langtang",
+    position: new THREE.Vector3(15.63, 3.62, -15.48),
+    overlayPosition: new THREE.Vector2(-0.4366, 0.7101), // OK
+    overlayRadius: 3,
+    type: "main",
   },
   {
     name: "Kyanjin_Gompa",

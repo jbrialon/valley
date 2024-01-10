@@ -26,6 +26,8 @@ export default class Markers {
     };
 
     // Setup
+    this.infowindow = document.querySelector(`.js-infowindow`);
+    this.infowindowContent = document.querySelector(`.js-infowindow .inner`);
     this.markers = [];
     this.setMaterial();
     this.setMarkers();
@@ -62,7 +64,7 @@ export default class Markers {
   }
 
   setMarkers() {
-    markers.forEach((marker) => {
+    markers.forEach((marker, index) => {
       let material = this.material.clone();
       let geometry = new THREE.OctahedronGeometry(1, 0);
       let scale = new THREE.Vector3(0.075, 0.1, 0.075);
@@ -113,20 +115,55 @@ export default class Markers {
   onMarkerClick(event) {
     const marker = event.target;
     const name = marker.name;
+
     this.bounce(marker);
+
     this.manager.trigger("onMarkerClick", name);
   }
 
   onMarkerHover(event) {
     const marker = event.target;
     const name = marker.name;
+
+    this.activeMarker = this.getMarkerByName(name);
+    this.revealInfowindow();
+
     // this.manager.trigger("onMarkerHover", name);
   }
 
   onMarkerOut(event) {
     const marker = event.target;
     const name = marker.name;
+
+    this.hideInfowindow();
     // this.manager.trigger("onMarkerOut", name);
+  }
+
+  getMarkerByName(name) {
+    return markers.find((marker) => marker.name === name);
+  }
+
+  revealInfowindow() {
+    gsap.to(this.infowindowContent, {
+      onStart: () => {
+        this.infowindow.style.display = "block";
+      },
+      delay: 0.5,
+      duration: 1,
+      autoAlpha: 1,
+    });
+  }
+
+  hideInfowindow() {
+    gsap.to(this.infowindowContent, {
+      delay: 0.5,
+      duration: 1,
+      autoAlpha: 0,
+      onComplete: () => {
+        this.infowindow.style.display = "none";
+        this.activeMarker = null;
+      },
+    });
   }
 
   bounce(marker) {
@@ -225,10 +262,15 @@ export default class Markers {
       this.debugFolder.close();
 
       this.debugFolder
+        .add(this.options, "range")
+        .name("range")
+        .min(0)
+        .max(10)
+        .step(0.1);
+      this.debugFolder
         .addColor(this.options, "defaultColor")
         .name("Main Color")
         .onChange(() => {
-          // this.material.color.set(this.options.defaultColor);
           this.markers
             .filter((marker) => marker.type === "main")
             .forEach((marker) => {
@@ -241,7 +283,6 @@ export default class Markers {
         .addColor(this.options, "secondaryColor")
         .name("Secondary Color")
         .onChange(() => {
-          // this.material.color.set(this.options.secondaryColor);
           this.markers
             .filter((marker) => marker.type === "secondary")
             .forEach((marker) => {
@@ -254,7 +295,6 @@ export default class Markers {
         .addColor(this.options, "mountainColor")
         .name("Mountain Color")
         .onChange(() => {
-          // this.material.color.set(this.options.mountainColor);
           this.markers
             .filter((marker) => marker.type === "mountain")
             .forEach((marker) => {
@@ -267,9 +307,20 @@ export default class Markers {
   }
 
   update() {
+    if (this.activeMarker) {
+      const screenPosition = this.activeMarker.position.clone();
+      screenPosition.project(this.camera.instance);
+
+      const position = new THREE.Vector3(
+        screenPosition.x * this.sizes.width * 0.5,
+        -screenPosition.y * this.sizes.height * 0.5
+      );
+
+      this.infowindow.style.transform = `translate(${position.x}px, ${position.y}px)`;
+    }
+
     this.markers.forEach((marker) => {
       const rotationSpeed = Math.random() * 0.005;
-
       if (marker.visible) {
         marker.rotation.y += rotationSpeed * this.time.delta;
       }

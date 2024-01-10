@@ -3,7 +3,7 @@
 
 @import "components/loader";
 @import "components/disclaimer";
-@import "components/tutorial";
+// @import "components/tutorial";
 
 * {
   margin: 0;
@@ -35,33 +35,22 @@ body {
   z-index: $z-webgl;
 }
 
-#app {
-  .title {
-    display: none;
-    font-family: "cartograph_cfbold_italic";
-    pointer-events: none;
-    font-size: 13vw;
-    line-height: 1.2;
-    font-weight: 300;
-    text-align: center;
-    letter-spacing: 0.55vw;
-  }
+.infowindow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 30;
+  display: none;
+}
 
-  .text {
-    position: absolute;
-    top: 1vw;
-    left: 2vw;
-    color: #f4e2d6;
-    opacity: 1;
-  }
-
-  .text-front {
-    z-index: 20;
-    -moz-text-stroke-color: #f4e2d6;
-    -webkit-text-stroke-color: #f4e2d6;
-    -moz-text-stroke-width: 0.085vw;
-    -webkit-text-stroke-width: 0.085vw;
-    -moz-text-fill-color: transparent;
-    -webkit-text-fill-color: transparent;
-  }
+.infowindow .inner {
+  position: relative;
+  opacity: 0;
+  width: 80px;
+  height: 80px;
+  background: white;
+  transform: rotate(45deg);
+  left: -50%;
+  bottom: 230px;
+  cursor: pointer;
 }

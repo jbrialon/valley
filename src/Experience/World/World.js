@@ -20,8 +20,8 @@ export default class World {
 
     this.resources.on("ready", () => {
       // Setup
-      this.overlay = new Overlay();
       this.map = new Map();
+      this.overlay = new Overlay();
       this.markers = new Markers();
       this.paths = new Paths();
       this.environment = new Environment();
