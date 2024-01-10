@@ -28,9 +28,9 @@ void main() {
   float inputMin = 1.0;  // Minimum pixel ratio
   float inputMax = 2.0;  // Maximum pixel ratio
   float outputMin = 0.65;  // Desired minimum output
-  float outputMax = 1.0;  // Desired maximum output
+  float outputMax = uContourWidth;  // Desired maximum output
 
-  float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, uContourWidth);
+  float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, outputMax);
 
   vec2 circlePos = vUv + (uCirclePos * 0.5) - vec2(0.5);
     // this 1.5 should be adapted by the ratio of the model we apply the material to 

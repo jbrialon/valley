@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-import vertexShader from "../../shaders/wireframe/vertex.glsl";
-import fragmentShader from "../../shaders/wireframe/fragment.glsl";
+import vertexShader from "../../shaders/overlay2/vertex.glsl";
+import fragmentShader from "../../shaders/overlay2/fragment.glsl";
 
-const terrainMaterial = (options) => {
+const overlay2Material = (options) => {
   return new THREE.ShaderMaterial({
     extensions: {
       derivatives: true,
@@ -12,6 +12,7 @@ const terrainMaterial = (options) => {
     side: THREE.DoubleSide,
     uniforms: {
       uTime: { value: 0 },
+      uAlpha: { value: options.uAlpha || 0 },
       // Visual
       uFill: { value: options.uFill },
       uStroke: { value: options.uStroke },
@@ -29,10 +30,18 @@ const terrainMaterial = (options) => {
       uDashOverlap: { value: options.uDashOverlap },
       uDashLength: { value: options.uDashLength },
       uDashAnimate: { value: options.uDashAnimate },
+      // Mask
+      uNoiseIntensity: { value: 140 },
+      uCircleRadius: {
+        value: options.uCircleRadius,
+      },
+      uCirclePos: {
+        value: options.uCirclePos || new THREE.Vector2(0.14, 0.41),
+      },
     },
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
   });
 };
 
-export default terrainMaterial;
+export default overlay2Material;

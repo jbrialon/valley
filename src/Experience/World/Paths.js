@@ -27,6 +27,7 @@ export default class Paths {
 
   setPaths() {
     this.cameraCurve = new THREE.CatmullRomCurve3(paths.camera);
+    this.curveCameraPoints = [];
     paths.camera.forEach((point, index) => {
       const curvePoint = new THREE.Mesh(
         new THREE.BoxGeometry(1, 1, 1),
@@ -36,8 +37,9 @@ export default class Paths {
       curvePoint.scale.set(0.1, 0.1, 0.1);
       curvePoint.index = index;
       curvePoint.type = "camera";
-      curvePoint.visible = this.debug.active;
+      curvePoint.visible = false;
       curvePoint.name = `path.camera.curvepoint.${index}`;
+      this.curveCameraPoints.push(curvePoint);
       this.scene.add(curvePoint);
 
       this.manager.addClickEventToMesh(curvePoint, () => {
@@ -53,11 +55,12 @@ export default class Paths {
     const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
     this.cameraCurveMesh = new THREE.Line(this.cameraGeometry, material);
-    this.cameraCurveMesh.visible = this.debug.active;
+    this.cameraCurveMesh.visible = false;
     this.scene.add(this.cameraCurveMesh);
 
     this.targetCurve = new THREE.CatmullRomCurve3(paths.target);
 
+    this.curveTargetPoints = [];
     paths.target.forEach((point, index) => {
       const curvePoint = new THREE.Mesh(
         new THREE.BoxGeometry(1, 1, 1),
@@ -67,13 +70,13 @@ export default class Paths {
       curvePoint.scale.set(0.1, 0.1, 0.1);
       curvePoint.index = index;
       curvePoint.type = "target";
-      curvePoint.visible = this.debug.active;
+      curvePoint.visible = false;
       curvePoint.name = `path.target.curvepoint.${index}`;
+      this.curveTargetPoints.push(curvePoint);
       this.scene.add(curvePoint);
 
       if (this.debug.active) {
         this.manager.addClickEventToMesh(curvePoint, () => {
-          console.log("e");
           this.transformControls.attach(curvePoint);
         });
       }
@@ -88,7 +91,7 @@ export default class Paths {
       this.targetGeometry,
       new THREE.LineBasicMaterial({ color: 0x599fd3 })
     );
-    this.targetCurveMesh.visible = this.debug.active;
+    this.targetCurveMesh.visible = false;
     this.scene.add(this.targetCurveMesh);
 
     this.fakeTarget = new THREE.Mesh(
@@ -101,7 +104,7 @@ export default class Paths {
       paths.target[0].y,
       paths.target[0].z
     );
-    this.fakeTarget.visible = this.debug.active;
+    this.fakeTarget.visible = false;
     this.scene.add(this.fakeTarget);
   }
 
@@ -112,6 +115,7 @@ export default class Paths {
           const transformedPoint = this.transformControls.object;
           const index = transformedPoint.index;
           const type = transformedPoint.type;
+          // if point is from camera type we update the camera curve
           if (type === "camera") {
             paths.camera[index] = new THREE.Vector3(
               transformedPoint.position.x,
@@ -125,6 +129,7 @@ export default class Paths {
             );
 
             this.cameraCurveMesh.geometry = this.cameraGeometry;
+            // if point is from camera type we update the target curve
           } else if (type === "target") {
             paths.target[index] = new THREE.Vector3(
               transformedPoint.position.x,
@@ -150,7 +155,38 @@ export default class Paths {
     // Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Paths");
-      this.debugFolder.close();
+      // this.debugFolder.close();
+
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.transformControls.detach();
+              this.curveCameraPoints.forEach((curvePoint) => {
+                curvePoint.visible = !curvePoint.visible;
+              });
+              this.cameraCurveMesh.visible = !this.cameraCurveMesh.visible;
+            },
+          },
+          "button"
+        )
+        .name("Toggle Camera Path");
+
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.transformControls.detach();
+              this.curveTargetPoints.forEach((curvePoint) => {
+                curvePoint.visible = !curvePoint.visible;
+              });
+              this.fakeTarget.visible = !this.fakeTarget.visible;
+              this.targetCurveMesh.visible = !this.targetCurveMesh.visible;
+            },
+          },
+          "button"
+        )
+        .name("Toggle Target Path");
     }
   }
 }

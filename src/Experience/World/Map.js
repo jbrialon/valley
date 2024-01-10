@@ -23,8 +23,6 @@ export default class Map {
       // Wireframe Material
       uFill: new THREE.Color(0x697f73),
       uStroke: new THREE.Color(0xf4e2d6),
-      uNoiseA: false,
-      uNoiseB: false,
       uDualStroke: false,
       uSeeThrough: false,
       uInsideAltColor: false,
@@ -81,8 +79,6 @@ export default class Map {
     this.wireframeMaterial = wireframeMaterial({
       uFill: this.options.uFill,
       uStroke: this.options.uStroke,
-      uNoiseA: this.options.uNoiseA,
-      uNoiseB: this.options.uNoiseB,
       uDualStroke: this.options.uDualStroke,
       uSeeThrough: this.options.uSeeThrough,
       uInsideAltColor: this.options.uInsideAltColor,
@@ -146,9 +142,10 @@ export default class Map {
 
   setDebug() {
     if (this.debug.active) {
+      let isWireframeActive = true;
+
       this.debugFolder = this.debug.ui.addFolder("Map");
       // this.debugFolder.close();
-      let isWireframeActive = true;
       this.debugFolder
         .add(
           {
@@ -267,18 +264,6 @@ export default class Map {
         .onChange(() => {
           this.wireframeMaterial.uniforms.uStroke.value = this.options.uStroke;
         });
-      // this.debugVisualFolder
-      //   .add(this.options, "uNoiseA")
-      //   .name("Noise Big")
-      //   .onChange(() => {
-      //     this.wireframeMaterial.uniforms.uNoiseA.value = this.options.uNoiseA;
-      //   });
-      // this.debugVisualFolder
-      //   .add(this.options, "uNoiseB")
-      //   .name("Noise Small")
-      //   .onChange(() => {
-      //     this.wireframeMaterial.uniforms.uNoiseB.value = this.options.uNoiseB;
-      //   });
       // this.debugVisualFolder
       //   .add(this.options, "uSeeThrough")
       //   .name("See Trough")

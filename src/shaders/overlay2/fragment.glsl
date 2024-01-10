@@ -1,3 +1,5 @@
+#include ../utils/circle.glsl;
+#include ../utils/snoise3.glsl;
 #define PI 3.14159265359
 
 varying vec3 vBarycentric;
@@ -25,6 +27,11 @@ uniform float uSqueezeMax;
 
 uniform vec3 uStroke;
 uniform vec3 uFill;
+
+uniform float uAlpha;
+uniform float uNoiseIntensity;
+uniform float uCircleRadius;
+uniform vec2 uCirclePos;
 
 // This is like
 float aastep(float threshold, float dist) {
@@ -102,9 +109,22 @@ vec4 getStyledWireframe(vec3 barycentric) {
     }
   }
 
-  return outColor;
+  return vec4(outColor.rgb, uAlpha);
 }
 
 void main() {
+  vec2 circlePos = vUv + (uCirclePos * 0.5) - vec2(0.5);
+
+  float c = circle(circlePos, (uCircleRadius / 10000.0), 2.) * 2.5;
+
+  float offx = vUv.x + sin(vUv.y + uTime * .1);
+  float offy = vUv.y - uTime * 0.1 - cos(uTime * .001) * .01;
+  float n = snoise3(vec3(offx, offy, uTime * 0.1) * uNoiseIntensity) - 1.0;
+  float finalMask = smoothstep(0.4, 0.5, n + pow(c, 2.));
+
+  if(finalMask < 0.5) {
+    discard;
+  }
+
   gl_FragColor = getStyledWireframe(vBarycentric);
 }
