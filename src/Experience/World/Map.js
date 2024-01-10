@@ -48,20 +48,6 @@ export default class Map {
       uContourFrequency: 2.7,
     };
 
-    this.manager.on("cameraPositionChanged", () => {
-      gsap.fromTo(
-        this.terrainMaterial.uniforms.uContourFrequency,
-        {
-          value: 1,
-        },
-        {
-          duration: 3,
-          value: 3.3,
-          ease: "power4.inOut",
-        }
-      );
-    });
-
     // Setup
     this.resource = this.resources.items.mapModel;
     this.terrainMaterial = terrainMaterial({
@@ -100,6 +86,19 @@ export default class Map {
 
     // Debug
     this.setDebug();
+    this.initEvents();
+  }
+
+  initEvents() {
+    this.manager.on("updateColors", (colors) => {
+      this.options.uFill = new THREE.Color(colors[0]);
+      this.wireframeMaterial.uniforms.uFill.value.set(this.options.uFill);
+      this.options.uStroke = new THREE.Color(colors[1]);
+      this.wireframeMaterial.uniforms.uStroke.value.set(this.options.uStroke);
+      this.debugVisualFolder.controllers.forEach((controller) => {
+        controller.updateDisplay();
+      });
+    });
   }
 
   setModel() {
@@ -254,13 +253,14 @@ export default class Map {
 
       this.debugVisualFolder
         .addColor(this.options, "uFill")
-        .name("Fill Hex")
+        .name("Fill color")
         .onChange(() => {
+          console.log(this.options.uFill);
           this.wireframeMaterial.uniforms.uFill.value = this.options.uFill;
         });
       this.debugVisualFolder
         .addColor(this.options, "uStroke")
-        .name("Stroke hex")
+        .name("Stroke color")
         .onChange(() => {
           this.wireframeMaterial.uniforms.uStroke.value = this.options.uStroke;
         });

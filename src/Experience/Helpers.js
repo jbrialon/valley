@@ -1,5 +1,7 @@
 import * as THREE from "three";
 
+import colors from "nice-color-palettes";
+
 import Experience from "./Experience.js";
 
 import { TransformControls } from "three/addons/controls/TransformControls.js";
@@ -14,6 +16,7 @@ export default class Helpers {
     this.camera = this.experience.camera;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
+    this.manager = this.experience.manager;
     this.resources = this.experience.resources;
 
     // Setup
@@ -152,6 +155,17 @@ export default class Helpers {
           "button"
         )
         .name("Show Light Helper");
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              const palette = colors[Math.floor(Math.random() * 100)];
+              this.manager.trigger("updateColors", palette);
+            },
+          },
+          "button"
+        )
+        .name("Random Colors");
     }
   }
 

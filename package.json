@@ -16,6 +16,7 @@
   "dependencies": {
     "gsap": "^3.12.4",
     "lil-gui": "^0.17.0",
+    "nice-color-palettes": "^3.0.0",
     "stats.js": "^0.17.0",
     "three": "^0.159.0",
     "three.interactive": "^1.7.0"

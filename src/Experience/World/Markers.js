@@ -21,8 +21,8 @@ export default class Markers {
     this.options = {
       range: 4.5,
       defaultColor: "#992625",
-      mountainColor: "#442a19",
-      secondaryColor: "#599fd3",
+      secondaryColor: "#2c4d38",
+      mountainColor: "#5a5444",
     };
 
     // Setup
@@ -160,6 +160,26 @@ export default class Markers {
         if (this.isMarkerInRange(marker)) {
           this.showMarkerInRange(marker);
         }
+      });
+    });
+
+    this.manager.on("updateColors", (colors) => {
+      this.options.defaultColor = colors[4];
+      this.options.secondaryColor = colors[2];
+      this.options.mountainColor = colors[2];
+
+      this.markers
+        .filter((marker) => marker.type === "main")
+        .forEach((marker) => {
+          marker.material.color = new THREE.Color(this.options.defaultColor);
+        });
+      this.markers
+        .filter((marker) => marker.type === "secondary" || "mountain")
+        .forEach((marker) => {
+          marker.material.color = new THREE.Color(this.options.secondaryColor);
+        });
+      this.debugFolder.controllers.forEach((controller) => {
+        controller.updateDisplay();
       });
     });
   }

@@ -10,6 +10,7 @@ export default class Renderer {
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
+    this.manager = this.experience.manager;
 
     // Options
     this.options = {
@@ -25,13 +26,21 @@ export default class Renderer {
         .name("Background Color")
         .onChange(() => {
           this.instance.setClearColor(this.options.backgroundColor);
-          // document.body.style.backgroundColor = this.options.backgroundColor;
+          document.body.style.backgroundColor = this.options.backgroundColor;
         });
     }
 
     // Setup
     this.setInstance();
     this.setInteractionManager();
+
+    this.manager.on("updateColors", (colors) => {
+      this.options.backgroundColor = colors[3];
+      this.instance.setClearColor(this.options.backgroundColor);
+      this.debugFolder.controllers.forEach((controller) => {
+        controller.updateDisplay();
+      });
+    });
   }
 
   setInstance() {

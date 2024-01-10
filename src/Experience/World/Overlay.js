@@ -134,6 +134,16 @@ export default class Overlay {
   }
 
   initEvents() {
+    this.manager.on("updateColors", (colors) => {
+      this.options.uFill = new THREE.Color(colors[4]);
+      this.overlay2Material.uniforms.uFill.value.set(this.options.uFill);
+      this.options.uStroke = new THREE.Color(colors[1]);
+      this.overlay2Material.uniforms.uStroke.value.set(this.options.uStroke);
+      this.debugVisualFolder.controllers.forEach((controller) => {
+        controller.updateDisplay();
+      });
+    });
+
     this.manager.on("onMarkerClick", (name) => {
       this.revealOverlay(name);
     });
@@ -241,7 +251,7 @@ export default class Overlay {
           },
           "button"
         )
-        .name("Toggle Map Material");
+        .name("Toggle Overlay Material");
 
       // Circle Mask
       this.debugCircleFolder = this.debugFolder.addFolder("Circle Mask");
@@ -269,169 +279,169 @@ export default class Overlay {
         .max(200)
         .step(0.01)
         .name("Intensity");
+
+      this.debugFolderMap = this.debugFolder.addFolder("Terrain Material");
+      this.debugFolderMap.close();
+      this.debugFolderMap
+        .add(this.overlayMaterial.uniforms.uAlpha, "value")
+        .min(0)
+        .max(1)
+        .step(0.01)
+        .name("Opacity");
+      this.debugFolderMap
+        .add(this.overlayMaterial.uniforms.uStrength, "value")
+        .min(0)
+        .max(1)
+        .step(0.01)
+        .name("Blend");
+      this.debugFolderMap
+        .add(this.overlayMaterial.uniforms.uContourWidth, "value")
+        .min(0)
+        .max(3)
+        .step(0.001)
+        .name("Contour Width");
+      this.debugFolderMap
+        .add(this.overlayMaterial.uniforms.uContourFrequency, "value")
+        .min(0.1)
+        .max(20)
+        .step(0.1)
+        .name("Contour Frequency");
+      this.debugFolderMap
+        .add(this.overlayMaterial.uniforms.uColorNumber, "value")
+        .min(1)
+        .max(3)
+        .step(1)
+        .name("Color Number");
+      this.debugFolderMap
+        .addColor(this.options, "uColorOne")
+        .name("Color One")
+        .onChange(() => {
+          this.overlayMaterial.uniforms.uColorOne.value.set(
+            this.options.uColorOne
+          );
+        });
+      this.debugFolderMap
+        .addColor(this.options, "uColorTwo")
+        .name("Color Two")
+        .onChange(() => {
+          this.overlayMaterial.uniforms.uColorTwo.value.set(
+            this.options.uColorTwo
+          );
+        });
+      this.debugFolderMap
+        .addColor(this.options, "uColorThree")
+        .name("Color Two")
+        .onChange(() => {
+          this.overlayMaterial.uniforms.uColorThree.value.set(
+            this.options.uColorThree
+          );
+        });
+      this.debugFolderMap
+        .addColor(this.options, "uLineColor")
+        .name("Line Color")
+        .onChange(() => {
+          this.overlayMaterial.uniforms.uLineColor.value.set(
+            this.options.uLineColor
+          );
+        });
+
+      this.debugFolderWireframe =
+        this.debugFolder.addFolder("Wireframe Material");
+      // Dash Debug
+      this.debugDashFolder = this.debugFolder.addFolder("Dash");
+      this.debugDashFolder
+        .add(this.options, "uDashEnabled")
+        .name("Dash Enabled")
+        .onChange(() => {
+          this.overlay2Material.uniforms.uDashEnabled.value =
+            this.options.uDashEnabled;
+        });
+      this.debugDashFolder
+        .add(this.options, "uDashRepeats")
+        .name("Repeats")
+        .min(1)
+        .max(10)
+        .step(1)
+        .onChange(() => {
+          this.overlay2Material.uniforms.uDashRepeats.value =
+            this.options.uDashRepeats;
+        });
+      this.debugDashFolder
+        .add(this.options, "uDashOverlap")
+        .name("Overlap Join")
+        .onChange(() => {
+          this.overlay2Material.uniforms.uDashOverlap.value =
+            this.options.uDashOverlap;
+        });
+      this.debugDashFolder
+        .add(this.options, "uDashLength")
+        .name("Dash Length")
+        .min(0.1)
+        .max(1)
+        .step(0.01)
+        .onChange(() => {
+          this.overlay2Material.uniforms.uDashLength.value =
+            this.options.uDashLength;
+        });
+      this.debugDashFolder
+        .add(this.options, "uDashAnimate")
+        .name("Dash Animate")
+        .onChange(() => {
+          this.overlay2Material.uniforms.uDashAnimate.value =
+            this.options.uDashAnimate;
+        });
+      // Visual Debug
+      this.debugVisualFolder = this.debugFolderWireframe.addFolder("Visual");
+
+      this.debugVisualFolder
+        .addColor(this.options, "uFill")
+        .name("Fill Hex")
+        .onChange(() => {
+          this.overlay2Material.uniforms.uFill.value = this.options.uFill;
+        });
+      this.debugVisualFolder
+        .addColor(this.options, "uStroke")
+        .name("Stroke hex")
+        .onChange(() => {
+          this.overlay2Material.uniforms.uStroke.value = this.options.uStroke;
+        });
+      this.debugVisualFolder
+        .add(this.options, "uThickness")
+        .name("Thickness")
+        .min(0.005)
+        .max(0.2)
+        .step(0.001)
+        .onChange(() => {
+          this.overlay2Material.uniforms.uThickness.value =
+            this.options.uThickness;
+        });
+      this.debugVisualFolder
+        .add(this.options, "uSqueeze")
+        .name("Squeeze")
+        .onChange(() => {
+          this.overlay2Material.uniforms.uSqueeze.value = this.options.uSqueeze;
+        });
+      this.debugVisualFolder
+        .add(this.options, "uSqueezeMin")
+        .name("Squeeze Min")
+        .min(0.0)
+        .max(1)
+        .step(0.01)
+        .onChange(() => {
+          this.overlay2Material.uniforms.uSqueezeMin.value =
+            this.options.uSqueezeMin;
+        });
+      this.debugVisualFolder
+        .add(this.options, "uSqueezeMax")
+        .name("Squeeze Max")
+        .min(0.0)
+        .max(1)
+        .step(0.01)
+        .onChange(() => {
+          this.overlay2Material.uniforms.uSqueezeMax.value =
+            this.options.uSqueezeMax;
+        });
     }
-
-    this.debugFolderMap = this.debugFolder.addFolder("Terrain Material");
-    this.debugFolderMap.close();
-    this.debugFolderMap
-      .add(this.overlayMaterial.uniforms.uAlpha, "value")
-      .min(0)
-      .max(1)
-      .step(0.01)
-      .name("Opacity");
-    this.debugFolderMap
-      .add(this.overlayMaterial.uniforms.uStrength, "value")
-      .min(0)
-      .max(1)
-      .step(0.01)
-      .name("Blend");
-    this.debugFolderMap
-      .add(this.overlayMaterial.uniforms.uContourWidth, "value")
-      .min(0)
-      .max(3)
-      .step(0.001)
-      .name("Contour Width");
-    this.debugFolderMap
-      .add(this.overlayMaterial.uniforms.uContourFrequency, "value")
-      .min(0.1)
-      .max(20)
-      .step(0.1)
-      .name("Contour Frequency");
-    this.debugFolderMap
-      .add(this.overlayMaterial.uniforms.uColorNumber, "value")
-      .min(1)
-      .max(3)
-      .step(1)
-      .name("Color Number");
-    this.debugFolderMap
-      .addColor(this.options, "uColorOne")
-      .name("Color One")
-      .onChange(() => {
-        this.overlayMaterial.uniforms.uColorOne.value.set(
-          this.options.uColorOne
-        );
-      });
-    this.debugFolderMap
-      .addColor(this.options, "uColorTwo")
-      .name("Color Two")
-      .onChange(() => {
-        this.overlayMaterial.uniforms.uColorTwo.value.set(
-          this.options.uColorTwo
-        );
-      });
-    this.debugFolderMap
-      .addColor(this.options, "uColorThree")
-      .name("Color Two")
-      .onChange(() => {
-        this.overlayMaterial.uniforms.uColorThree.value.set(
-          this.options.uColorThree
-        );
-      });
-    this.debugFolderMap
-      .addColor(this.options, "uLineColor")
-      .name("Line Color")
-      .onChange(() => {
-        this.overlayMaterial.uniforms.uLineColor.value.set(
-          this.options.uLineColor
-        );
-      });
-
-    this.debugFolderWireframe =
-      this.debugFolder.addFolder("Wireframe Material");
-    // Dash Debug
-    this.debugDashFolder = this.debugFolder.addFolder("Dash");
-    this.debugDashFolder
-      .add(this.options, "uDashEnabled")
-      .name("Dash Enabled")
-      .onChange(() => {
-        this.overlay2Material.uniforms.uDashEnabled.value =
-          this.options.uDashEnabled;
-      });
-    this.debugDashFolder
-      .add(this.options, "uDashRepeats")
-      .name("Repeats")
-      .min(1)
-      .max(10)
-      .step(1)
-      .onChange(() => {
-        this.overlay2Material.uniforms.uDashRepeats.value =
-          this.options.uDashRepeats;
-      });
-    this.debugDashFolder
-      .add(this.options, "uDashOverlap")
-      .name("Overlap Join")
-      .onChange(() => {
-        this.overlay2Material.uniforms.uDashOverlap.value =
-          this.options.uDashOverlap;
-      });
-    this.debugDashFolder
-      .add(this.options, "uDashLength")
-      .name("Dash Length")
-      .min(0.1)
-      .max(1)
-      .step(0.01)
-      .onChange(() => {
-        this.overlay2Material.uniforms.uDashLength.value =
-          this.options.uDashLength;
-      });
-    this.debugDashFolder
-      .add(this.options, "uDashAnimate")
-      .name("Dash Animate")
-      .onChange(() => {
-        this.overlay2Material.uniforms.uDashAnimate.value =
-          this.options.uDashAnimate;
-      });
-    // Visual Debug
-    this.debugVisualFolder = this.debugFolderWireframe.addFolder("Visual");
-
-    this.debugVisualFolder
-      .addColor(this.options, "uFill")
-      .name("Fill Hex")
-      .onChange(() => {
-        this.overlay2Material.uniforms.uFill.value = this.options.uFill;
-      });
-    this.debugVisualFolder
-      .addColor(this.options, "uStroke")
-      .name("Stroke hex")
-      .onChange(() => {
-        this.overlay2Material.uniforms.uStroke.value = this.options.uStroke;
-      });
-    this.debugVisualFolder
-      .add(this.options, "uThickness")
-      .name("Thickness")
-      .min(0.005)
-      .max(0.2)
-      .step(0.001)
-      .onChange(() => {
-        this.overlay2Material.uniforms.uThickness.value =
-          this.options.uThickness;
-      });
-    this.debugVisualFolder
-      .add(this.options, "uSqueeze")
-      .name("Squeeze")
-      .onChange(() => {
-        this.overlay2Material.uniforms.uSqueeze.value = this.options.uSqueeze;
-      });
-    this.debugVisualFolder
-      .add(this.options, "uSqueezeMin")
-      .name("Squeeze Min")
-      .min(0.0)
-      .max(1)
-      .step(0.01)
-      .onChange(() => {
-        this.overlay2Material.uniforms.uSqueezeMin.value =
-          this.options.uSqueezeMin;
-      });
-    this.debugVisualFolder
-      .add(this.options, "uSqueezeMax")
-      .name("Squeeze Max")
-      .min(0.0)
-      .max(1)
-      .step(0.01)
-      .onChange(() => {
-        this.overlay2Material.uniforms.uSqueezeMax.value =
-          this.options.uSqueezeMax;
-      });
   }
 
   update() {
