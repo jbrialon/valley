@@ -135,10 +135,27 @@ export default class Overlay {
 
   initEvents() {
     this.manager.on("updateColors", (colors) => {
+      // Overlay 1
+      this.options.uColorOne = new THREE.Color(colors[2]);
+      this.overlayMaterial.uniforms.uColorOne.value.set(this.options.uColorOne);
+      this.options.uColorTwo = new THREE.Color(colors[3]);
+      this.overlayMaterial.uniforms.uColorTwo.value.set(this.options.uColorTwo);
+      this.options.uColorThree = new THREE.Color(colors[4]);
+      this.overlayMaterial.uniforms.uColorThree.value.set(
+        this.options.uColorThree
+      );
+
+      this.options.uLineColor = new THREE.Color(colors[1]);
+      this.overlayMaterial.uniforms.uLineColor.value.set(
+        this.options.uLineColor
+      );
+
+      // Overlay 2
       this.options.uFill = new THREE.Color(colors[4]);
       this.overlay2Material.uniforms.uFill.value.set(this.options.uFill);
       this.options.uStroke = new THREE.Color(colors[1]);
       this.overlay2Material.uniforms.uStroke.value.set(this.options.uStroke);
+
       this.debugVisualFolder.controllers.forEach((controller) => {
         controller.updateDisplay();
       });
@@ -395,13 +412,13 @@ export default class Overlay {
 
       this.debugVisualFolder
         .addColor(this.options, "uFill")
-        .name("Fill Hex")
+        .name("Fill Color")
         .onChange(() => {
           this.overlay2Material.uniforms.uFill.value = this.options.uFill;
         });
       this.debugVisualFolder
         .addColor(this.options, "uStroke")
-        .name("Stroke hex")
+        .name("Stroke Color")
         .onChange(() => {
           this.overlay2Material.uniforms.uStroke.value = this.options.uStroke;
         });

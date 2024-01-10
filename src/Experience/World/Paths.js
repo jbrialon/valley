@@ -165,6 +165,7 @@ export default class Paths {
               this.curveCameraPoints.forEach((curvePoint) => {
                 curvePoint.visible = !curvePoint.visible;
               });
+              this.transformControls.enabled = !this.transformControls.enabled;
               this.cameraCurveMesh.visible = !this.cameraCurveMesh.visible;
             },
           },
@@ -182,6 +183,7 @@ export default class Paths {
               });
               this.fakeTarget.visible = !this.fakeTarget.visible;
               this.targetCurveMesh.visible = !this.targetCurveMesh.visible;
+              this.transformControls.enabled = !this.transformControls.enabled;
             },
           },
           "button"

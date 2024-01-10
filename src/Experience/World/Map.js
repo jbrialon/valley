@@ -91,10 +91,22 @@ export default class Map {
 
   initEvents() {
     this.manager.on("updateColors", (colors) => {
+      // Wireframe
       this.options.uFill = new THREE.Color(colors[0]);
       this.wireframeMaterial.uniforms.uFill.value.set(this.options.uFill);
+
       this.options.uStroke = new THREE.Color(colors[1]);
       this.wireframeMaterial.uniforms.uStroke.value.set(this.options.uStroke);
+
+      // Terrain
+      this.options.uColorOne = new THREE.Color(colors[0]);
+      this.terrainMaterial.uniforms.uColorOne.value.set(this.options.uColorOne);
+      this.options.uLineColor = new THREE.Color(colors[1]);
+
+      this.terrainMaterial.uniforms.uLineColor.value.set(
+        this.options.uLineColor
+      );
+
       this.debugVisualFolder.controllers.forEach((controller) => {
         controller.updateDisplay();
       });

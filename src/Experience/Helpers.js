@@ -102,15 +102,17 @@ export default class Helpers {
       this.debugFolder = this.debug.ui.addFolder("Helpers");
       this.debugFolder.close();
 
-      this.transformControls.enabled = true;
+      this.transformControls.enabled = false;
 
       this.debugFolder
         .add(
           {
             button: () => {
               if (!this.helper) {
+                this.transformControls.enabled = true;
                 this.addTargetHelper();
               } else {
+                this.transformControls.enabled = false;
                 this.transformControls.detach();
                 this.scene.remove(this.helper);
                 this.helper = null;
@@ -169,7 +171,5 @@ export default class Helpers {
     }
   }
 
-  update() {
-    //if (this.transformControls) this.transformControls.update();
-  }
+  update() {}
 }
