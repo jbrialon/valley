@@ -13,6 +13,7 @@ export default class Markers {
     this.sizes = this.experience.sizes;
     this.debug = this.experience.debug;
     this.time = this.experience.time;
+    this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.manager;
     this.camera = this.experience.camera;
     this.resources = this.experience.resources;
@@ -126,7 +127,7 @@ export default class Markers {
     const marker = event.target;
 
     this.activeMarker = this.getMarkerByName(marker.name);
-    this.infowindowContent.innerHTML = this.activeMarker.displayName;
+    this.infowindowContent.innerHTML = this.activeMarker.info.displayName;
     this.revealInfowindow();
 
     // this.manager.trigger("onMarkerHover", name);
@@ -141,7 +142,10 @@ export default class Markers {
   }
 
   getMarkerByName(name) {
-    return markers.find((marker) => marker.name === name);
+    return {
+      mesh: this.markers.find((marker) => marker.name === name),
+      info: markers.find((marker) => marker.name === name),
+    };
   }
 
   revealInfowindow() {
@@ -168,24 +172,22 @@ export default class Markers {
   }
 
   bounce() {
-    const name = this.activeMarker.name;
-    const markerMesh = this.markers.find((marker) => marker.name === name);
+    if (this.activeMarker?.mesh) {
+      const bounceStrength = 0.05;
 
-    // const markerMesh =
-    const bounceStrength = 0.05;
-
-    gsap.to(markerMesh.position, {
-      y: "+=" + bounceStrength,
-      duration: 0.75,
-      ease: "power2.out",
-      onComplete: () => {
-        gsap.to(markerMesh.position, {
-          y: "-=" + bounceStrength,
-          duration: 0.5,
-          ease: "bounce.out",
-        });
-      },
-    });
+      gsap.to(this.activeMarker.mesh.position, {
+        y: "+=" + bounceStrength,
+        duration: 0.75,
+        ease: "power2.out",
+        onComplete: () => {
+          gsap.to(this.activeMarker.mesh.position, {
+            y: "-=" + bounceStrength,
+            duration: 0.5,
+            ease: "bounce.out",
+          });
+        },
+      });
+    }
   }
 
   initEvents() {
@@ -205,13 +207,17 @@ export default class Markers {
       });
     });
 
+    this.inputEvents.on("wheel", () => {
+      this.hideInfowindow();
+    });
+
     this.infowindowInner.addEventListener("mouseleave", () => {
       this.hideInfowindow();
     });
 
     this.infowindowInner.addEventListener("click", () => {
       if (this.activeMarker) {
-        const name = this.activeMarker.name;
+        const name = this.activeMarker.info.name;
         this.bounce();
         this.manager.trigger("onMarkerClick", name);
       }
@@ -325,7 +331,7 @@ export default class Markers {
 
   update() {
     if (this.activeMarker) {
-      const screenPosition = this.activeMarker.position.clone();
+      const screenPosition = this.activeMarker.mesh.position.clone();
       screenPosition.project(this.camera.instance);
 
       const position = new THREE.Vector3(

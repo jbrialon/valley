@@ -72,6 +72,7 @@ export default class Camera {
     this.inputEvents.on("mousemove", () => {
       this.onMouseMove();
     });
+    // Scroll event
     this.inputEvents.on("wheel", () => {
       this.onMouseWheel();
     });
