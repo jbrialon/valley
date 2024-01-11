@@ -40,14 +40,15 @@ export default class Overlay {
       // Overlay 2
       uFill: new THREE.Color(0xde9e7b),
       uStroke: new THREE.Color(0xf4e2d6),
+
       uDualStroke: false,
       uSeeThrough: false,
       uInsideAltColor: false,
-      uThickness: 0.02,
+      uThickness: 0.04,
       uSecondThickness: 0.05,
       uDashEnabled: true,
-      uDashRepeats: 3.0,
-      uDashOverlap: false,
+      uDashRepeats: 2.0,
+      uDashOverlap: true,
       uDashLength: 0.55,
       uDashAnimate: false,
       uSqueeze: false,
@@ -276,17 +277,17 @@ export default class Overlay {
         .add(this.activeMaterial.uniforms.uCirclePos.value, "x")
         .min(-1)
         .max(1)
-        .step(0.0001)
+        .step(0.00001)
         .name("Position X");
       this.debugCircleFolder
         .add(this.activeMaterial.uniforms.uCirclePos.value, "y")
         .min(-1)
         .max(1)
-        .step(0.0001)
+        .step(0.00001)
         .name("Position Y");
       this.debugCircleFolder
         .add(this.activeMaterial.uniforms.uCircleRadius, "value")
-        .min(1)
+        .min(0)
         .max(20)
         .step(0.0001)
         .name("Circle Radius");

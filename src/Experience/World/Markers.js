@@ -27,7 +27,8 @@ export default class Markers {
 
     // Setup
     this.infowindow = document.querySelector(`.js-infowindow`);
-    this.infowindowContent = document.querySelector(`.js-infowindow .inner`);
+    this.infowindowInner = this.infowindow.querySelector(`.inner`);
+    this.infowindowContent = this.infowindow.querySelector(`.content`);
     this.markers = [];
     this.setMaterial();
     this.setMarkers();
@@ -116,16 +117,16 @@ export default class Markers {
     const marker = event.target;
     const name = marker.name;
 
-    this.bounce(marker);
+    this.bounce();
 
     this.manager.trigger("onMarkerClick", name);
   }
 
   onMarkerHover(event) {
     const marker = event.target;
-    const name = marker.name;
 
-    this.activeMarker = this.getMarkerByName(name);
+    this.activeMarker = this.getMarkerByName(marker.name);
+    this.infowindowContent.innerHTML = this.activeMarker.displayName;
     this.revealInfowindow();
 
     // this.manager.trigger("onMarkerHover", name);
@@ -135,7 +136,7 @@ export default class Markers {
     const marker = event.target;
     const name = marker.name;
 
-    this.hideInfowindow();
+    // this.hideInfowindow();
     // this.manager.trigger("onMarkerOut", name);
   }
 
@@ -166,15 +167,19 @@ export default class Markers {
     });
   }
 
-  bounce(marker) {
+  bounce() {
+    const name = this.activeMarker.name;
+    const markerMesh = this.markers.find((marker) => marker.name === name);
+
+    // const markerMesh =
     const bounceStrength = 0.05;
 
-    gsap.to(marker.position, {
+    gsap.to(markerMesh.position, {
       y: "+=" + bounceStrength,
       duration: 0.75,
       ease: "power2.out",
       onComplete: () => {
-        gsap.to(marker.position, {
+        gsap.to(markerMesh.position, {
           y: "-=" + bounceStrength,
           duration: 0.5,
           ease: "bounce.out",
@@ -198,6 +203,18 @@ export default class Markers {
           this.showMarkerInRange(marker);
         }
       });
+    });
+
+    this.infowindowInner.addEventListener("mouseleave", () => {
+      this.hideInfowindow();
+    });
+
+    this.infowindowInner.addEventListener("click", () => {
+      if (this.activeMarker) {
+        const name = this.activeMarker.name;
+        this.bounce();
+        this.manager.trigger("onMarkerClick", name);
+      }
     });
 
     this.manager.on("updateColors", (colors) => {

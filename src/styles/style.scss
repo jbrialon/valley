@@ -3,7 +3,7 @@
 
 @import "components/loader";
 @import "components/disclaimer";
-// @import "components/tutorial";
+@import "components/infowindow";
 
 * {
   margin: 0;
@@ -21,6 +21,8 @@ body {
 }
 
 body {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
   background-color: #b9a998;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -33,24 +35,4 @@ body {
   left: 0;
   outline: none;
   z-index: $z-webgl;
-}
-
-.infowindow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 30;
-  display: none;
-}
-
-.infowindow .inner {
-  position: relative;
-  opacity: 0;
-  width: 80px;
-  height: 80px;
-  background: white;
-  transform: rotate(45deg);
-  left: -50%;
-  bottom: 230px;
-  cursor: pointer;
 }

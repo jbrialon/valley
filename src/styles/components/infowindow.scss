@@ -1,0 +1,26 @@
+.infowindow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 30;
+  display: none;
+
+  .inner {
+    position: relative;
+    left: -50%;
+    bottom: 100px;
+    padding-bottom: 100px;
+  }
+}
+
+.content {
+  position: relative;
+  opacity: 0;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #5a5444;
+  padding: 5px 11px;
+  background: #f4e2d6;
+  box-shadow: 2px 2px 0px 2px #5a5444;
+}
