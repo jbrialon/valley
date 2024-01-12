@@ -6,7 +6,6 @@ const toonMaterial = (options) => {
     gradientMap: options.gradientMap,
     transparent: options.transparent,
     opacity: options.opacity,
-    depthTest: true,
   });
 };
 

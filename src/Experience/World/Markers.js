@@ -75,13 +75,13 @@ export default class Markers {
       if (marker.type === "secondary") {
         geometry = new THREE.ConeGeometry(1, 2, 4, 1);
         scale = new THREE.Vector3(0.05, 0.05, 0.05);
-        material = this.secondaryMaterial.clone();
+        material = this.secondaryMaterial;
         rotation = new THREE.Vector3(0, 0, Math.PI);
       }
 
       if (marker.type === "mountain") {
         geometry = new THREE.ConeGeometry(1, 2, 6, 1);
-        material = this.mountainMaterial.clone();
+        material = this.mountainMaterial;
         scale = new THREE.Vector3(0.075, 0.05, 0.075);
         rotation = new THREE.Vector3(0, 0, 0);
       }
