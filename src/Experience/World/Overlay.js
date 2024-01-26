@@ -16,14 +16,17 @@ export default class Overlay {
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.time = this.experience.time;
+    this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.manager;
+    this.raycaster = this.experience.renderer.raycaster;
+    this.camera = this.experience.camera;
     this.resources = this.experience.resources;
 
     // Options
     this.options = {
       uAlpha: 1,
-      uCirclePos: new THREE.Vector2(0.14, 0.417),
-      uCircleRadius: 0,
+      uCirclePos: markers[0].overlayPosition,
+      uCircleRadius: 3,
       offsetPosY: 0.001,
 
       // Overlay 1
@@ -123,7 +126,9 @@ export default class Overlay {
       if (child instanceof THREE.Mesh && child.name === "map") {
         child.geometry = child.geometry.toNonIndexed();
         addBarycentricCoordinates(child.geometry, true);
+        child.geometry.computeBoundsTree();
         this.overlayModel = child;
+        this.overlayModel.layers.enable(1);
       } else if (child.name !== "Scene") {
         child.visible = false;
       }
@@ -135,6 +140,11 @@ export default class Overlay {
   }
 
   initEvents() {
+    // Mouse Events
+    this.inputEvents.on("mousemove", () => {
+      this.onMouseMove();
+    });
+
     this.manager.on("updateColors", (colors) => {
       // Overlay 1
       this.options.uColorOne = new THREE.Color(colors[2]);
@@ -163,7 +173,7 @@ export default class Overlay {
     });
 
     this.manager.on("onMarkerClick", (name) => {
-      this.revealOverlay(name);
+      // this.revealOverlay(name);
     });
 
     this.manager.on("onMarkerHover", (name) => {
@@ -173,6 +183,31 @@ export default class Overlay {
     this.manager.on("onMarkerOut", (name) => {
       // console.log(name);
     });
+  }
+
+  onMouseMove() {
+    // calculate the position of the mouse based with center as origin
+    if (this.inputEvents.isPressed) {
+      const mouse = new THREE.Vector2(
+        (this.inputEvents.mouse.x / this.sizes.width) * 2 - 1,
+        -(this.inputEvents.mouse.y / this.sizes.height) * 2 + 1
+      );
+
+      // Update the raycaster with the mouse coordinates
+      this.raycaster.setFromCamera(mouse, this.camera.instance);
+
+      // Perform raycasting to find intersections with the mesh
+      const intersects = this.raycaster.intersectObject(this.overlayModel);
+      if (intersects.length > 0) {
+        // Get the UV coordinates where the mouse intersects the mesh
+        const uv = intersects[0].uv;
+        this.activeMaterial.uniforms.uCirclePos.value.x = 1 - uv.x;
+        this.activeMaterial.uniforms.uCirclePos.value.y = 1 - uv.y;
+
+        const point = intersects[0].point;
+        console.log("Intersection Point (X, Y, Z):", point.x, point.y, point.z);
+      }
+    }
   }
 
   revealOverlay(name) {

@@ -113,7 +113,7 @@ vec4 getStyledWireframe(vec3 barycentric) {
 }
 
 void main() {
-  vec2 circlePos = vUv + (uCirclePos * 0.5) - vec2(0.5);
+  vec2 circlePos = vUv + (uCirclePos) - vec2(1.0);
 
   float c = circle(circlePos, (uCircleRadius / 10000.0), 2.) * 2.5;
 

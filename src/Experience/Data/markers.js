@@ -5,9 +5,9 @@ export default [
     name: "syabru_besi",
     displayName: "Syabru Besi",
     position: new THREE.Vector3(-4.29, 1.56, -9.07),
-    overlayPosition: new THREE.Vector2(0.1432, 0.41919), // OK
-    overlayRadius: 3,
+    overlayPosition: new THREE.Vector2(0.5718753935582855, 0.7088970566384686), // OK
     type: "main",
+    photos: [],
   },
   {
     name: "pairo",
@@ -16,6 +16,7 @@ export default [
     overlayPosition: new THREE.Vector2(0.02, 0.356), // OK
     overlayRadius: 3,
     type: "secondary",
+    photos: ["/photos/photo-1.jpg"],
   },
   {
     name: "bamboo",
@@ -24,6 +25,7 @@ export default [
     overlayPosition: new THREE.Vector2(-0.0557, 0.3692), // OK
     overlayRadius: 3,
     type: "secondary",
+    photos: ["/photos/photo-2.jpg"],
   },
   {
     name: "lama_hotel",
@@ -32,6 +34,7 @@ export default [
     overlayPosition: new THREE.Vector2(-0.143, 0.4014), // OK
     overlayRadius: 3,
     type: "main",
+    photos: ["/photos/photo-3.jpg"],
   },
   {
     name: "langtang",
@@ -40,6 +43,7 @@ export default [
     overlayPosition: new THREE.Vector2(-0.4366, 0.7101), // OK
     overlayRadius: 3,
     type: "main",
+    photos: ["/photos/photo-4.jpg"],
   },
   {
     name: "kyanjin_gompa",
@@ -48,6 +52,7 @@ export default [
     overlayPosition: new THREE.Vector2(-0.5875, 0.6931), // OK
     overlayRadius: 6.5,
     type: "main",
+    photos: [],
   },
   {
     name: "kyanjin_gompa_cheese_factory",
@@ -56,14 +61,7 @@ export default [
     overlayPosition: new THREE.Vector2(-0.5875, 0.6931), // OK
     overlayRadius: 3,
     type: "pos",
-  },
-  {
-    name: "tserko_ri",
-    displayName: "Tserko Ri",
-    position: new THREE.Vector3(24.69, 5.14, -15.29),
-    overlayPosition: new THREE.Vector2(-0.705, 0.696), // OK
-    overlayRadius: 3,
-    type: "mountain",
+    photos: ["/photos/photo-7.jpg"],
   },
   {
     name: "Kkyanjin_ri",
@@ -72,15 +70,25 @@ export default [
     overlayPosition: new THREE.Vector2(-0.6045, 0.7301), // OK
     overlayRadius: 6.5,
     type: "mountain",
+    photos: ["/photos/photo-5.jpg", "/photos/photo-6.jpg"],
   },
   {
-    name: "thulo_syabru",
-    displayName: "Thulo Syabru",
-    position: new THREE.Vector3(-2.1, 2.29, -6.49),
-    overlayPosition: new THREE.Vector2(0.0783, 0.2989), // OK
+    name: "tserko_ri",
+    displayName: "Tserko Ri",
+    position: new THREE.Vector3(24.69, 5.14, -15.29),
+    overlayPosition: new THREE.Vector2(-0.705, 0.696), // OK
     overlayRadius: 3,
-    type: "main",
+    type: "mountain",
+    photos: [],
   },
+  // {
+  //   name: "thulo_syabru",
+  //   displayName: "Thulo Syabru",
+  //   position: new THREE.Vector3(-2.1, 2.29, -6.49),
+  //   overlayPosition: new THREE.Vector2(0.0783, 0.2989), // OK
+  //   overlayRadius: 3,
+  //   type: "main",
+  // },
   {
     name: "sing gomba",
     displayName: "Sing_Gomba",

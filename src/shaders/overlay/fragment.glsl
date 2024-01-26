@@ -32,7 +32,7 @@ void main() {
 
   float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, outputMax);
 
-  vec2 circlePos = vUv + (uCirclePos * 0.5) - vec2(0.5);
+  vec2 circlePos = vUv + (uCirclePos) - vec2(1.0);
     // this 1.5 should be adapted by the ratio of the model we apply the material to 
     // circlePos.x = circlePos.x * 1.5;
   float c = circle(circlePos, (uCircleRadius / 10000.0), 2.) * 2.5;

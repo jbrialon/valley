@@ -18,6 +18,9 @@ export default class InputEvents extends EventEmitter {
       this.trigger("mousemove");
     });
 
+    window.addEventListener("mousedown", this.handleMouseDown.bind(this));
+    window.addEventListener("mouseup", this.handleMouseUp.bind(this));
+
     // Add touch event listeners
     window.addEventListener("touchstart", this.handleTouchStart.bind(this));
     window.addEventListener("touchmove", this.handleTouch.bind(this));
@@ -35,6 +38,16 @@ export default class InputEvents extends EventEmitter {
       this.keys[event.code] = false;
       this.trigger("keyup", event.code);
     });
+  }
+
+  handleMouseDown() {
+    this.isPressed = true;
+    document.body.style.cursor = "grabbing";
+  }
+
+  handleMouseUp() {
+    this.isPressed = false;
+    document.body.style.cursor = "grab";
   }
 
   handleWheel(event) {

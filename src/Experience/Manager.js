@@ -41,29 +41,29 @@ export default class Manager extends EventEmitter {
     }
   }
 
-  addHoverEventToMesh(mesh, hoverHandlerFunction, outHandlerFunction) {
-    if (!this.interactionManager) {
-      this.interactionManager = this.experience.renderer.interactionManager;
-    }
+  // addHoverEventToMesh(mesh, hoverHandlerFunction, outHandlerFunction) {
+  //   if (!this.interactionManager) {
+  //     this.interactionManager = this.experience.renderer.interactionManager;
+  //   }
 
-    mesh.addEventListener("mouseover", (event) => {
-      if (typeof hoverHandlerFunction === "function") {
-        hoverHandlerFunction(event);
-      }
-    });
+  //   mesh.addEventListener("mouseover", (event) => {
+  //     if (typeof hoverHandlerFunction === "function") {
+  //       hoverHandlerFunction(event);
+  //     }
+  //   });
 
-    mesh.addEventListener("mouseout", (event) => {
-      if (typeof outHandlerFunction === "function") {
-        outHandlerFunction(event);
-      }
-    });
+  //   mesh.addEventListener("mouseout", (event) => {
+  //     if (typeof outHandlerFunction === "function") {
+  //       outHandlerFunction(event);
+  //     }
+  //   });
 
-    // we add the mesh to the interaction Manager if it's not already there
-    if (!this.meshes.includes(mesh.name)) {
-      this.meshes.push(mesh.name);
-      this.interactionManager.add(mesh);
-    }
-  }
+  //   // we add the mesh to the interaction Manager if it's not already there
+  //   if (!this.meshes.includes(mesh.name)) {
+  //     this.meshes.push(mesh.name);
+  //     this.interactionManager.add(mesh);
+  //   }
+  // }
 
   setDebug() {
     if (this.debug.active) {

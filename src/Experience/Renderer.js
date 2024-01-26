@@ -12,35 +12,22 @@ export default class Renderer {
     this.camera = this.experience.camera;
     this.manager = this.experience.manager;
 
+    this.raycaster = new THREE.Raycaster();
+    this.raycaster.layers.set(1);
+    this.raycaster.firstHitOnly = true;
+
     // Options
     this.options = {
       backgroundColor: "#b9a998",
     };
 
-    // Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("World");
-      this.debugFolder.close();
-      this.debugFolder
-        .addColor(this.options, "backgroundColor")
-        .name("Background Color")
-        .onChange(() => {
-          this.instance.setClearColor(this.options.backgroundColor);
-          document.body.style.backgroundColor = this.options.backgroundColor;
-        });
-    }
-
     // Setup
     this.setInstance();
     this.setInteractionManager();
+    this.initEvents();
 
-    this.manager.on("updateColors", (colors) => {
-      this.options.backgroundColor = colors[3];
-      this.instance.setClearColor(this.options.backgroundColor);
-      this.debugFolder.controllers.forEach((controller) => {
-        controller.updateDisplay();
-      });
-    });
+    // Debug
+    this.setDebug();
   }
 
   setInstance() {
@@ -64,6 +51,16 @@ export default class Renderer {
     this.instance.setPixelRatio(this.sizes.pixelRatio);
   }
 
+  initEvents() {
+    this.manager.on("updateColors", (colors) => {
+      this.options.backgroundColor = colors[3];
+      this.instance.setClearColor(this.options.backgroundColor);
+      this.debugFolder.controllers.forEach((controller) => {
+        controller.updateDisplay();
+      });
+    });
+  }
+
   setInteractionManager() {
     this.interactionManager = new InteractionManager(
       this.instance,
@@ -75,6 +72,20 @@ export default class Renderer {
   resize() {
     this.instance.setSize(this.sizes.width, this.sizes.height);
     this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
+  }
+
+  setDebug() {
+    if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("World");
+      this.debugFolder.close();
+      this.debugFolder
+        .addColor(this.options, "backgroundColor")
+        .name("Background Color")
+        .onChange(() => {
+          this.instance.setClearColor(this.options.backgroundColor);
+          document.body.style.backgroundColor = this.options.backgroundColor;
+        });
+    }
   }
 
   update() {
