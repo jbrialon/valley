@@ -42,11 +42,13 @@ export default class InputEvents extends EventEmitter {
 
   handleMouseDown() {
     this.isPressed = true;
+    this.trigger("pressDown");
     document.body.style.cursor = "grabbing";
   }
 
   handleMouseUp() {
     this.isPressed = false;
+    this.trigger("pressUp");
     document.body.style.cursor = "grab";
   }
 

@@ -13,9 +13,8 @@ export default class Markers {
     this.sizes = this.experience.sizes;
     this.debug = this.experience.debug;
     this.time = this.experience.time;
-    // this.inputEvents = this.experience.inputEvents;
+    this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.manager;
-    // this.camera = this.experience.camera;
     this.resources = this.experience.resources;
 
     // Options
@@ -27,9 +26,6 @@ export default class Markers {
     };
 
     // Setup
-    this.infowindow = document.querySelector(`.js-infowindow`);
-    this.infowindowInner = this.infowindow.querySelector(`.inner`);
-    this.infowindowContent = this.infowindow.querySelector(`.content`);
 
     this.markers = [];
     this.setMaterial();
@@ -101,115 +97,43 @@ export default class Markers {
 
       this.markers.push(markerMesh);
       this.scene.add(markerMesh);
-
-      // this.manager.addClickEventToMesh(
-      //   markerMesh,
-      //   this.onMarkerClick.bind(this)
-      // );
-
-      // this.manager.addHoverEventToMesh(
-      //   markerMesh,
-      //   this.onMarkerHover.bind(this),
-      //   this.onMarkerOut.bind(this)
-      // );
     });
   }
 
-  // onMarkerClick(event) {
-  //   const marker = event.target;
-  //   const name = marker.name;
-
-  //   this.bounce();
-  //   this.manager.trigger("onMarkerClick", name);
-  // }
-
-  // onMarkerHover(event) {
-  //   const marker = event.target;
-
-  //   this.activeMarker = this.getMarkerByName(marker.name);
-  //   this.infowindowContent.innerHTML = this.activeMarker.info.displayName;
-  //   this.revealInfowindow();
-
-  //   this.manager.trigger("onMarkerHover", name);
-  // }
-
-  // onMarkerOut(event) {
-  //   const marker = event.target;
-  //   const name = marker.name;
-
-  //   this.hideInfowindow();
-  //   this.manager.trigger("onMarkerOut", name);
-  // }
-
-  getMarkerByName(name) {
-    return {
-      mesh: this.markers.find((marker) => marker.name === name),
-      info: markers.find((marker) => marker.name === name),
-    };
-  }
-
-  revealInfowindow() {
-    gsap.to(this.infowindowContent, {
-      onStart: () => {
-        this.infowindow.style.display = "block";
-      },
-      delay: 0.5,
-      duration: 1,
-      autoAlpha: 1,
-    });
-  }
-
-  hideInfowindow() {
-    gsap.to(this.infowindowContent, {
-      delay: 0.5,
-      duration: 1,
-      autoAlpha: 0,
-      onComplete: () => {
-        this.infowindow.style.display = "none";
-        this.activeMarker = null;
-      },
-    });
-  }
-
-  bounce() {
-    if (this.activeMarker?.mesh) {
-      const bounceStrength = 0.05;
-
-      gsap.to(this.activeMarker.mesh.position, {
-        y: "+=" + bounceStrength,
-        duration: 0.75,
-        ease: "power2.out",
-        onComplete: () => {
-          gsap.to(this.activeMarker.mesh.position, {
-            y: "-=" + bounceStrength,
-            duration: 0.5,
-            ease: "bounce.out",
-          });
-        },
+  revealMarker(index) {
+    const markerMesh = this.markers[index];
+    if (!markerMesh.visible) {
+      markerMesh.visible = true;
+      markerMesh.position.y = markers[index].position.y - 1;
+      gsap.to(markerMesh.position, {
+        y: markers[index].position.y,
+        duration: 1.5,
+        ease: "power4.inOut",
       });
     }
   }
 
-  initEvents() {
-    this.manager.on("loaded", () => {
-      this.markers.forEach((marker) => {
-        // if (this.isMarkerInRange(marker)) {
-        this.showMarkerInRange(marker);
-        // }
-      });
+  bounce() {
+    const bounceStrength = 0.05;
+
+    gsap.to(this.activeMarker.mesh.position, {
+      y: "+=" + bounceStrength,
+      duration: 0.75,
+      ease: "power2.out",
+      onComplete: () => {
+        gsap.to(this.activeMarker.mesh.position, {
+          y: "-=" + bounceStrength,
+          duration: 0.5,
+          ease: "bounce.out",
+        });
+      },
     });
+  }
 
-    // this.manager.on("onScrollComplete", () => {
-    //   this.markers.forEach((marker) => {
-    //     if (this.isMarkerInRange(marker)) {
-    //       this.showMarkerInRange(marker);
-    //     }
-    //   });
-    // });
-
-    // this.inputEvents.on("wheel", () => {
-    //   this.hideInfowindow();
-    // });
+  initEvents() {
+    this.manager.on("revealMarker", (index) => {
+      this.revealMarker(index);
+    });
 
     this.manager.on("updateColors", (colors) => {
       this.options.defaultColor = colors[4];
@@ -230,41 +154,6 @@ export default class Markers {
         controller.updateDisplay();
       });
     });
-  }
-
-  // isMarkerInRange(marker) {
-  //   const distance = marker.position.distanceTo(
-  //     this.camera.cameraParent.position
-  //   );
-
-  //   return distance < this.options.range;
-  // }
-
-  showMarkerInRange(marker) {
-    // if (!marker.visible) {
-    marker.visible = true;
-
-    gsap.fromTo(
-      marker.material,
-      {
-        opacity: 0,
-      },
-      {
-        duration: 2,
-        opacity: 1,
-        ease: "power4.inOut",
-      }
-    );
-    gsap.fromTo(
-      marker.position,
-      { y: marker.position.y + 0.15 },
-      {
-        duration: 2,
-        y: marker.position.y,
-        ease: "power4.inOut",
-      }
-    );
-    // }
   }
 
   setDebug() {
