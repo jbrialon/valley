@@ -1,7 +1,4 @@
 import * as THREE from "three";
-import { Line2 } from "three/addons/lines/Line2.js";
-import { LineMaterial } from "three/addons/lines/LineMaterial.js";
-import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 
 import { gsap } from "gsap";
 import Experience from "../Experience";
@@ -23,10 +20,16 @@ export default class Markers {
 
     // Options
     this.options = {
-      range: 4.5,
+      range: 45,
       defaultColor: "#992625",
       secondaryColor: "#2c4d38",
       mountainColor: "#5a5444",
+      // Line
+      lineWidth: 18,
+      dashArray: 0.05,
+      dashRatio: 0.5,
+      dashOffset: 0,
+      visibility: 0,
     };
 
     // Setup
@@ -118,93 +121,6 @@ export default class Markers {
     }
   }
 
-  addPathsOne() {
-    const points = [
-      new THREE.Vector3(-4.29, 1.56, -9.07),
-      new THREE.Vector3(-3.3, 2, -7.78),
-      new THREE.Vector3(0.08, 1.88, -7.69),
-    ];
-
-    const positions = [];
-    const colors = [];
-    const spline = new THREE.CatmullRomCurve3(points);
-
-    const divisions = Math.round(12 * points.length);
-    const point = new THREE.Vector3();
-    const color = new THREE.Color();
-
-    for (let i = 0, l = divisions; i < l; i++) {
-      const t = i / l;
-
-      spline.getPoint(t, point);
-      positions.push(point.x, point.y, point.z);
-
-      color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace);
-      colors.push(color.r, color.g, color.b);
-    }
-
-    const geometry = new LineGeometry();
-    geometry.setPositions(positions);
-
-    const matLine = new LineMaterial({
-      color: 0xffffff,
-      linewidth: 5,
-      resolution: new THREE.Vector2(this.sizes.width, this.sizes.height),
-      dashed: true,
-      dashScale: 10,
-      gapSize: 1,
-      alphaToCoverage: true,
-    });
-
-    const line = new Line2(geometry, matLine);
-    line.computeLineDistances();
-
-    this.scene.add(line);
-  }
-
-  addPathsTwo() {
-    const points = [
-      new THREE.Vector3(0.08, 1.88, -7.69),
-      new THREE.Vector3(2.17, 2.34, -7.96),
-    ];
-
-    const positions = [];
-    const colors = [];
-    const spline = new THREE.CatmullRomCurve3(points);
-
-    const divisions = Math.round(12 * points.length);
-    const point = new THREE.Vector3();
-    const color = new THREE.Color();
-
-    for (let i = 0, l = divisions; i < l; i++) {
-      const t = i / l;
-
-      spline.getPoint(t, point);
-      positions.push(point.x, point.y, point.z);
-
-      color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace);
-      colors.push(color.r, color.g, color.b);
-    }
-
-    const geometry = new LineGeometry();
-    geometry.setPositions(positions);
-
-    const matLine = new LineMaterial({
-      color: 0xffffff,
-      linewidth: 5,
-      resolution: new THREE.Vector2(this.sizes.width, this.sizes.height),
-      dashed: true,
-      dashScale: 10,
-      gapSize: 1,
-      alphaToCoverage: true,
-    });
-
-    const line = new Line2(geometry, matLine);
-    line.computeLineDistances();
-
-    this.scene.add(line);
-  }
-
   bounce() {
     const bounceStrength = 0.05;
 
@@ -223,11 +139,23 @@ export default class Markers {
   }
 
   showClosestMarkers() {
+    let markerCloseTimer = null;
     markers.forEach((marker, index) => {
       const distance = marker.position.distanceTo(this.point) * 100;
-      if (distance <= 45) {
-        this.revealMarker(index);
-        this.manageSteps(index);
+      if (distance <= this.options.range) {
+        if (!markerCloseTimer) {
+          // Start the timer if it's not already running
+          markerCloseTimer = setTimeout(() => {
+            // Trigger revealMarker after 400ms
+            this.revealMarker(index);
+            this.manageSteps(index);
+            markerCloseTimer = null; // Reset the timer
+          }, 400);
+        } else {
+          // Reset the timer if the distance exceeds 45 units
+          clearTimeout(markerCloseTimer);
+          markerCloseTimer = null;
+        }
       }
       // if (distance > 20 && distance <= 90) {
       //   const markerMesh = this.markers[index];
@@ -258,22 +186,12 @@ export default class Markers {
   }
 
   showPath(index) {
-    if (index === 1) {
-      this.addPathsOne();
-    } else if (index === 2) {
-      this.addPathsTwo();
-    }
-    // console.log(index);
-    // this.addPaths();
+    this.manager.trigger("showDashLine", index);
   }
 
   initEvents() {
     this.manager.on("navigation", (point) => {
       this.point = point;
-    });
-
-    this.manager.on("revealMarker", (index) => {
-      this.revealMarker(index);
     });
 
     this.manager.on("updateColors", (colors) => {
@@ -306,8 +224,8 @@ export default class Markers {
         .add(this.options, "range")
         .name("range")
         .min(0)
-        .max(10)
-        .step(0.1);
+        .max(100)
+        .step(0.01);
       this.debugFolder
         .addColor(this.options, "defaultColor")
         .name("Main Color")

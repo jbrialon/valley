@@ -16,6 +16,7 @@
   "dependencies": {
     "gsap": "^3.12.4",
     "lil-gui": "^0.17.0",
+    "meshline": "^3.2.0",
     "nice-color-palettes": "^3.0.0",
     "stats-gl": "^2.0.1",
     "three": "^0.159.0",

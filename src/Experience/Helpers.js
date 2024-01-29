@@ -17,11 +17,9 @@ export default class Helpers {
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
     this.manager = this.experience.manager;
-    this.resources = this.experience.resources;
 
     // Setup
     this.DirectionalLightHelper = null;
-    this.gradientMap = null;
 
     this.transformControls = new TransformControls(
       this.camera.instance,
@@ -77,17 +75,11 @@ export default class Helpers {
   }
 
   createTargetHelper() {
-    if (!this.gradientMap) {
-      this.gradientMap = this.resources.items.fiveToneToonTexture;
-      this.gradientMap.magFilter = THREE.NearestFilter;
-    }
-    const geometry = new THREE.CapsuleGeometry(1, 1, 4, 8);
-    const material = toonMaterial({
-      color: 0x599fd3,
-      gradientMap: this.gradientMap,
-    });
+    const geometry = new THREE.OctahedronGeometry(1, 0);
+
+    const material = new THREE.MeshNormalMaterial();
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.set(0.25, 0.35, 0.25);
+    mesh.scale.set(0.075, 0.1, 0.075);
     return mesh;
   }
 

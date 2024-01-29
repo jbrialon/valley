@@ -144,7 +144,15 @@ export default class Paths {
 
             this.targetCurveMesh.geometry = this.targetGeometry;
           }
-          console.log("New Point Position: ", index, transformedPoint.position);
+          console.log(
+            "New Point Position:",
+            index,
+            `new THREE.Vector3(${transformedPoint.position.x.toFixed(
+              2
+            )},${transformedPoint.position.y.toFixed(
+              2
+            )},${transformedPoint.position.z.toFixed(2)})`
+          );
         }
         this.camera.setPaths();
       });

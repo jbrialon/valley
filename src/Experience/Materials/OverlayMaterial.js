@@ -30,7 +30,7 @@ const overlayMaterial = (options) => {
     },
     vertexShader: overlayVertexShader,
     fragmentShader: overlayFragmentShader,
-    transparent: true,
+    transparent: false,
     side: THREE.DoubleSide,
   });
 };

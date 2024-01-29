@@ -156,7 +156,7 @@ export default class Map {
       let isWireframeActive = true;
 
       this.debugFolder = this.debug.ui.addFolder("Map");
-      // this.debugFolder.close();
+      this.debugFolder.close();
       this.debugFolder
         .add(
           {
