@@ -175,18 +175,6 @@ export default class Overlay {
         controller.updateDisplay();
       });
     });
-
-    this.manager.on("onMarkerClick", (name) => {
-      // this.revealOverlay(name);
-    });
-
-    this.manager.on("onMarkerHover", (name) => {
-      // console.log(name);
-    });
-
-    this.manager.on("onMarkerOut", (name) => {
-      // console.log(name);
-    });
   }
 
   onMouseMove() {
@@ -208,10 +196,9 @@ export default class Overlay {
       this.activeMaterial.uniforms.uCirclePos.value.y = 1 - uv.y;
 
       if (this.inputEvents.isPressed) {
-        const point = intersects[0].point;
-        this.point = point;
+        this.point = intersects[0].point;
+        this.manager.trigger("navigation", this.point);
       }
-      // console.log("Intersection Point (X, Y, Z):", point.x, point.y, point.z);
     }
   }
 
@@ -228,15 +215,6 @@ export default class Overlay {
       duration: 0.5,
       value: 0,
       ease: "power4.inOut",
-    });
-  }
-
-  showClosestMarkers() {
-    markers.forEach((marker, index) => {
-      const distance = marker.position.distanceTo(this.point) * 100;
-      if (distance <= 45) {
-        this.manager.trigger("revealMarker", index);
-      }
     });
   }
 
@@ -464,8 +442,5 @@ export default class Overlay {
 
   update() {
     this.activeMaterial.uniforms.uTime.value = this.time.elapsedTime * 0.015;
-    if (this.inputEvents.isPressed && this.point) {
-      this.showClosestMarkers();
-    }
   }
 }

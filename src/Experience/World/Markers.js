@@ -1,4 +1,8 @@
 import * as THREE from "three";
+import { Line2 } from "three/addons/lines/Line2.js";
+import { LineMaterial } from "three/addons/lines/LineMaterial.js";
+import { LineGeometry } from "three/addons/lines/LineGeometry.js";
+
 import { gsap } from "gsap";
 import Experience from "../Experience";
 
@@ -26,8 +30,9 @@ export default class Markers {
     };
 
     // Setup
-
+    this.point = new THREE.Vector3();
     this.markers = [];
+    this.revealedSteps = [];
     this.setMaterial();
     this.setMarkers();
     this.initEvents();
@@ -113,6 +118,93 @@ export default class Markers {
     }
   }
 
+  addPathsOne() {
+    const points = [
+      new THREE.Vector3(-4.29, 1.56, -9.07),
+      new THREE.Vector3(-3.3, 2, -7.78),
+      new THREE.Vector3(0.08, 1.88, -7.69),
+    ];
+
+    const positions = [];
+    const colors = [];
+    const spline = new THREE.CatmullRomCurve3(points);
+
+    const divisions = Math.round(12 * points.length);
+    const point = new THREE.Vector3();
+    const color = new THREE.Color();
+
+    for (let i = 0, l = divisions; i < l; i++) {
+      const t = i / l;
+
+      spline.getPoint(t, point);
+      positions.push(point.x, point.y, point.z);
+
+      color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace);
+      colors.push(color.r, color.g, color.b);
+    }
+
+    const geometry = new LineGeometry();
+    geometry.setPositions(positions);
+
+    const matLine = new LineMaterial({
+      color: 0xffffff,
+      linewidth: 5,
+      resolution: new THREE.Vector2(this.sizes.width, this.sizes.height),
+      dashed: true,
+      dashScale: 10,
+      gapSize: 1,
+      alphaToCoverage: true,
+    });
+
+    const line = new Line2(geometry, matLine);
+    line.computeLineDistances();
+
+    this.scene.add(line);
+  }
+
+  addPathsTwo() {
+    const points = [
+      new THREE.Vector3(0.08, 1.88, -7.69),
+      new THREE.Vector3(2.17, 2.34, -7.96),
+    ];
+
+    const positions = [];
+    const colors = [];
+    const spline = new THREE.CatmullRomCurve3(points);
+
+    const divisions = Math.round(12 * points.length);
+    const point = new THREE.Vector3();
+    const color = new THREE.Color();
+
+    for (let i = 0, l = divisions; i < l; i++) {
+      const t = i / l;
+
+      spline.getPoint(t, point);
+      positions.push(point.x, point.y, point.z);
+
+      color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace);
+      colors.push(color.r, color.g, color.b);
+    }
+
+    const geometry = new LineGeometry();
+    geometry.setPositions(positions);
+
+    const matLine = new LineMaterial({
+      color: 0xffffff,
+      linewidth: 5,
+      resolution: new THREE.Vector2(this.sizes.width, this.sizes.height),
+      dashed: true,
+      dashScale: 10,
+      gapSize: 1,
+      alphaToCoverage: true,
+    });
+
+    const line = new Line2(geometry, matLine);
+    line.computeLineDistances();
+
+    this.scene.add(line);
+  }
+
   bounce() {
     const bounceStrength = 0.05;
 
@@ -130,7 +222,56 @@ export default class Markers {
     });
   }
 
+  showClosestMarkers() {
+    markers.forEach((marker, index) => {
+      const distance = marker.position.distanceTo(this.point) * 100;
+      if (distance <= 45) {
+        this.revealMarker(index);
+        this.manageSteps(index);
+      }
+      // if (distance > 20 && distance <= 90) {
+      //   const markerMesh = this.markers[index];
+      //   const posY = THREE.MathUtils.mapLinear(
+      //     distance,
+      //     20,
+      //     90,
+      //     marker.position.y,
+      //     marker.position.y - 1
+      //   );
+      //   markerMesh.visible = true;
+      //   markerMesh.position.y = posY;
+      // } else if (distance <= 20) {
+      // this.revealMarker(index);
+      // }
+    });
+  }
+
+  manageSteps(index) {
+    this.revealedSteps.push(index);
+
+    if (this.revealedSteps.length > 1) {
+      const prevIndex = this.revealedSteps[this.revealedSteps.length - 2];
+      if (index - prevIndex === 1) {
+        this.showPath(index); // Call the corresponding path function
+      }
+    }
+  }
+
+  showPath(index) {
+    if (index === 1) {
+      this.addPathsOne();
+    } else if (index === 2) {
+      this.addPathsTwo();
+    }
+    // console.log(index);
+    // this.addPaths();
+  }
+
   initEvents() {
+    this.manager.on("navigation", (point) => {
+      this.point = point;
+    });
+
     this.manager.on("revealMarker", (index) => {
       this.revealMarker(index);
     });
@@ -207,17 +348,9 @@ export default class Markers {
   }
 
   update() {
-    // if (this.activeMarker) {
-    //   const screenPosition = this.activeMarker.mesh.position.clone();
-    //   screenPosition.project(this.camera.instance);
-
-    //   const position = new THREE.Vector3(
-    //     screenPosition.x * this.sizes.width * 0.5,
-    //     -screenPosition.y * this.sizes.height * 0.5
-    //   );
-
-    //   this.infowindow.style.transform = `translate(${position.x}px, ${position.y}px)`;
-    // }
+    if (this.inputEvents.isPressed && this.point) {
+      this.showClosestMarkers();
+    }
 
     this.markers.forEach((marker) => {
       const rotationSpeed = Math.random() * 0.005;

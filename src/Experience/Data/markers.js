@@ -48,7 +48,7 @@ export default [
   {
     name: "kyanjin_gompa",
     displayName: "Kyanjin Gompa",
-    position: new THREE.Vector3(20.67, 3.93, -15.35),
+    position: new THREE.Vector3(20.67, 4, -15.35),
     overlayPosition: new THREE.Vector2(-0.5875, 0.6931), // OK
     overlayRadius: 6.5,
     type: "main",
