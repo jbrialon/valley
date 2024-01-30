@@ -15,6 +15,7 @@ export default class DashLine {
     this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.manager;
     this.resources = this.experience.resources;
+    this.transformControls = this.experience.helpers.transformControls;
 
     // Options
     this.options = {
@@ -25,14 +26,33 @@ export default class DashLine {
       dashRatio: 0.5,
       dashOffset: 0,
       visibility: 0,
-      progress: [0.17, 0.26, 0.435, 0.803, 1],
+      progress: [0.305, 0.39, 0.534, 0.84, 1],
     };
 
     // Setup
     this.point = new THREE.Vector3();
+    this.points = [
+      new THREE.Vector3(-4.29, 1.43, -9.07),
+      new THREE.Vector3(-3.61, 1.8, -8.42),
+      new THREE.Vector3(-2.49, 1.69, -7.47),
+      new THREE.Vector3(-1.57, 1.74, -7.69),
+      new THREE.Vector3(0.08, 1.92, -7.57),
+      new THREE.Vector3(2.17, 2.16, -8.01),
+      new THREE.Vector3(4.87, 2.67, -8.23),
+      new THREE.Vector3(5.7, 2.65, -8.74),
+      new THREE.Vector3(6.46, 2.97, -10.08),
+      new THREE.Vector3(8.23, 3.2, -12.99),
+      new THREE.Vector3(12.16, 3.44, -15.14),
+      new THREE.Vector3(15.63, 3.62, -15.48),
+      new THREE.Vector3(19.45, 4.02, -14.67),
+      new THREE.Vector3(20.67, 4, -15.35),
+    ];
+    this.curvePoint = [];
+
     this.setMaterial();
     this.setDashLine();
     this.initEvents();
+    this.setControls();
 
     // Debug
     this.setDebug();
@@ -56,23 +76,29 @@ export default class DashLine {
   // Working Demo : https://lume.github.io/three-meshline/demo/index.html
   setDashLine() {
     this.geometry = new MeshLineGeometry();
-    const points = [
-      new THREE.Vector3(-4.29, 1.56, -9.07),
-      new THREE.Vector3(-3.3, 2, -7.78),
-      new THREE.Vector3(0.08, 1.88, -7.69),
-      new THREE.Vector3(2.17, 2.34, -7.96),
-      new THREE.Vector3(4.87, 2.67, -8.23),
-      new THREE.Vector3(5.7, 2.65, -8.74),
-      new THREE.Vector3(6.46, 2.97, -10.08),
-      new THREE.Vector3(8.23, 3.2, -12.99),
-      new THREE.Vector3(12.16, 3.44, -15.14),
-      new THREE.Vector3(15.63, 3.62, -15.48),
-      new THREE.Vector3(19.45, 4.02, -14.67),
-      new THREE.Vector3(20.67, 4, -15.35),
-    ];
-    const curve = new THREE.CatmullRomCurve3(points).getPoints(50);
 
-    this.geometry.setPoints(curve);
+    this.points.forEach((point, index) => {
+      const curvePoint = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshNormalMaterial()
+      );
+      curvePoint.position.set(point.x, point.y, point.z);
+      curvePoint.scale.set(0.1, 0.1, 0.1);
+      curvePoint.index = index;
+      curvePoint.visible = false;
+      curvePoint.name = `dashLine.curvepoint.${index}`;
+
+      this.curvePoint.push(curvePoint);
+      this.scene.add(curvePoint);
+
+      this.manager.addClickEventToMesh(curvePoint, () => {
+        this.transformControls.attach(curvePoint);
+      });
+    });
+
+    this.curve = new THREE.CatmullRomCurve3(this.points).getPoints(500);
+
+    this.geometry.setPoints(this.curve);
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
@@ -87,6 +113,41 @@ export default class DashLine {
       duration: 3,
       ease: "power4.inOut",
     });
+  }
+
+  setControls() {
+    if (this.debug.active) {
+      this.transformControls.addEventListener("dragging-changed", (event) => {
+        if (!event.value) {
+          // this.mesh.geometry.dispose();
+          // this.geometry.dispose();
+          // this.material.dispose();
+          const transformedPoint = this.transformControls.object;
+          const index = transformedPoint.index;
+          this.points[index] = new THREE.Vector3(
+            transformedPoint.position.x,
+            transformedPoint.position.y,
+            transformedPoint.position.z
+          );
+          this.curve = new THREE.CatmullRomCurve3(this.points).getPoints(500);
+
+          this.geometry.setPoints(this.curve);
+
+          this.mesh.geometry = this.geometry;
+          // if point is from camera type we update the target curve
+          console.log(
+            "New dashLine Point Position:",
+            index,
+            `new THREE.Vector3(${transformedPoint.position.x.toFixed(
+              2
+            )},${transformedPoint.position.y.toFixed(
+              2
+            )},${transformedPoint.position.z.toFixed(2)})`
+          );
+        }
+        // this.setDashLine();
+      });
+    }
   }
 
   initEvents() {
@@ -152,6 +213,26 @@ export default class DashLine {
         .onChange(() => {
           this.material.uniforms.visibility.value = this.options.visibility;
         });
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.options.visibility = 1;
+              this.material.uniforms.visibility.value = this.options.visibility;
+              this.debugFolder.controllers.forEach((controller) => {
+                controller.updateDisplay();
+              });
+
+              this.transformControls.detach();
+              this.curvePoint.forEach((curvePoint) => {
+                curvePoint.visible = !curvePoint.visible;
+              });
+              this.transformControls.enabled = !this.transformControls.enabled;
+            },
+          },
+          "button"
+        )
+        .name("Toggle Helper");
     }
   }
 
