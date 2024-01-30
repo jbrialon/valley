@@ -36,6 +36,10 @@ export default class World {
     });
   }
 
+  resize() {
+    if (this.dashLine) this.dashLine.resize();
+  }
+
   update() {
     if (this.map) this.map.update();
     if (this.loader) this.loader.update();

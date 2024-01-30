@@ -3,6 +3,7 @@ import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import { gsap } from "gsap";
 
 import Experience from "../Experience";
+// import { Maf } from "../Utils/Maf";
 
 export default class DashLine {
   constructor() {
@@ -18,12 +19,13 @@ export default class DashLine {
     // Options
     this.options = {
       // Line
+      color: new THREE.Color(0xffffff),
       lineWidth: 18,
-      dashArray: 0.03,
+      dashArray: 0.01,
       dashRatio: 0.5,
       dashOffset: 0,
       visibility: 0,
-      progress: [0.385, 0.582, 1],
+      progress: [0.17, 0.26, 0.435, 0.803, 1],
     };
 
     // Setup
@@ -38,7 +40,7 @@ export default class DashLine {
 
   setMaterial() {
     this.material = new MeshLineMaterial({
-      color: new THREE.Color(0xffffff),
+      color: this.options.color,
       lineWidth: this.options.lineWidth,
       resolution: new THREE.Vector2(this.sizes.width, this.sizes.height),
       dashArray: this.options.dashArray,
@@ -51,6 +53,7 @@ export default class DashLine {
     });
   }
 
+  // Working Demo : https://lume.github.io/three-meshline/demo/index.html
   setDashLine() {
     this.geometry = new MeshLineGeometry();
     const points = [
@@ -60,6 +63,12 @@ export default class DashLine {
       new THREE.Vector3(2.17, 2.34, -7.96),
       new THREE.Vector3(4.87, 2.67, -8.23),
       new THREE.Vector3(5.7, 2.65, -8.74),
+      new THREE.Vector3(6.46, 2.97, -10.08),
+      new THREE.Vector3(8.23, 3.2, -12.99),
+      new THREE.Vector3(12.16, 3.44, -15.14),
+      new THREE.Vector3(15.63, 3.62, -15.48),
+      new THREE.Vector3(19.45, 4.02, -14.67),
+      new THREE.Vector3(20.67, 4, -15.35),
     ];
     const curve = new THREE.CatmullRomCurve3(points).getPoints(50);
 
@@ -86,9 +95,20 @@ export default class DashLine {
     });
   }
 
+  resize() {
+    this.material.uniforms.resolution.value.x = this.sizes.width;
+    this.material.uniforms.resolution.value.y = this.sizes.height;
+  }
+
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Dash Line");
+      this.debugFolder
+        .addColor(this.options, "color")
+        .name("Color")
+        .onChange(() => {
+          this.material.color = new THREE.Color(this.options.color);
+        });
       this.debugFolder
         .add(this.options, "lineWidth")
         .name("Line Width")

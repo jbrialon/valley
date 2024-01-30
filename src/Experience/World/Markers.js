@@ -11,7 +11,6 @@ export default class Markers {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
-    this.sizes = this.experience.sizes;
     this.debug = this.experience.debug;
     this.time = this.experience.time;
     this.inputEvents = this.experience.inputEvents;
@@ -21,6 +20,7 @@ export default class Markers {
     // Options
     this.options = {
       range: 45,
+      markerCloseTimer: 400,
       defaultColor: "#992625",
       secondaryColor: "#2c4d38",
       mountainColor: "#5a5444",
@@ -150,7 +150,7 @@ export default class Markers {
             this.revealMarker(index);
             this.manageSteps(index);
             markerCloseTimer = null; // Reset the timer
-          }, 400);
+          }, this.options.markerCloseTimer);
         } else {
           // Reset the timer if the distance exceeds 45 units
           clearTimeout(markerCloseTimer);
@@ -222,9 +222,15 @@ export default class Markers {
 
       this.debugFolder
         .add(this.options, "range")
-        .name("range")
+        .name("Detection Range")
         .min(0)
         .max(100)
+        .step(0.01);
+      this.debugFolder
+        .add(this.options, "markerCloseTimer")
+        .name("Detection Time")
+        .min(0)
+        .max(1000)
         .step(0.01);
       this.debugFolder
         .addColor(this.options, "defaultColor")

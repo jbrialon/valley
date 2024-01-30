@@ -10,7 +10,6 @@ export default class Card {
   constructor() {
     this.experience = new Experience();
     this.manager = this.experience.manager;
-    this.sizes = this.experience.sizes;
     this.time = this.experience.time;
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
