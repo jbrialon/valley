@@ -19,7 +19,7 @@
     "meshline": "^3.2.0",
     "nice-color-palettes": "^3.0.0",
     "stats-gl": "^2.0.1",
-    "three": "^0.159.0",
+    "three": "^0.161.0",
     "three-mesh-bvh": "^0.7.0",
     "three.interactive": "^1.7.0"
   }
