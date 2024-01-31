@@ -21,6 +21,7 @@ export default class Overlay {
     this.raycaster = this.experience.renderer.raycaster;
     this.camera = this.experience.camera;
     this.resources = this.experience.resources;
+    this.transformControls = this.experience.helpers.transformControls;
 
     // Options
     this.options = {
@@ -138,15 +139,21 @@ export default class Overlay {
   initEvents() {
     // Mouse Events
     this.inputEvents.on("mousemove", () => {
-      this.onMouseMove();
+      if (!this.transformControls.enabled) {
+        this.onMouseMove();
+      }
     });
 
     this.inputEvents.on("pressDown", () => {
-      this.onPressDown();
+      if (!this.transformControls.enabled) {
+        this.onPressDown();
+      }
     });
 
     this.inputEvents.on("pressUp", () => {
-      this.onPressUp();
+      if (!this.transformControls.enabled) {
+        this.onPressUp();
+      }
     });
 
     this.manager.on("updateColors", (colors) => {

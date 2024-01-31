@@ -5,7 +5,6 @@ import colors from "nice-color-palettes";
 import Experience from "./Experience.js";
 
 import { TransformControls } from "three/addons/controls/TransformControls.js";
-import toonMaterial from "./Materials/ToonMaterial.js";
 
 export default class Helpers {
   constructor() {
@@ -26,6 +25,7 @@ export default class Helpers {
       this.canvas
     );
     this.transformControls.enabled = false;
+    this.transformControls.size = 0.5;
     this.scene.add(this.transformControls);
 
     // Keyboard Events
@@ -51,6 +51,12 @@ export default class Helpers {
       case "KeyS":
         this.transformControls.setMode("scale");
         break;
+    }
+  }
+
+  setActiveMesh(mesh) {
+    if (this.transformControls.enabled) {
+      this.transformControls.attach(mesh);
     }
   }
 

@@ -40,6 +40,7 @@ export default class Renderer {
 
     // TODO: try to understand that
     THREE.ColorManagement.enabled = false;
+    // https://threejs.org/docs/#manual/en/introduction/Color-management
     // discourse.threejs.org/t/updates-to-color-management-in-three-js-r152/50791
     // this.instance.outputColorSpace = THREE.SRGBColorSpace;
     // this.instance.outputColorSpace = THREE.LinearSRGBColorSpace;

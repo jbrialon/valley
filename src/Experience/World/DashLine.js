@@ -15,6 +15,7 @@ export default class DashLine {
     this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.manager;
     this.resources = this.experience.resources;
+    this.helpers = this.experience.helpers;
     this.transformControls = this.experience.helpers.transformControls;
 
     // Options
@@ -85,6 +86,7 @@ export default class DashLine {
       curvePoint.position.set(point.x, point.y, point.z);
       curvePoint.scale.set(0.1, 0.1, 0.1);
       curvePoint.index = index;
+      curvePoint.type = "dashLine";
       curvePoint.visible = false;
       curvePoint.name = `dashLine.curvepoint.${index}`;
 
@@ -92,7 +94,7 @@ export default class DashLine {
       this.scene.add(curvePoint);
 
       this.manager.addClickEventToMesh(curvePoint, () => {
-        this.transformControls.attach(curvePoint);
+        this.helpers.setActiveMesh(curvePoint);
       });
     });
 
@@ -118,12 +120,11 @@ export default class DashLine {
   setControls() {
     if (this.debug.active) {
       this.transformControls.addEventListener("dragging-changed", (event) => {
-        if (!event.value) {
-          // this.mesh.geometry.dispose();
-          // this.geometry.dispose();
-          // this.material.dispose();
-          const transformedPoint = this.transformControls.object;
-          const index = transformedPoint.index;
+        const transformedPoint = this.transformControls.object;
+        const index = transformedPoint.index;
+        const type = transformedPoint.type;
+
+        if (!event.value && type === "dashLine") {
           this.points[index] = new THREE.Vector3(
             transformedPoint.position.x,
             transformedPoint.position.y,
@@ -136,7 +137,7 @@ export default class DashLine {
           this.mesh.geometry = this.geometry;
           // if point is from camera type we update the target curve
           console.log(
-            "New dashLine Point Position:",
+            "New dashLine Position:",
             index,
             `new THREE.Vector3(${transformedPoint.position.x.toFixed(
               2
@@ -145,7 +146,6 @@ export default class DashLine {
             )},${transformedPoint.position.z.toFixed(2)})`
           );
         }
-        // this.setDashLine();
       });
     }
   }

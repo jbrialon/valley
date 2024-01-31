@@ -13,7 +13,7 @@ export default class Environment {
     this.setSunLight();
 
     // Debug
-    // this.setDebug();
+    this.setDebug();
   }
 
   setAmbientLight() {
