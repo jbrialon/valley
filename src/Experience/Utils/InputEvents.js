@@ -8,6 +8,7 @@ export default class InputEvents extends EventEmitter {
     // Setup
     this.mouse = new THREE.Vector3(0, 0, 0);
     this.touch = new THREE.Vector2(0, 0);
+
     this.keys = {};
 
     // Mouse events
@@ -24,6 +25,7 @@ export default class InputEvents extends EventEmitter {
     // Add touch event listeners
     window.addEventListener("touchstart", this.handleTouchStart.bind(this));
     window.addEventListener("touchmove", this.handleTouch.bind(this));
+    window.addEventListener("touchend", this.handleTouchEnd.bind(this));
 
     // Mouse Wheel / Trackpad events
     window.addEventListener("wheel", this.handleWheel.bind(this));
@@ -60,21 +62,49 @@ export default class InputEvents extends EventEmitter {
     this.trigger("wheel");
   }
 
-  // Function to handle touch events and simulate wheel behavior
-  handleTouch(event) {
-    const delta = event.touches[0].clientY - this.touch.y;
+  handleTouchStart(event) {
+    // if only one touch, we act as simple mouse click
+    if (event.touches.length === 1) {
+      this.isPressed = true;
+      this.trigger("pressDown");
+      // if two touch it's not mouse click, we act as a scroll
+    } else if (event.touches.length === 2) {
+      this.isPressed = false;
+      this.trigger("pressUp");
+    }
     this.touch.y = event.touches[0].clientY;
+  }
 
-    this.mouse.z = delta / 100; // You may need to adjust the scaling factor
-    this.trigger("wheel");
+  handleTouch(event) {
+    // if only one touch, we act as simple mouse move
+    if (event.touches.length === 1) {
+      this.mouse.x = event.touches[0].clientX;
+      this.mouse.y = event.touches[0].clientY;
+      this.trigger("mousemove");
 
-    // Prevent the default touch behavior to avoid scrolling
+      // if two touches, we act as a mouse scroll
+    } else if (event.touches.length === 2) {
+      // Calculate the average change in position of the two touches to simulate a delta
+      const delta =
+        (event.touches[0].clientY + event.touches[1].clientY) / 2 -
+        this.touch.y;
+      this.touch.y = (event.touches[0].clientY + event.touches[1].clientY) / 2;
+
+      // Adjust this.mouse.z based on the delta, 100 as scaling factor for mobile
+      this.mouse.z = delta / 100;
+
+      // Trigger the custom 'wheel' event or equivalent functionality
+      this.trigger("wheel");
+    }
+    // Prevent the default touch behavior to avoid scrolling and pinch-zoom actions
     event.preventDefault();
   }
 
-  // Function to handle touch start event
-  handleTouchStart(event) {
-    this.touch.y = event.touches[0].clientY;
+  handleTouchEnd(event) {
+    if (event.touches.length === 0) {
+      this.isPressed = false;
+      this.trigger("pressUp");
+    }
   }
 
   isKeyDown(keyCode) {

@@ -20,6 +20,11 @@ body {
   overflow: hidden;
 }
 
+html {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
 body {
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
