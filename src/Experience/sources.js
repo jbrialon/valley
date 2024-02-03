@@ -5,6 +5,11 @@ export default [
     path: "/models/map/map.glb",
   },
   {
+    name: "treeModel",
+    type: "gltfModel",
+    path: "/models/tree/tree.glb",
+  },
+  {
     name: "threeToneToonTexture",
     type: "texture",
     path: "/textures/toon/threeTone.jpg",
@@ -13,5 +18,10 @@ export default [
     name: "fiveToneToonTexture",
     type: "texture",
     path: "/textures/toon/fiveTone.jpg",
+  },
+  {
+    name: "toonTexture",
+    type: "texture",
+    path: "/textures/toon/toon.jpg",
   },
 ];

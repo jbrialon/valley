@@ -16,20 +16,23 @@ export default class Markers {
     this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.manager;
     this.resources = this.experience.resources;
+    this.helpers = this.experience.helpers;
 
     // Options
     this.options = {
       range: 45,
       markerCloseTimer: 400,
-      defaultColor: "#992625",
-      secondaryColor: "#2c4d38",
-      mountainColor: "#5a5444",
+      defaultColor: new THREE.Color(0x992625),
+      secondaryColor: new THREE.Color(0x2c4d38),
+      mountainColor: new THREE.Color(0x5a5444),
       // Line
       lineWidth: 18,
       dashArray: 0.05,
       dashRatio: 0.5,
       dashOffset: 0,
       visibility: 0,
+      // Meshes
+      uLightDirection: new THREE.Vector3(1, 3, 3),
     };
 
     // Setup
@@ -39,6 +42,7 @@ export default class Markers {
     this.setMaterial();
     this.setMarkers();
     this.initEvents();
+    this.addMeshes();
 
     // Debug
     this.setDebug();
@@ -48,25 +52,33 @@ export default class Markers {
     this.gradientMap = this.resources.items.threeToneToonTexture;
     this.gradientMap.magFilter = THREE.NearestFilter;
 
-    this.material = toonMaterial({
+    this.toonTexture = this.resources.items.toonTexture;
+
+    this.foliageMaterial = toonMaterial({
+      uColor: new THREE.Color(0x1e854d),
+      uTexture: this.toonTexture,
+      uLightDirection: this.options.uLightDirection,
+    });
+
+    this.woodMaterial = toonMaterial({
+      uColor: new THREE.Color(0xa67b56),
+      uTexture: this.toonTexture,
+      uLightDirection: this.options.uLightDirection,
+    });
+
+    this.material = new THREE.MeshToonMaterial({
       color: this.options.defaultColor,
       gradientMap: this.gradientMap,
-      transparent: true,
-      opacity: 1,
     });
 
-    this.secondaryMaterial = toonMaterial({
+    this.secondaryMaterial = new THREE.MeshToonMaterial({
       color: this.options.secondaryColor,
       gradientMap: this.gradientMap,
-      transparent: true,
-      opacity: 1,
     });
 
-    this.mountainMaterial = toonMaterial({
+    this.mountainMaterial = new THREE.MeshToonMaterial({
       color: this.options.mountainColor,
       gradientMap: this.gradientMap,
-      transparent: true,
-      opacity: 1,
     });
   }
 
@@ -108,6 +120,39 @@ export default class Markers {
     });
   }
 
+  addMeshes() {
+    const meshPos = [
+      new THREE.Vector3(-4.58, 1.44, -9.03),
+      new THREE.Vector3(-4.26, 1.53, -8.82),
+      new THREE.Vector3(-4.36, 1.45, -9.3),
+      new THREE.Vector3(-4.13, 1.49, -9.23),
+    ];
+    this.treeMeshes = [];
+    this.tree = this.resources.items.treeModel.scene;
+    this.tree.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        if (child.material.name === "foliage") {
+          child.material = this.foliageMaterial;
+        } else if (child.material.name === "wood") {
+          child.material = this.woodMaterial;
+        }
+      }
+    });
+
+    meshPos.forEach((pos) => {
+      const treeMesh = this.tree.clone();
+      treeMesh.visible = false;
+      treeMesh.scale.set(0, 0, 0);
+      treeMesh.position.set(pos.x, pos.y, pos.z);
+      this.treeMeshes.push(treeMesh);
+      this.scene.add(treeMesh);
+    });
+
+    // this.manager.addClickEventToMesh(this.tree, () => {
+    //   this.helpers.setActiveMesh(this.tree);
+    // });
+  }
+
   revealMarker(index) {
     const markerMesh = this.markers[index];
     if (!markerMesh.visible) {
@@ -118,6 +163,21 @@ export default class Markers {
         duration: 1.5,
         ease: "power4.inOut",
       });
+
+      setTimeout(() => {
+        this.treeMeshes.forEach((mesh, index) => {
+          mesh.visible = true;
+          const size = 0.15 + Math.random() * 0.09;
+          gsap.to(mesh.scale, {
+            duration: 1.2,
+            delay: index * 0.3, // Stagger the animation
+            x: size,
+            y: size,
+            z: size,
+            ease: "elastic.out",
+          });
+        });
+      }, 1300);
     }
   }
 
@@ -175,12 +235,17 @@ export default class Markers {
   }
 
   manageSteps(index) {
-    this.revealedSteps.push(index);
-
-    if (this.revealedSteps.length > 1) {
-      const prevIndex = this.revealedSteps[this.revealedSteps.length - 2];
-      if (index - prevIndex === 1) {
-        this.showPath(index); // Call the corresponding path function
+    const marker = markers[index];
+    if (
+      !this.revealedSteps.includes(index) &&
+      (marker.type === "main" || marker.type === "secondary")
+    ) {
+      this.revealedSteps.push(index);
+      if (this.revealedSteps.length > 1) {
+        const prevIndex = this.revealedSteps[this.revealedSteps.length - 2];
+        if (index - prevIndex === 1) {
+          this.showPath(index); // Call the corresponding path function
+        }
       }
     }
   }
@@ -219,6 +284,25 @@ export default class Markers {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Markers");
       this.debugFolder.close();
+
+      this.debugFolder.add(this.options.uLightDirection, "x").onChange(() => {
+        this.woodMaterial.uniforms.uLightDirection.x =
+          this.options.uLightDirection.x;
+        this.foliageMaterial.uniforms.uLightDirection.x =
+          this.options.uLightDirection.x;
+      });
+      this.debugFolder.add(this.options.uLightDirection, "y").onChange(() => {
+        this.woodMaterial.uniforms.uLightDirection.y =
+          this.options.uLightDirection.y;
+        this.foliageMaterial.uniforms.uLightDirection.y =
+          this.options.uLightDirection.y;
+      });
+      this.debugFolder.add(this.options.uLightDirection, "z").onChange(() => {
+        this.woodMaterial.uniforms.uLightDirection.z =
+          this.options.uLightDirection.z;
+        this.foliageMaterial.uniforms.uLightDirection.z =
+          this.options.uLightDirection.z;
+      });
 
       this.debugFolder
         .add(this.options, "range")
