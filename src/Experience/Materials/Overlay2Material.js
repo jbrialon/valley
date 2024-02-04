@@ -16,11 +16,7 @@ const overlay2Material = (options) => {
       // Visual
       uFill: { value: options.uFill },
       uStroke: { value: options.uStroke },
-      uDualStroke: { value: options.uDualStroke },
-      uSeeThrough: { value: options.uSeeThrough },
-      uInsideAltColor: { value: options.uInsideAltColor },
       uThickness: { value: options.uThickness },
-      uSecondThickness: { value: options.uSecondThickness },
       uSqueeze: { value: options.uSqueeze },
       uSqueezeMin: { value: options.uSqueezeMin },
       uSqueezeMax: { value: options.uSqueezeMax },

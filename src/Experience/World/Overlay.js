@@ -26,7 +26,7 @@ export default class Overlay {
     // Options
     this.options = {
       uAlpha: 1,
-      uCirclePos: markers[0].overlayPosition,
+      uCirclePos: new THREE.Vector3(0, 0, 0),
       uCircleRadius: 0,
       offsetPosY: 0.001,
 
@@ -39,16 +39,11 @@ export default class Overlay {
       uColorNumber: 2,
       uContourWidth: 1,
       uContourFrequency: 2.7,
-      uMaskTexture: "",
 
       // Overlay 2
       uFill: new THREE.Color(0xde9e7b),
       uStroke: new THREE.Color(0xf4e2d6),
-      uDualStroke: false,
-      uSeeThrough: false,
-      uInsideAltColor: false,
       uThickness: 0.04,
-      uSecondThickness: 0.05,
       uDashEnabled: true,
       uDashRepeats: 2.0,
       uDashOverlap: true,
@@ -85,7 +80,6 @@ export default class Overlay {
       uColorTwo: this.options.uColorTwo,
       uColorThree: this.options.uColorThree,
       uCirclePos: this.options.uCirclePos,
-      uMaskTexture: this.maskTexture,
       uCircleRadius: this.options.uCircleRadius,
     });
 

@@ -21,7 +21,7 @@ const terrainMaterial = (options) => {
     },
     vertexShader: terrainVertexShader,
     fragmentShader: terrainFragmentShader,
-    transparent: true,
+    transparent: false,
     side: THREE.DoubleSide,
   });
 };

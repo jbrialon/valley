@@ -1,23 +1,15 @@
 #define PI 3.14159265359
 
 varying vec3 vBarycentric;
-varying float vEven;
-varying vec2 vUv;
-varying vec3 vPosition;
 
 uniform float uTime;
 uniform float uThickness;
-uniform float uSeconduThickness;
 
 uniform float uDashRepeats;
 uniform float uDashLength;
 uniform bool uDashOverlap;
 uniform bool uDashEnabled;
 uniform bool uDashAnimate;
-
-uniform bool uSeeThrough;
-uniform bool uInsideAltColor;
-uniform bool uDualStroke;
 
 uniform bool uSqueeze;
 uniform float uSqueezeMin;
@@ -26,18 +18,9 @@ uniform float uSqueezeMax;
 uniform vec3 uStroke;
 uniform vec3 uFill;
 
-// This is like
 float aastep(float threshold, float dist) {
   float afwidth = fwidth(dist) * 0.5;
   return smoothstep(threshold - afwidth, threshold + afwidth, dist);
-}
-
-// This function is not currently used, but it can be useful
-// to achieve a fixed width wireframe regardless of z-depth
-float computeScreenSpaceWireframe(vec3 barycentric, float lineWidth) {
-  vec3 dist = fwidth(barycentric);
-  vec3 smoothed = smoothstep(dist * ((lineWidth * 0.5) - 0.5), dist * ((lineWidth * 0.5) + 0.5), barycentric);
-  return 1.0 - min(min(smoothed.x, smoothed.y), smoothed.z);
 }
 
 // This function returns the fragment color for our styled wireframe effect
@@ -85,22 +68,9 @@ vec4 getStyledWireframe(vec3 barycentric) {
 
   // now compute the final color of the mesh
   vec4 outColor = vec4(0.0);
-  if(uSeeThrough) {
-    outColor = vec4(uStroke, edge);
-    if(uInsideAltColor && !gl_FrontFacing) {
-      outColor.rgb = uFill;
-    }
-  } else {
-    vec3 mainStroke = mix(uFill, uStroke, edge);
-    outColor.a = 1.0;
-    if(uDualStroke) {
-      float inner = 1.0 - aastep(uSeconduThickness, d);
-      vec3 wireColor = mix(uFill, uStroke, abs(inner - edge));
-      outColor.rgb = wireColor;
-    } else {
-      outColor.rgb = mainStroke;
-    }
-  }
+  vec3 mainStroke = mix(uFill, uStroke, edge);
+  outColor.a = 1.0;
+  outColor.rgb = mainStroke;
 
   return outColor;
 }

@@ -18,7 +18,6 @@ const overlayMaterial = (options) => {
       uColorOne: { value: new THREE.Color(options.uColorOne || "#ff0000") },
       uColorTwo: { value: new THREE.Color(options.uColorTwo || "#00ff00") },
       uColorThree: { value: new THREE.Color(options.uColorThree || "#0000ff") },
-      uMaskTexture: { value: options.uMaskTexture || null },
       uCircleRadius: {
         value: options.uCircleRadius || 3,
       },
@@ -31,7 +30,6 @@ const overlayMaterial = (options) => {
     vertexShader: overlayVertexShader,
     fragmentShader: overlayFragmentShader,
     transparent: false,
-    side: THREE.DoubleSide,
   });
 };
 

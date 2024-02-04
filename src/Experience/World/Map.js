@@ -23,8 +23,6 @@ export default class Map {
       // Wireframe Material
       uFill: new THREE.Color(0x697f73),
       uStroke: new THREE.Color(0xf4e2d6),
-      uDualStroke: false,
-      uSeeThrough: false,
       uInsideAltColor: false,
       uThickness: 0.02,
       uSecondThickness: 0.05,
@@ -65,11 +63,7 @@ export default class Map {
     this.wireframeMaterial = wireframeMaterial({
       uFill: this.options.uFill,
       uStroke: this.options.uStroke,
-      uDualStroke: this.options.uDualStroke,
-      uSeeThrough: this.options.uSeeThrough,
-      uInsideAltColor: this.options.uInsideAltColor,
       uThickness: this.options.uThickness,
-      uSecondThickness: this.options.uSecondThickness,
       uSqueeze: this.options.uSqueeze,
       uSqueezeMin: this.options.uSqueezeMin,
       uSqueezeMax: this.options.uSqueezeMax,
@@ -276,20 +270,6 @@ export default class Map {
         .onChange(() => {
           this.wireframeMaterial.uniforms.uStroke.value = this.options.uStroke;
         });
-      // this.debugVisualFolder
-      //   .add(this.options, "uSeeThrough")
-      //   .name("See Trough")
-      //   .onChange(() => {
-      //     this.wireframeMaterial.uniforms.uSeeThrough.value =
-      //       this.options.uSeeThrough;
-      //   });
-      // this.debugVisualFolder
-      //   .add(this.options, "uInsideAltColor")
-      //   .name("BackFace Color")
-      //   .onChange(() => {
-      //     this.wireframeMaterial.uniforms.uInsideAltColor.value =
-      //       this.options.uInsideAltColor;
-      //   });
       this.debugVisualFolder
         .add(this.options, "uThickness")
         .name("Thickness")
@@ -300,16 +280,7 @@ export default class Map {
           this.wireframeMaterial.uniforms.uThickness.value =
             this.options.uThickness;
         });
-      // this.debugVisualFolder
-      //   .add(this.options, "uSecondThickness")
-      //   .name("Dual Thickness")
-      //   .min(0.0)
-      //   .max(0.2)
-      //   .step(0.001)
-      //   .onChange(() => {
-      //     this.wireframeMaterial.uniforms.uSecondThickness.value =
-      //       this.options.uSecondThickness;
-      //   });
+
       this.debugVisualFolder
         .add(this.options, "uSqueeze")
         .name("Squeeze")

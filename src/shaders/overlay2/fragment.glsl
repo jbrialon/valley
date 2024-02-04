@@ -3,23 +3,16 @@
 #define PI 3.14159265359
 
 varying vec3 vBarycentric;
-varying float vEven;
 varying vec2 vUv;
-varying vec3 vPosition;
 
 uniform float uTime;
 uniform float uThickness;
-uniform float uSeconduThickness;
 
 uniform float uDashRepeats;
 uniform float uDashLength;
 uniform bool uDashOverlap;
 uniform bool uDashEnabled;
 uniform bool uDashAnimate;
-
-uniform bool uSeeThrough;
-uniform bool uInsideAltColor;
-uniform bool uDualStroke;
 
 uniform bool uSqueeze;
 uniform float uSqueezeMin;
@@ -92,22 +85,10 @@ vec4 getStyledWireframe(vec3 barycentric) {
 
   // now compute the final color of the mesh
   vec4 outColor = vec4(0.0);
-  if(uSeeThrough) {
-    outColor = vec4(uStroke, edge);
-    if(uInsideAltColor && !gl_FrontFacing) {
-      outColor.rgb = uFill;
-    }
-  } else {
-    vec3 mainStroke = mix(uFill, uStroke, edge);
-    outColor.a = 1.0;
-    if(uDualStroke) {
-      float inner = 1.0 - aastep(uSeconduThickness, d);
-      vec3 wireColor = mix(uFill, uStroke, abs(inner - edge));
-      outColor.rgb = wireColor;
-    } else {
-      outColor.rgb = mainStroke;
-    }
-  }
+
+  vec3 mainStroke = mix(uFill, uStroke, edge);
+  outColor.a = 1.0;
+  outColor.rgb = mainStroke;
 
   return vec4(outColor.rgb, uAlpha);
 }

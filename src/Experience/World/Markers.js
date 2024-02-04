@@ -17,7 +17,6 @@ export default class Markers {
     this.manager = this.experience.manager;
     this.resources = this.experience.resources;
     this.helpers = this.experience.helpers;
-    this.camera = this.experience.camera;
 
     // Options
     this.options = {
@@ -151,7 +150,6 @@ export default class Markers {
 
     this.rock.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        console.log(child.name);
         if (child.name === "rockB") {
           child.material = this.rockMaterial;
         }
@@ -380,13 +378,6 @@ export default class Markers {
     if (this.inputEvents.isPressed && this.point) {
       this.showClosestMarkers();
     }
-    console.log(this.camera.cameraParent.position);
-    // this.foliageMaterial.uniforms.uLightDirection.value = new THREE.Vector3(
-    //   this.camera.cameraParent.position.x,
-    //   this.camera.cameraParent.position.y,
-    //   this.camera.cameraParent.position.z
-    // );
-    // this.camera.cameraParent.position.x;
 
     this.markers.forEach((marker) => {
       const rotationSpeed = Math.random() * 0.005;

@@ -11,7 +11,6 @@ uniform vec3 uLineColor;
 uniform vec3 uColorOne;
 uniform vec3 uColorTwo;
 uniform vec3 uColorThree;
-uniform sampler2D uMaskTexture;
 uniform float uPixelRatio;
 
 varying vec2 vUv;
