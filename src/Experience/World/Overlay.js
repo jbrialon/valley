@@ -131,23 +131,11 @@ export default class Overlay {
 
   initEvents() {
     // Mouse Events
-    this.inputEvents.on("mousemove", () => {
-      if (!this.transformControls.enabled) {
-        this.onMouseMove();
-      }
-    });
+    this.inputEvents.on("mousemove", this.onMouseMove.bind(this));
 
-    this.inputEvents.on("pressDown", () => {
-      if (!this.transformControls.enabled) {
-        this.onPressDown();
-      }
-    });
+    this.inputEvents.on("pressDown", this.onPressDown.bind(this));
 
-    this.inputEvents.on("pressUp", () => {
-      if (!this.transformControls.enabled) {
-        this.onPressUp();
-      }
-    });
+    this.inputEvents.on("pressUp", this.onPressUp.bind(this));
 
     this.manager.on("updateColors", (colors) => {
       // Overlay 1
@@ -178,44 +166,50 @@ export default class Overlay {
   }
 
   onMouseMove() {
-    // calculate the position of the mouse based with center as origin
-    const mouse = new THREE.Vector2(
-      (this.inputEvents.mouse.x / this.sizes.width) * 2 - 1,
-      -(this.inputEvents.mouse.y / this.sizes.height) * 2 + 1
-    );
+    if (!this.transformControls.enabled) {
+      // calculate the position of the mouse based with center as origin
+      const mouse = new THREE.Vector2(
+        (this.inputEvents.mouse.x / this.sizes.width) * 2 - 1,
+        -(this.inputEvents.mouse.y / this.sizes.height) * 2 + 1
+      );
 
-    // Update the raycaster with the mouse coordinates
-    this.raycaster.setFromCamera(mouse, this.camera.instance);
+      // Update the raycaster with the mouse coordinates
+      this.raycaster.setFromCamera(mouse, this.camera.instance);
 
-    // Perform raycasting to find intersections with the mesh
-    const intersects = this.raycaster.intersectObject(this.overlayModel);
-    if (intersects.length > 0) {
-      // Get the UV coordinates where the mouse intersects the mesh
-      const uv = intersects[0].uv;
-      this.activeMaterial.uniforms.uCirclePos.value.x = 1 - uv.x;
-      this.activeMaterial.uniforms.uCirclePos.value.y = 1 - uv.y;
+      // Perform raycasting to find intersections with the mesh
+      const intersects = this.raycaster.intersectObject(this.overlayModel);
+      if (intersects.length > 0) {
+        // Get the UV coordinates where the mouse intersects the mesh
+        const uv = intersects[0].uv;
+        this.activeMaterial.uniforms.uCirclePos.value.x = 1 - uv.x;
+        this.activeMaterial.uniforms.uCirclePos.value.y = 1 - uv.y;
 
-      if (this.inputEvents.isPressed) {
-        this.point = intersects[0].point;
-        this.manager.trigger("navigation", this.point);
+        if (this.inputEvents.isPressed) {
+          this.point = intersects[0].point;
+          this.manager.trigger("navigation", this.point);
+        }
       }
     }
   }
 
   onPressDown() {
-    gsap.to(this.activeMaterial.uniforms.uCircleRadius, {
-      duration: 0.5,
-      value: 3,
-      ease: "power4.inOut",
-    });
+    if (!this.transformControls.enabled) {
+      gsap.to(this.activeMaterial.uniforms.uCircleRadius, {
+        duration: 0.5,
+        value: 3,
+        ease: "power4.inOut",
+      });
+    }
   }
 
   onPressUp() {
-    gsap.to(this.activeMaterial.uniforms.uCircleRadius, {
-      duration: 0.5,
-      value: 0,
-      ease: "power4.inOut",
-    });
+    if (!this.transformControls.enabled) {
+      gsap.to(this.activeMaterial.uniforms.uCircleRadius, {
+        duration: 0.5,
+        value: 0,
+        ease: "power4.inOut",
+      });
+    }
   }
 
   setDebug() {

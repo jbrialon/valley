@@ -69,17 +69,11 @@ export default class Camera {
 
   initEvents() {
     // Mouse Events
-    this.inputEvents.on("mousemove", () => {
-      this.onMouseMove();
-    });
+    this.inputEvents.on("mousemove", this.onMouseMove.bind(this));
     // Scroll event
-    this.inputEvents.on("wheel", () => {
-      this.onMouseWheel();
-    });
+    this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
     // Keyboard Events
-    this.inputEvents.on("keydown", (keyCode) => {
-      this.onKeyDown(keyCode);
-    });
+    this.inputEvents.on("keydown", this.onKeyDown.bind(this));
   }
 
   onMouseWheel() {

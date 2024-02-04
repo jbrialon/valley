@@ -1,16 +1,18 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
-import Experience from "../Experience";
+import Experience from "../Experience.js";
 
+import props from "../Data/props.js";
 import toonMaterial from "../Materials/ToonMaterial.js";
 
-export default class Meshes {
+export default class Props {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.manager = this.experience.manager;
     this.debug = this.experience.debug;
+    this.helpers = this.experience.helpers;
 
     // Options
     this.options = {
@@ -18,6 +20,7 @@ export default class Meshes {
     };
 
     // Setup
+    this.propsMeshes = [];
     this.setMaterial();
     this.setModels();
     this.initEvents();
@@ -48,13 +51,6 @@ export default class Meshes {
   }
 
   setModels() {
-    const meshPos = [
-      new THREE.Vector3(-4.58, 1.44, -9.03),
-      new THREE.Vector3(-4.26, 1.53, -8.82),
-      new THREE.Vector3(-4.36, 1.45, -9.3),
-      new THREE.Vector3(-4.13, 1.49, -9.23),
-    ];
-
     this.treeMeshes = [];
     this.tree = this.resources.items.treeModel.scene;
     this.tree.traverse((child) => {
@@ -77,45 +73,61 @@ export default class Meshes {
       }
     });
 
-    meshPos.forEach((pos) => {
-      const meshes = [this.tree.clone(), this.rock.clone()];
+    const models = {
+      tree: this.tree,
+      rock: this.rock,
+    };
 
-      const mesh = meshes[Math.round(Math.random())];
-      mesh.visible = false;
-      mesh.scale.set(0, 0, 0);
-      mesh.position.set(pos.x, pos.y, pos.z);
-      this.treeMeshes.push(mesh);
-      this.scene.add(mesh);
+    props.forEach((props) => {
+      props.objects.forEach((object) => {
+        const mesh = models[object.type].clone();
+        mesh.name = props.name;
+        mesh.visible = false;
+        mesh.scale.set(0, 0, 0);
+        mesh.position.set(
+          object.position.x,
+          object.position.y,
+          object.position.z
+        );
+
+        this.propsMeshes.push(mesh);
+        this.scene.add(mesh);
+
+        this.manager.addClickEventToMesh(mesh, () => {
+          this.helpers.setActiveMesh(mesh);
+        });
+      });
     });
-
-    // this.manager.addClickEventToMesh(this.tree, () => {
-    //   this.helpers.setActiveMesh(this.tree);
-    // });
   }
 
   initEvents() {
-    this.manager.on("revealMeshes", (index) => {
-      console.log("revealMeshes: ", index);
-      this.revealMeshes();
-    });
+    // expecting name as parameter
+    this.manager.on("revealMeshes", this.revealMeshes.bind(this));
   }
 
-  revealMeshes() {
+  getMarkerByName(name) {
+    return markers[this.currentChapter].find((item) => item.name === name);
+  }
+
+  revealMeshes(name) {
     setTimeout(() => {
-      this.treeMeshes.forEach((mesh, index) => {
-        mesh.visible = true;
-        const size = 0.15 + Math.random() * 0.09;
-        gsap.to(mesh.scale, {
-          duration: 1.2,
-          delay: index * 0.3, // Stagger the animation
-          x: size,
-          y: size,
-          z: size,
-          ease: "elastic.out",
-        });
+      this.propsMeshes.forEach((mesh, index) => {
+        if (mesh.name === name) {
+          mesh.visible = true;
+          const size = 0.15 + Math.random() * 0.09;
+          gsap.to(mesh.scale, {
+            duration: 1.2,
+            delay: index * 0.3, // Stagger the animation
+            x: size,
+            y: size,
+            z: size,
+            ease: "elastic.out",
+          });
+        }
       });
     }, 1300);
   }
+
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Meshes");
@@ -141,4 +153,6 @@ export default class Meshes {
       });
     }
   }
+
+  update() {}
 }

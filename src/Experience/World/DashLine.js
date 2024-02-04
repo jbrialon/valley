@@ -27,7 +27,7 @@ export default class DashLine {
       dashRatio: 0.5,
       dashOffset: 0,
       visibility: 0,
-      progress: [0.305, 0.39, 0.534, 0.84, 1],
+      progress: [0, 0.285, 0.361, 0.49, 0.852, 1],
     };
 
     // Setup
@@ -125,7 +125,7 @@ export default class DashLine {
         const index = transformedPoint.index;
         const type = transformedPoint.type;
 
-        if (!event.value && type === "dashLine") {
+        if (!event.value) {
           this.points[index] = new THREE.Vector3(
             transformedPoint.position.x,
             transformedPoint.position.y,
@@ -152,9 +152,7 @@ export default class DashLine {
   }
 
   initEvents() {
-    this.manager.on("showDashLine", (index) => {
-      this.showPath(index);
-    });
+    this.manager.on("showDashLine", this.showPath.bind(this));
   }
 
   resize() {
@@ -228,7 +226,6 @@ export default class DashLine {
               this.curvePoint.forEach((curvePoint) => {
                 curvePoint.visible = !curvePoint.visible;
               });
-              this.transformControls.enabled = !this.transformControls.enabled;
             },
           },
           "button"

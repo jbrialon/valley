@@ -101,7 +101,7 @@ export default class Markers {
     return markers[this.currentChapter].find((item) => item.name === name);
   }
 
-  revealMarker(index) {
+  revealMarker(index, name) {
     const markerMesh = this.markers[index];
     if (!markerMesh.visible) {
       markerMesh.visible = true;
@@ -111,8 +111,7 @@ export default class Markers {
         duration: 1.5,
         ease: "power4.inOut",
       });
-      // TODO: Reveal Meshes
-      this.manager.trigger("revealMeshes", index);
+      this.manager.trigger("revealMeshes", name);
     }
   }
 
@@ -143,7 +142,7 @@ export default class Markers {
           // Start the timer if it's not already running
           markerCloseTimer = setTimeout(() => {
             // Trigger revealMarker after 400ms
-            this.revealMarker(index);
+            this.revealMarker(index, name);
             this.manageSteps(name);
             markerCloseTimer = null; // Reset the timer
           }, this.options.markerCloseTimer);
@@ -184,7 +183,7 @@ export default class Markers {
         );
 
         if (allPreviousStepsRevealed) {
-          const currentStep = this.revealedSteps.length - 1;
+          const currentStep = this.revealedSteps.length;
           this.showPath(currentStep);
           console.log(
             `All previous steps for ${name} are revealed. showing path to ${currentStep}.`

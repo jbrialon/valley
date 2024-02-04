@@ -1,10 +1,8 @@
 import * as THREE from "three";
-
 import colors from "nice-color-palettes";
+import { TransformControls } from "three/addons/controls/TransformControls.js";
 
 import Experience from "./Experience.js";
-
-import { TransformControls } from "three/addons/controls/TransformControls.js";
 
 export default class Helpers {
   constructor() {
@@ -100,61 +98,51 @@ export default class Helpers {
       this.debugFolder = this.debug.ui.addFolder("Helpers");
       this.debugFolder.close();
 
-      this.transformControls.enabled = false;
-
       this.debugFolder
         .add(
           {
             button: () => {
-              if (!this.helper) {
-                this.transformControls.enabled = true;
-                this.addTargetHelper();
-              } else {
-                this.transformControls.enabled = false;
-                this.transformControls.detach();
-                this.scene.remove(this.helper);
-                this.helper = null;
-              }
+              this.transformControls.enabled = !this.transformControls.enabled;
             },
           },
           "button"
         )
-        .name("Toggle Helper");
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              if (this.helper) {
-                this.camera.instance.lookAt(this.helper.position);
-                console.log(
-                  "Helper Position:",
-                  `new THREE.Vector3(${this.helper.position.x.toFixed(
-                    2
-                  )},${this.helper.position.y.toFixed(
-                    2
-                  )},${this.helper.position.z.toFixed(2)})`
-                );
-              }
-            },
-          },
-          "button"
-        )
-        .name("Look At Helper");
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              const sunLight = this.experience.world.environment.sunLight;
-              this.DirectionalLightHelper = new THREE.DirectionalLightHelper(
-                sunLight,
-                5
-              );
-              this.scene.add(this.DirectionalLightHelper);
-            },
-          },
-          "button"
-        )
-        .name("Show Light Helper");
+        .name("Toggle Controls");
+      // this.debugFolder
+      //   .add(
+      //     {
+      //       button: () => {
+      //         if (this.helper) {
+      //           this.camera.instance.lookAt(this.helper.position);
+      //           console.log(
+      //             "Helper Position:",
+      //             `new THREE.Vector3(${this.helper.position.x.toFixed(
+      //               2
+      //             )},${this.helper.position.y.toFixed(
+      //               2
+      //             )},${this.helper.position.z.toFixed(2)})`
+      //           );
+      //         }
+      //       },
+      //     },
+      //     "button"
+      //   )
+      //   .name("Look At Helper");
+      // this.debugFolder
+      //   .add(
+      //     {
+      //       button: () => {
+      //         const sunLight = this.experience.world.environment.sunLight;
+      //         this.DirectionalLightHelper = new THREE.DirectionalLightHelper(
+      //           sunLight,
+      //           5
+      //         );
+      //         this.scene.add(this.DirectionalLightHelper);
+      //       },
+      //     },
+      //     "button"
+      //   )
+      //   .name("Show Light Helper");
       this.debugFolder
         .add(
           {

@@ -40,4 +40,6 @@ export default class Environment {
         .step(0.001);
     }
   }
+
+  update() {}
 }
