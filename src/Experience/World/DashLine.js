@@ -107,14 +107,17 @@ export default class DashLine {
     this.scene.add(this.mesh);
   }
 
-  showPath(index) {
-    console.log("showDashLine: ", index);
+  showPath(index, name) {
     const progress = this.options.progress[index - 1];
 
     gsap.to(this.material.uniforms.visibility, {
       value: progress,
       duration: 3,
       ease: "power4.inOut",
+      onComplete: () => {
+        console.log("reveal props", name);
+        this.manager.trigger("revealProps", name);
+      },
     });
   }
 

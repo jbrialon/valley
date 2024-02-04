@@ -102,30 +102,29 @@ export default class Props {
 
   initEvents() {
     // expecting name as parameter
-    this.manager.on("revealMeshes", this.revealMeshes.bind(this));
+    this.manager.on("revealProps", this.revealProps.bind(this));
   }
 
   getMarkerByName(name) {
     return markers[this.currentChapter].find((item) => item.name === name);
   }
 
-  revealMeshes(name) {
-    setTimeout(() => {
-      this.propsMeshes.forEach((mesh, index) => {
-        if (mesh.name === name) {
-          mesh.visible = true;
-          const size = 0.15 + Math.random() * 0.09;
-          gsap.to(mesh.scale, {
-            duration: 1.2,
-            delay: index * 0.3, // Stagger the animation
-            x: size,
-            y: size,
-            z: size,
-            ease: "elastic.out",
-          });
-        }
+  revealProps(name) {
+    console.log("reveal props", name);
+    this.propsMeshes
+      .filter((mesh) => mesh.name === name)
+      .forEach((mesh, index) => {
+        mesh.visible = true;
+        const size = 0.15 + Math.random() * 0.09;
+        gsap.to(mesh.scale, {
+          duration: 1.2,
+          delay: index * 0.3, // Stagger the animation
+          x: size,
+          y: size,
+          z: size,
+          ease: "elastic.out",
+        });
       });
-    }, 1300);
   }
 
   setDebug() {

@@ -110,8 +110,12 @@ export default class Markers {
         y: markersArray[index].position.y,
         duration: 1.5,
         ease: "power4.inOut",
+        onComplete: () => {
+          if (index === 0) {
+            this.manager.trigger("revealProps", name);
+          }
+        },
       });
-      this.manager.trigger("revealMeshes", name);
     }
   }
 
@@ -184,7 +188,7 @@ export default class Markers {
 
         if (allPreviousStepsRevealed) {
           const currentStep = this.revealedSteps.length;
-          this.showPath(currentStep);
+          this.showPath(currentStep, name);
           console.log(
             `All previous steps for ${name} are revealed. showing path to ${currentStep}.`
           );
@@ -202,8 +206,8 @@ export default class Markers {
     }
   }
 
-  showPath(index) {
-    this.manager.trigger("showDashLine", index);
+  showPath(index, name) {
+    this.manager.trigger("showDashLine", index, name);
   }
 
   initEvents() {
