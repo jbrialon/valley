@@ -6,7 +6,6 @@ import overlayMaterial from "../Materials/OverlayMaterial";
 import overlay2Material from "../Materials/Overlay2Material";
 
 import { addBarycentricCoordinates } from "../Utils/Geometry";
-import markers from "../Data/markers.js";
 
 export default class Overlay {
   constructor(options) {

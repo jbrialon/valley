@@ -4,8 +4,9 @@ import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import markers from "../Data/markers.js";
-
 import toonMaterial from "../Materials/ToonMaterial.js";
+console.log(markers);
+const markersArray = Object.values(markers).flat();
 
 export default class Markers {
   constructor() {
@@ -25,17 +26,12 @@ export default class Markers {
       defaultColor: new THREE.Color(0x992625),
       secondaryColor: new THREE.Color(0x2c4d38),
       mountainColor: new THREE.Color(0x5a5444),
-      // Line
-      lineWidth: 18,
-      dashArray: 0.05,
-      dashRatio: 0.5,
-      dashOffset: 0,
-      visibility: 0,
       // Meshes
       uLightDirection: new THREE.Vector3(1, 3, 3),
     };
 
     // Setup
+    this.currentChapter = "chapterOne";
     this.point = new THREE.Vector3();
     this.markers = [];
     this.revealedSteps = [];
@@ -89,7 +85,7 @@ export default class Markers {
   }
 
   setMarkers() {
-    markers.forEach((marker, index) => {
+    markersArray.forEach((marker) => {
       let material = this.material.clone();
       let geometry = new THREE.OctahedronGeometry(1, 0);
       let scale = new THREE.Vector3(0.075, 0.1, 0.075);
@@ -172,13 +168,17 @@ export default class Markers {
     // });
   }
 
+  getMarkerByName(name) {
+    return markers[this.currentChapter].find((item) => item.name === name);
+  }
+
   revealMarker(index) {
     const markerMesh = this.markers[index];
     if (!markerMesh.visible) {
       markerMesh.visible = true;
-      markerMesh.position.y = markers[index].position.y - 1;
+      markerMesh.position.y = markersArray[index].position.y - 1;
       gsap.to(markerMesh.position, {
-        y: markers[index].position.y,
+        y: markersArray[index].position.y,
         duration: 1.5,
         ease: "power4.inOut",
       });
@@ -219,15 +219,16 @@ export default class Markers {
 
   showClosestMarkers() {
     let markerCloseTimer = null;
-    markers.forEach((marker, index) => {
+    markersArray.forEach((marker, index) => {
       const distance = marker.position.distanceTo(this.point) * 100;
+      const name = marker.name;
       if (distance <= this.options.range) {
         if (!markerCloseTimer) {
           // Start the timer if it's not already running
           markerCloseTimer = setTimeout(() => {
             // Trigger revealMarker after 400ms
             this.revealMarker(index);
-            this.manageSteps(index);
+            this.manageSteps(name);
             markerCloseTimer = null; // Reset the timer
           }, this.options.markerCloseTimer);
         } else {
@@ -253,19 +254,36 @@ export default class Markers {
     });
   }
 
-  manageSteps(index) {
-    const marker = markers[index];
-    if (
-      !this.revealedSteps.includes(index) &&
-      (marker.type === "main" || marker.type === "secondary")
-    ) {
-      this.revealedSteps.push(index);
+  manageSteps(name) {
+    const marker = this.getMarkerByName(name);
+
+    if (marker && !this.revealedSteps.includes(marker.order)) {
+      this.revealedSteps.push(marker.order);
       if (this.revealedSteps.length > 1) {
-        const prevIndex = this.revealedSteps[this.revealedSteps.length - 2];
-        if (index - prevIndex === 1) {
-          this.showPath(index); // Call the corresponding path function
+        const previousSteps = markers[this.currentChapter].filter(
+          (item) => item.order < marker.order
+        );
+        const allPreviousStepsRevealed = previousSteps.every((item) =>
+          this.revealedSteps.includes(item.order)
+        );
+
+        if (allPreviousStepsRevealed) {
+          const currentStep = this.revealedSteps.length - 1;
+          this.showPath(currentStep);
+          console.log(
+            `All previous steps for ${name} are revealed. showing path to ${currentStep}.`
+          );
+        } else {
+          console.log(`All previous steps for ${name} are not revealed.`);
+        }
+        if (this.revealedSteps.length === markers[this.currentChapter].length) {
+          console.log(
+            `All steps from ${this.currentChapter} are revealed, go to next chapter.`
+          );
         }
       }
+    } else if (!marker) {
+      console.log(`Marker not found, probably not in the current chapter.`);
     }
   }
 

@@ -6,8 +6,6 @@ import Markers from "./Markers";
 import Paths from "./Paths";
 import Overlay from "./Overlay";
 import DashLine from "./DashLine";
-import Tutorial from "./Tutorial";
-import Card from "./Card";
 
 export default class World {
   constructor() {
@@ -26,8 +24,7 @@ export default class World {
       this.markers = new Markers();
       this.paths = new Paths();
       this.environment = new Environment();
-      // this.tutorial = new Tutorial();
-      // this.card = new Card();
+
       this.dashLine = new DashLine();
       this.camera.setPaths();
 
@@ -46,6 +43,5 @@ export default class World {
     if (this.overlay) this.overlay.update();
     if (this.markers) this.markers.update();
     if (this.dashLine) this.dashLine.update();
-    if (this.card) this.card.update();
   }
 }
