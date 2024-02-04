@@ -6,6 +6,7 @@ import Markers from "./Markers";
 import Paths from "./Paths";
 import Overlay from "./Overlay";
 import DashLine from "./DashLine";
+import Meshes from "./Meshes";
 
 export default class World {
   constructor() {
@@ -22,6 +23,7 @@ export default class World {
       this.map = new Map();
       this.overlay = new Overlay();
       this.markers = new Markers();
+      this.mesges = new Meshes();
       this.paths = new Paths();
       this.environment = new Environment();
 

@@ -4,8 +4,6 @@ import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import markers from "../Data/markers.js";
-import toonMaterial from "../Materials/ToonMaterial.js";
-console.log(markers);
 const markersArray = Object.values(markers).flat();
 
 export default class Markers {
@@ -26,8 +24,6 @@ export default class Markers {
       defaultColor: new THREE.Color(0x992625),
       secondaryColor: new THREE.Color(0x2c4d38),
       mountainColor: new THREE.Color(0x5a5444),
-      // Meshes
-      uLightDirection: new THREE.Vector3(1, 3, 3),
     };
 
     // Setup
@@ -38,7 +34,6 @@ export default class Markers {
     this.setMaterial();
     this.setMarkers();
     this.initEvents();
-    this.addMeshes();
 
     // Debug
     this.setDebug();
@@ -47,26 +42,6 @@ export default class Markers {
   setMaterial() {
     this.gradientMap = this.resources.items.threeToneToonTexture;
     this.gradientMap.magFilter = THREE.NearestFilter;
-
-    this.toonTexture = this.resources.items.toonTexture;
-
-    this.foliageMaterial = toonMaterial({
-      uColor: new THREE.Color(0x1e854d),
-      uTexture: this.toonTexture,
-      uLightDirection: this.options.uLightDirection,
-    });
-
-    this.woodMaterial = toonMaterial({
-      uColor: new THREE.Color(0xa67b56),
-      uTexture: this.toonTexture,
-      uLightDirection: this.options.uLightDirection,
-    });
-
-    this.rockMaterial = toonMaterial({
-      uColor: new THREE.Color(0xead3a2),
-      uTexture: this.toonTexture,
-      uLightDirection: this.options.uLightDirection,
-    });
 
     this.material = new THREE.MeshToonMaterial({
       color: this.options.defaultColor,
@@ -122,52 +97,6 @@ export default class Markers {
     });
   }
 
-  addMeshes() {
-    const meshPos = [
-      new THREE.Vector3(-4.58, 1.44, -9.03),
-      new THREE.Vector3(-4.26, 1.53, -8.82),
-      new THREE.Vector3(-4.36, 1.45, -9.3),
-      new THREE.Vector3(-4.13, 1.49, -9.23),
-    ];
-
-    this.treeMeshes = [];
-    this.tree = this.resources.items.treeModel.scene;
-    this.tree.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        if (child.material.name === "foliage") {
-          child.material = this.foliageMaterial;
-        } else if (child.material.name === "wood") {
-          child.material = this.woodMaterial;
-        }
-      }
-    });
-
-    this.rock = this.resources.items.rockModel.scene;
-
-    this.rock.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        if (child.name === "rockB") {
-          child.material = this.rockMaterial;
-        }
-      }
-    });
-
-    meshPos.forEach((pos) => {
-      const meshes = [this.tree.clone(), this.rock.clone()];
-
-      const mesh = meshes[Math.round(Math.random())];
-      mesh.visible = false;
-      mesh.scale.set(0, 0, 0);
-      mesh.position.set(pos.x, pos.y, pos.z);
-      this.treeMeshes.push(mesh);
-      this.scene.add(mesh);
-    });
-
-    // this.manager.addClickEventToMesh(this.tree, () => {
-    //   this.helpers.setActiveMesh(this.tree);
-    // });
-  }
-
   getMarkerByName(name) {
     return markers[this.currentChapter].find((item) => item.name === name);
   }
@@ -182,21 +111,8 @@ export default class Markers {
         duration: 1.5,
         ease: "power4.inOut",
       });
-
-      setTimeout(() => {
-        this.treeMeshes.forEach((mesh, index) => {
-          mesh.visible = true;
-          const size = 0.15 + Math.random() * 0.09;
-          gsap.to(mesh.scale, {
-            duration: 1.2,
-            delay: index * 0.3, // Stagger the animation
-            x: size,
-            y: size,
-            z: size,
-            ease: "elastic.out",
-          });
-        });
-      }, 1300);
+      // TODO: Reveal Meshes
+      this.manager.trigger("revealMeshes", index);
     }
   }
 
@@ -321,25 +237,6 @@ export default class Markers {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Markers");
       this.debugFolder.close();
-
-      this.debugFolder.add(this.options.uLightDirection, "x").onChange(() => {
-        this.woodMaterial.uniforms.uLightDirection.x =
-          this.options.uLightDirection.x;
-        this.foliageMaterial.uniforms.uLightDirection.x =
-          this.options.uLightDirection.x;
-      });
-      this.debugFolder.add(this.options.uLightDirection, "y").onChange(() => {
-        this.woodMaterial.uniforms.uLightDirection.y =
-          this.options.uLightDirection.y;
-        this.foliageMaterial.uniforms.uLightDirection.y =
-          this.options.uLightDirection.y;
-      });
-      this.debugFolder.add(this.options.uLightDirection, "z").onChange(() => {
-        this.woodMaterial.uniforms.uLightDirection.z =
-          this.options.uLightDirection.z;
-        this.foliageMaterial.uniforms.uLightDirection.z =
-          this.options.uLightDirection.z;
-      });
 
       this.debugFolder
         .add(this.options, "range")
