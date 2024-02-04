@@ -8,8 +8,8 @@ varying mat4 vModelViewMatrix;
 varying vec3 vNormal;
 
 void main() {
-  // mat4 invMatrix = inverse4(vModelViewMatrix);
-  vec3 invLight = normalize(vModelViewMatrix * vec4(uLightDirection, 0.0)).xyz;
+  mat4 invMatrix = inverse4(vModelViewMatrix);
+  vec3 invLight = normalize(invMatrix * vec4(uLightDirection, 0.0)).xyz;
   float diffuse = clamp(dot(vNormal, invLight), 0.0, 0.8);
   vec4 smpColor = texture2D(uTexture, vec2(diffuse, 0.0));
 

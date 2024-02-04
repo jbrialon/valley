@@ -17,6 +17,7 @@ export default class Markers {
     this.manager = this.experience.manager;
     this.resources = this.experience.resources;
     this.helpers = this.experience.helpers;
+    this.camera = this.experience.camera;
 
     // Options
     this.options = {
@@ -62,6 +63,12 @@ export default class Markers {
 
     this.woodMaterial = toonMaterial({
       uColor: new THREE.Color(0xa67b56),
+      uTexture: this.toonTexture,
+      uLightDirection: this.options.uLightDirection,
+    });
+
+    this.rockMaterial = toonMaterial({
+      uColor: new THREE.Color(0xead3a2),
       uTexture: this.toonTexture,
       uLightDirection: this.options.uLightDirection,
     });
@@ -127,6 +134,7 @@ export default class Markers {
       new THREE.Vector3(-4.36, 1.45, -9.3),
       new THREE.Vector3(-4.13, 1.49, -9.23),
     ];
+
     this.treeMeshes = [];
     this.tree = this.resources.items.treeModel.scene;
     this.tree.traverse((child) => {
@@ -139,13 +147,26 @@ export default class Markers {
       }
     });
 
+    this.rock = this.resources.items.rockModel.scene;
+
+    this.rock.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        console.log(child.name);
+        if (child.name === "rockB") {
+          child.material = this.rockMaterial;
+        }
+      }
+    });
+
     meshPos.forEach((pos) => {
-      const treeMesh = this.tree.clone();
-      treeMesh.visible = false;
-      treeMesh.scale.set(0, 0, 0);
-      treeMesh.position.set(pos.x, pos.y, pos.z);
-      this.treeMeshes.push(treeMesh);
-      this.scene.add(treeMesh);
+      const meshes = [this.tree.clone(), this.rock.clone()];
+
+      const mesh = meshes[Math.round(Math.random())];
+      mesh.visible = false;
+      mesh.scale.set(0, 0, 0);
+      mesh.position.set(pos.x, pos.y, pos.z);
+      this.treeMeshes.push(mesh);
+      this.scene.add(mesh);
     });
 
     // this.manager.addClickEventToMesh(this.tree, () => {
@@ -359,6 +380,13 @@ export default class Markers {
     if (this.inputEvents.isPressed && this.point) {
       this.showClosestMarkers();
     }
+    console.log(this.camera.cameraParent.position);
+    // this.foliageMaterial.uniforms.uLightDirection.value = new THREE.Vector3(
+    //   this.camera.cameraParent.position.x,
+    //   this.camera.cameraParent.position.y,
+    //   this.camera.cameraParent.position.z
+    // );
+    // this.camera.cameraParent.position.x;
 
     this.markers.forEach((marker) => {
       const rotationSpeed = Math.random() * 0.005;
