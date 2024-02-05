@@ -10,35 +10,50 @@ export default class Manager extends EventEmitter {
     this.camera = this.experience.camera;
 
     // Setup
-    this.meshes = [];
+    this.interactiveMeshes = [];
+    this.chapters = ["chapterOne", "chapterTwo", "chapterThree"];
+    this.currentChapter = 0;
 
     // Debug
     this.setDebug();
   }
 
-  addClickEventToMesh(mesh, clickHandlerFunction) {
-    if (!this.interactionManager) {
-      this.interactionManager = this.experience.renderer.interactionManager;
+  getCurrentChapter() {
+    return this.chapters[this.currentChapter];
+  }
+
+  goToNextChapter() {
+    if (this.currentChapter < this.chapters.length) {
+      this.currentChapter++;
+      console.log(`Going to Chapter ${this.currentChapter + 1}`);
     }
+  }
 
-    mesh.addEventListener("mouseover", (event) => {
-      document.body.style.cursor = "pointer";
-    });
-
-    mesh.addEventListener("mouseout", (event) => {
-      document.body.style.cursor = "default";
-    });
-
-    mesh.addEventListener("click", (event) => {
-      if (typeof clickHandlerFunction === "function") {
-        clickHandlerFunction(event);
+  addClickEventToMesh(mesh, clickHandlerFunction) {
+    if (this.debug.active) {
+      if (!this.interactionManager) {
+        this.interactionManager = this.experience.renderer.interactionManager;
       }
-    });
 
-    // we add the mesh to the interaction Manager if it's not already there
-    if (!this.meshes.includes(mesh.name)) {
-      this.meshes.push(mesh.name);
-      this.interactionManager.add(mesh);
+      mesh.addEventListener("mouseover", (event) => {
+        document.body.style.cursor = "pointer";
+      });
+
+      mesh.addEventListener("mouseout", (event) => {
+        document.body.style.cursor = "default";
+      });
+
+      mesh.addEventListener("click", (event) => {
+        if (typeof clickHandlerFunction === "function") {
+          clickHandlerFunction(event);
+        }
+      });
+
+      // we add the mesh to the interaction Manager if it's not already there
+      if (!this.interactiveMeshes.includes(mesh.name)) {
+        this.interactiveMeshes.push(mesh.name);
+        this.interactionManager.add(mesh);
+      }
     }
   }
 
@@ -60,8 +75,8 @@ export default class Manager extends EventEmitter {
     });
 
     // we add the mesh to the interaction Manager if it's not already there
-    if (!this.meshes.includes(mesh.name)) {
-      this.meshes.push(mesh.name);
+    if (!this.interactiveMeshes.includes(mesh.name)) {
+      this.interactiveMeshes.push(mesh.name);
       this.interactionManager.add(mesh);
     }
   }

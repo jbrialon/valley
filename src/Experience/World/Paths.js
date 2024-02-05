@@ -19,7 +19,6 @@ export default class Paths {
 
     // Setup
     this.setPaths();
-    this.setControls();
 
     // Debug
     this.setDebug();
@@ -110,8 +109,43 @@ export default class Paths {
     this.scene.add(this.fakeTarget);
   }
 
-  setControls() {
+  setDebug() {
+    // Debug
     if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("Paths");
+      // this.debugFolder.close();
+
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.transformControls.detach();
+              this.curveCameraPoints.forEach((curvePoint) => {
+                curvePoint.visible = !curvePoint.visible;
+              });
+              this.cameraCurveMesh.visible = !this.cameraCurveMesh.visible;
+            },
+          },
+          "button"
+        )
+        .name("Toggle Camera Path");
+
+      this.debugFolder
+        .add(
+          {
+            button: () => {
+              this.transformControls.detach();
+              this.curveTargetPoints.forEach((curvePoint) => {
+                curvePoint.visible = !curvePoint.visible;
+              });
+              this.fakeTarget.visible = !this.fakeTarget.visible;
+              this.targetCurveMesh.visible = !this.targetCurveMesh.visible;
+            },
+          },
+          "button"
+        )
+        .name("Toggle Target Path");
+
       this.transformControls.addEventListener("dragging-changed", (event) => {
         const transformedPoint = this.transformControls.object;
         const index = transformedPoint.index;
@@ -159,45 +193,6 @@ export default class Paths {
         }
         this.camera.setPaths();
       });
-    }
-  }
-
-  setDebug() {
-    // Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Paths");
-      // this.debugFolder.close();
-
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              this.transformControls.detach();
-              this.curveCameraPoints.forEach((curvePoint) => {
-                curvePoint.visible = !curvePoint.visible;
-              });
-              this.cameraCurveMesh.visible = !this.cameraCurveMesh.visible;
-            },
-          },
-          "button"
-        )
-        .name("Toggle Camera Path");
-
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              this.transformControls.detach();
-              this.curveTargetPoints.forEach((curvePoint) => {
-                curvePoint.visible = !curvePoint.visible;
-              });
-              this.fakeTarget.visible = !this.fakeTarget.visible;
-              this.targetCurveMesh.visible = !this.targetCurveMesh.visible;
-            },
-          },
-          "button"
-        )
-        .name("Toggle Target Path");
     }
   }
 

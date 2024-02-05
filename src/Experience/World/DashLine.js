@@ -54,7 +54,6 @@ export default class DashLine {
     this.setMaterial();
     this.setDashLine();
     this.initEvents();
-    this.setControls();
 
     // Debug
     this.setDebug();
@@ -109,49 +108,15 @@ export default class DashLine {
 
   showPath(index, name) {
     const progress = this.options.progress[index - 1];
-
+    console.log(`Show Path ${progress} going to ${name}`);
     gsap.to(this.material.uniforms.visibility, {
       value: progress,
       duration: 3,
       ease: "power4.inOut",
       onComplete: () => {
-        console.log("reveal props", name);
         this.manager.trigger("revealProps", name);
       },
     });
-  }
-
-  setControls() {
-    if (this.debug.active) {
-      this.transformControls.addEventListener("dragging-changed", (event) => {
-        const transformedPoint = this.transformControls.object;
-        const index = transformedPoint.index;
-        const type = transformedPoint.type;
-
-        if (!event.value) {
-          this.points[index] = new THREE.Vector3(
-            transformedPoint.position.x,
-            transformedPoint.position.y,
-            transformedPoint.position.z
-          );
-          this.curve = new THREE.CatmullRomCurve3(this.points).getPoints(500);
-
-          this.geometry.setPoints(this.curve);
-
-          this.mesh.geometry = this.geometry;
-          // if point is from camera type we update the target curve
-          console.log(
-            "New dashLine Position:",
-            index,
-            `new THREE.Vector3(${transformedPoint.position.x.toFixed(
-              2
-            )},${transformedPoint.position.y.toFixed(
-              2
-            )},${transformedPoint.position.z.toFixed(2)})`
-          );
-        }
-      });
-    }
   }
 
   initEvents() {
@@ -234,6 +199,35 @@ export default class DashLine {
           "button"
         )
         .name("Toggle Helper");
+
+      this.transformControls.addEventListener("dragging-changed", (event) => {
+        const transformedPoint = this.transformControls.object;
+        const index = transformedPoint.index;
+        const type = transformedPoint.type;
+
+        if (!event.value && type === "dashLine") {
+          this.points[index] = new THREE.Vector3(
+            transformedPoint.position.x,
+            transformedPoint.position.y,
+            transformedPoint.position.z
+          );
+          this.curve = new THREE.CatmullRomCurve3(this.points).getPoints(500);
+
+          this.geometry.setPoints(this.curve);
+
+          this.mesh.geometry = this.geometry;
+          // if point is from camera type we update the target curve
+          console.log(
+            "New dashLine Position:",
+            index,
+            `new THREE.Vector3(${transformedPoint.position.x.toFixed(
+              2
+            )},${transformedPoint.position.y.toFixed(
+              2
+            )},${transformedPoint.position.z.toFixed(2)})`
+          );
+        }
+      });
     }
   }
 

@@ -27,7 +27,7 @@ export default class Markers {
     };
 
     // Setup
-    this.currentChapter = "chapterOne";
+    this.currentChapter = this.manager.getCurrentChapter();
     this.point = new THREE.Vector3();
     this.markers = [];
     this.revealedSteps = [];
@@ -190,7 +190,7 @@ export default class Markers {
           const currentStep = this.revealedSteps.length;
           this.showPath(currentStep, name);
           console.log(
-            `All previous steps for ${name} are revealed. showing path to ${currentStep}.`
+            `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`
           );
         } else {
           console.log(`All previous steps for ${name} are not revealed.`);
@@ -199,6 +199,8 @@ export default class Markers {
           console.log(
             `All steps from ${this.currentChapter} are revealed, go to next chapter.`
           );
+          // we should wait for all animations to be hover actually
+          this.manager.goToNextChapter();
         }
       }
     } else if (!marker) {

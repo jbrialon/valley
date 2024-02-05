@@ -13,6 +13,7 @@ export default class Props {
     this.manager = this.experience.manager;
     this.debug = this.experience.debug;
     this.helpers = this.experience.helpers;
+    this.transformControls = this.experience.helpers.transformControls;
 
     // Options
     this.options = {
@@ -79,9 +80,11 @@ export default class Props {
     };
 
     props.forEach((props) => {
-      props.objects.forEach((object) => {
+      props.objects.forEach((object, index) => {
         const mesh = models[object.type].clone();
-        mesh.name = props.name;
+        mesh.name = `${props.name}.${index}`;
+        mesh.type = "props";
+        mesh.index = index;
         mesh.visible = false;
         mesh.scale.set(0, 0, 0);
         mesh.position.set(
@@ -110,9 +113,9 @@ export default class Props {
   }
 
   revealProps(name) {
-    console.log("reveal props", name);
+    console.log("Reveal Props:", name);
     this.propsMeshes
-      .filter((mesh) => mesh.name === name)
+      .filter((mesh) => mesh.name.includes(name))
       .forEach((mesh, index) => {
         mesh.visible = true;
         const size = 0.15 + Math.random() * 0.09;
@@ -149,6 +152,25 @@ export default class Props {
           this.options.uLightDirection.z;
         this.foliageMaterial.uniforms.uLightDirection.z =
           this.options.uLightDirection.z;
+      });
+
+      this.transformControls.addEventListener("dragging-changed", (event) => {
+        const transformedPoint = this.transformControls.object;
+        const index = transformedPoint.index;
+        const type = transformedPoint.type;
+        const name = transformedPoint.name;
+
+        if (!event.value && type === "props") {
+          console.log(
+            `New Props Position for ${name}:`,
+            index,
+            `new THREE.Vector3(${transformedPoint.position.x.toFixed(
+              2
+            )},${transformedPoint.position.y.toFixed(
+              2
+            )},${transformedPoint.position.z.toFixed(2)})`
+          );
+        }
       });
     }
   }
