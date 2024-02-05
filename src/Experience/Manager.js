@@ -11,7 +11,7 @@ export default class Manager extends EventEmitter {
 
     // Setup
     this.interactiveMeshes = [];
-    this.chapters = ["chapterOne", "chapterTwo", "chapterThree"];
+    this.chapters = ["chapterOne", "chapterTwo", "chapterTree"];
     this.currentChapter = 0;
 
     // Debug
