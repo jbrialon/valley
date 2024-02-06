@@ -32,7 +32,7 @@ const overlay2Material = (options) => {
         value: options.uCircleRadius,
       },
       uCirclePos: {
-        value: options.uCirclePos || new THREE.Vector2(0.14, 0.41),
+        value: options.uCirclePos,
       },
     },
     vertexShader: vertexShader,

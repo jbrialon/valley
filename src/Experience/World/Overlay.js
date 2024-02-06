@@ -25,8 +25,14 @@ export default class Overlay {
     // Options
     this.options = {
       uAlpha: 1,
-      uCirclePos: new THREE.Vector3(0, 0, 0),
-      uCircleRadius: 0,
+      uCirclePos: [
+        new THREE.Vector2(0, 0),
+        new THREE.Vector2(0.5709589045068721, 0.7096687321470818),
+        new THREE.Vector2(0.5077445414629836, 0.6746022993310021),
+        new THREE.Vector2(0.47512453334237614, 0.6858865351558925),
+        new THREE.Vector2(0.4256830893906932, 0.7012801433406837),
+      ],
+      uCircleRadius: [0, 0, 0, 0, 0],
       offsetPosY: 0.001,
 
       // Overlay 1
@@ -86,11 +92,7 @@ export default class Overlay {
       uAlpha: this.options.uAlpha,
       uFill: this.options.uFill,
       uStroke: this.options.uStroke,
-      uDualStroke: this.options.uDualStroke,
-      uSeeThrough: this.options.uSeeThrough,
-      uInsideAltColor: this.options.uInsideAltColor,
       uThickness: this.options.uThickness,
-      uSecondThickness: this.options.uSecondThickness,
       uSqueeze: this.options.uSqueeze,
       uSqueezeMin: this.options.uSqueezeMin,
       uSqueezeMax: this.options.uSqueezeMax,
@@ -137,6 +139,8 @@ export default class Overlay {
 
     this.inputEvents.on("pressUp", this.onPressUp.bind(this));
 
+    this.manager.on("revealOverlay", this.revealOverlay.bind(this));
+
     this.manager.on("updateColors", (colors) => {
       // Overlay 1
       this.options.uColorOne = new THREE.Color(colors[2]);
@@ -180,11 +184,15 @@ export default class Overlay {
       const intersects = this.raycaster.intersectObject(this.overlayModel);
       if (intersects.length > 0) {
         // Get the UV coordinates where the mouse intersects the mesh
-        const uv = intersects[0].uv;
-        this.activeMaterial.uniforms.uCirclePos.value.x = 1 - uv.x;
-        this.activeMaterial.uniforms.uCirclePos.value.y = 1 - uv.y;
-
         if (this.inputEvents.isPressed) {
+          const uv = new THREE.Vector2(
+            1 - intersects[0].uv.x,
+            1 - intersects[0].uv.y
+          );
+          console.log(uv);
+          this.activeMaterial.uniforms.uCirclePos.value[0].x = uv.x;
+          this.activeMaterial.uniforms.uCirclePos.value[0].y = uv.y;
+
           this.point = intersects[0].point;
           this.manager.trigger("navigation", this.point);
         }
@@ -194,9 +202,9 @@ export default class Overlay {
 
   onPressDown() {
     if (!this.transformControls.enabled) {
-      gsap.to(this.activeMaterial.uniforms.uCircleRadius, {
+      gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
         duration: 0.5,
-        value: 3,
+        0: 3,
         ease: "power4.inOut",
       });
     }
@@ -204,12 +212,24 @@ export default class Overlay {
 
   onPressUp() {
     if (!this.transformControls.enabled) {
-      gsap.to(this.activeMaterial.uniforms.uCircleRadius, {
+      gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
         duration: 0.5,
-        value: 0,
+        0: 0,
         ease: "power4.inOut",
       });
     }
+  }
+
+  revealOverlay(index, name) {
+    console.log("revealOverlay: ", index, name);
+    const animationProps = {};
+    animationProps[index + 1] = 1.8;
+
+    gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
+      duration: 0.5,
+      ...animationProps,
+      ease: "power4.inOut",
+    });
   }
 
   setDebug() {
@@ -244,24 +264,6 @@ export default class Overlay {
 
       // Circle Mask
       this.debugCircleFolder = this.debugFolder.addFolder("Circle Mask");
-      this.debugCircleFolder
-        .add(this.activeMaterial.uniforms.uCirclePos.value, "x")
-        .min(-1)
-        .max(1)
-        .step(0.00001)
-        .name("Position X");
-      this.debugCircleFolder
-        .add(this.activeMaterial.uniforms.uCirclePos.value, "y")
-        .min(-1)
-        .max(1)
-        .step(0.00001)
-        .name("Position Y");
-      this.debugCircleFolder
-        .add(this.activeMaterial.uniforms.uCircleRadius, "value")
-        .min(0)
-        .max(20)
-        .step(0.0001)
-        .name("Circle Radius");
       this.debugCircleFolder
         .add(this.activeMaterial.uniforms.uNoiseIntensity, "value")
         .min(10)

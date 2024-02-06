@@ -114,7 +114,7 @@ export default class DashLine {
       duration: 3,
       ease: "power4.inOut",
       onComplete: () => {
-        this.manager.trigger("revealProps", name);
+        this.manager.trigger("revealProps", index, name);
       },
     });
   }

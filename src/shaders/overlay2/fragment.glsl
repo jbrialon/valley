@@ -23,21 +23,13 @@ uniform vec3 uFill;
 
 uniform float uAlpha;
 uniform float uNoiseIntensity;
-uniform float uCircleRadius;
-uniform vec2 uCirclePos;
+uniform float uCircleRadius[5];
+uniform vec2 uCirclePos[5];
 
 // This is like
 float aastep(float threshold, float dist) {
   float afwidth = fwidth(dist) * 0.5;
   return smoothstep(threshold - afwidth, threshold + afwidth, dist);
-}
-
-// This function is not currently used, but it can be useful
-// to achieve a fixed width wireframe regardless of z-depth
-float computeScreenSpaceWireframe(vec3 barycentric, float lineWidth) {
-  vec3 dist = fwidth(barycentric);
-  vec3 smoothed = smoothstep(dist * ((lineWidth * 0.5) - 0.5), dist * ((lineWidth * 0.5) + 0.5), barycentric);
-  return 1.0 - min(min(smoothed.x, smoothed.y), smoothed.z);
 }
 
 // This function returns the fragment color for our styled wireframe effect
@@ -94,14 +86,22 @@ vec4 getStyledWireframe(vec3 barycentric) {
 }
 
 void main() {
-  vec2 circlePos = vUv + (uCirclePos) - vec2(1.0);
-
-  float c = circle(circlePos, (uCircleRadius / 10000.0), 2.) * 2.5;
+  float finalMask = 0.0;
 
   float offx = vUv.x + sin(vUv.y + uTime * .1);
   float offy = vUv.y - uTime * 0.1 - cos(uTime * .001) * .01;
-  float n = snoise3(vec3(offx, offy, uTime * 0.1) * uNoiseIntensity) - 1.0;
-  float finalMask = smoothstep(0.4, 0.5, n + pow(c, 2.));
+  float noise = snoise3(vec3(offx, offy, uTime * 0.1) * uNoiseIntensity) - 1.0;
+
+  for(int i = 0; i < 5; ++i) {
+    // I don't now if it's better in terms of performances to draw a 0 radius circle or doing an if > 0.0 
+    if(uCircleRadius[i] > 0.0) {
+      vec2 circlePos = vUv + (uCirclePos[i]) - vec2(1.0);
+      float circle = circle(circlePos, (uCircleRadius[i] / 10000.0), 2.) * 2.5;
+      float circleNoise = smoothstep(0.4, 0.5, noise + pow(circle, 2.));
+
+      finalMask += circleNoise;
+    }
+  }
 
   if(finalMask < 0.5) {
     discard;

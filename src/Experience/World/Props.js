@@ -112,7 +112,7 @@ export default class Props {
     return markers[this.currentChapter].find((item) => item.name === name);
   }
 
-  revealProps(name) {
+  revealProps(index, name) {
     console.log("Reveal Props:", name);
     this.propsMeshes
       .filter((mesh) => mesh.name.includes(name))

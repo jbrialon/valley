@@ -104,6 +104,7 @@ export default class Markers {
   revealMarker(index, name) {
     const markerMesh = this.markers[index];
     if (!markerMesh.visible) {
+      this.manager.trigger("revealOverlay", index, name);
       markerMesh.visible = true;
       markerMesh.position.y = markersArray[index].position.y - 1;
       gsap.to(markerMesh.position, {
@@ -112,7 +113,7 @@ export default class Markers {
         ease: "power4.inOut",
         onComplete: () => {
           if (index === 0) {
-            this.manager.trigger("revealProps", name);
+            this.manager.trigger("revealProps", index, name);
           }
         },
       });
