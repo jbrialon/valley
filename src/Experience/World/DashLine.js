@@ -107,7 +107,7 @@ export default class DashLine {
   }
 
   showPath(index, name) {
-    const progress = this.options.progress[index - 1];
+    const progress = this.options.progress[index];
     console.log(`Show Path ${progress} going to ${name}`);
     gsap.to(this.material.uniforms.visibility, {
       value: progress,

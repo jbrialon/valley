@@ -5,6 +5,9 @@ import Experience from "../Experience.js";
 import props from "../Data/props.js";
 import toonMaterial from "../Materials/ToonMaterial.js";
 
+import markers from "../Data/markers.js";
+const markersArray = Object.values(markers).flat();
+
 export default class Props {
   constructor() {
     this.experience = new Experience();
@@ -112,8 +115,10 @@ export default class Props {
     return markers[this.currentChapter].find((item) => item.name === name);
   }
 
-  revealProps(index, name) {
-    console.log("Reveal Props:", name);
+  revealProps(index) {
+    const name = markersArray[index].name;
+    console.log("Reveal Props:", index, name);
+
     this.propsMeshes
       .filter((mesh) => mesh.name.includes(name))
       .forEach((mesh, index) => {

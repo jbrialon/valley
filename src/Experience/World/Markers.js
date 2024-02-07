@@ -188,7 +188,7 @@ export default class Markers {
         );
 
         if (allPreviousStepsRevealed) {
-          const currentStep = this.revealedSteps.length;
+          const currentStep = this.revealedSteps.length - 1;
           this.showPath(currentStep, name);
           console.log(
             `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`

@@ -182,17 +182,17 @@ export default class Overlay {
 
       // Perform raycasting to find intersections with the mesh
       const intersects = this.raycaster.intersectObject(this.overlayModel);
+
       if (intersects.length > 0) {
         // Get the UV coordinates where the mouse intersects the mesh
-        if (this.inputEvents.isPressed) {
-          const uv = new THREE.Vector2(
-            1 - intersects[0].uv.x,
-            1 - intersects[0].uv.y
-          );
-          console.log(uv);
-          this.activeMaterial.uniforms.uCirclePos.value[0].x = uv.x;
-          this.activeMaterial.uniforms.uCirclePos.value[0].y = uv.y;
+        const uv = new THREE.Vector2(
+          1 - intersects[0].uv.x,
+          1 - intersects[0].uv.y
+        );
+        this.activeMaterial.uniforms.uCirclePos.value[0].x = uv.x;
+        this.activeMaterial.uniforms.uCirclePos.value[0].y = uv.y;
 
+        if (this.inputEvents.isPressed) {
           this.point = intersects[0].point;
           this.manager.trigger("navigation", this.point);
         }
