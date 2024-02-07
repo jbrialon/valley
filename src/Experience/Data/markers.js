@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const chapterOne = [
+export const chapterOne = [
   {
     order: 1,
     name: "syabru_besi",
@@ -58,7 +58,7 @@ const chapterOne = [
 ];
 
 // Acclimatation
-const chapterTwo = [
+export const chapterTwo = [
   {
     order: 1,
     name: "Kkyanjin_ri",
@@ -79,7 +79,7 @@ const chapterTwo = [
   },
 ];
 
-const chapterTree = [
+export const chapterTree = [
   // Re-langtang et kyanjin_gompa sans doute
   {
     order: 0, //todo
@@ -121,7 +121,7 @@ const chapterTree = [
   },
 ];
 
-const bonus = [
+export const bonus = [
   {
     order: null,
     name: "kyanjin_gompa_cheese_factory",
@@ -133,9 +133,13 @@ const bonus = [
   },
 ];
 
-export default {
+// export all markers per chapter
+export const markers = {
   chapterOne,
   chapterTwo,
   chapterTree,
   bonus,
 };
+
+// export all markers as array
+export const markersArray = Object.values(markers).flat();

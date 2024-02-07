@@ -5,8 +5,7 @@ import Experience from "../Experience.js";
 import props from "../Data/props.js";
 import toonMaterial from "../Materials/ToonMaterial.js";
 
-import markers from "../Data/markers.js";
-const markersArray = Object.values(markers).flat();
+import { markers, markersArray } from "../Data/markers.js";
 
 export default class Props {
   constructor() {
@@ -122,16 +121,18 @@ export default class Props {
     this.propsMeshes
       .filter((mesh) => mesh.name.includes(name))
       .forEach((mesh, index) => {
-        mesh.visible = true;
-        const size = 0.15 + Math.random() * 0.09;
-        gsap.to(mesh.scale, {
-          duration: 1.2,
-          delay: index * 0.3, // Stagger the animation
-          x: size,
-          y: size,
-          z: size,
-          ease: "elastic.out",
-        });
+        if (!mesh.visible) {
+          mesh.visible = true;
+          const size = 0.15 + Math.random() * 0.09;
+          gsap.to(mesh.scale, {
+            duration: 1.2,
+            delay: index * 0.3, // Stagger the animation
+            x: size,
+            y: size,
+            z: size,
+            ease: "elastic.out",
+          });
+        }
       });
   }
 

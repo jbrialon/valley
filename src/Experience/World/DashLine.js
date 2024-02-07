@@ -3,6 +3,8 @@ import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import { gsap } from "gsap";
 
 import Experience from "../Experience";
+import { findMissingSteps } from "../Utils/utils.js";
+
 // import { Maf } from "../Utils/Maf";
 
 export default class DashLine {
@@ -31,6 +33,7 @@ export default class DashLine {
     };
 
     // Setup
+    this.revealSteps = [0];
     this.point = new THREE.Vector3();
     this.points = [
       new THREE.Vector3(-4.29, 1.43, -9.07),
@@ -107,14 +110,41 @@ export default class DashLine {
   }
 
   showPath(index, name) {
-    const progress = this.options.progress[index];
-    console.log(`Show Path ${progress} going to ${name}`);
+    const progressTarget = this.options.progress[index];
+    this.revealSteps.push(index);
+    const missingSteps = findMissingSteps(this.revealSteps);
+    console.log(
+      `Show Path ${progressTarget} going to ${name}, missing steps: ${missingSteps}`
+    );
+    // Track which steps have been revealed to prevent duplicate triggers
+    const revealed = {};
+
+    // animation of the DashLine
     gsap.to(this.material.uniforms.visibility, {
-      value: progress,
+      value: progressTarget,
       duration: 3,
       ease: "power4.inOut",
+      onUpdate: () => {
+        const currentProgress = this.material.uniforms.visibility.value;
+        // Iterate through missingSteps to see if any matches current progress
+        missingSteps.forEach((missingIndex) => {
+          const missingProgress = this.options.progress[missingIndex];
+          // Check if the current progress is close enough to the missingProgress
+          // and that it hasn't been revealed yet
+          if (
+            !revealed[missingIndex] &&
+            Math.abs(currentProgress - missingProgress) < 0.01
+          ) {
+            this.manager.trigger("revealProps", missingIndex);
+            revealed[missingIndex] = true; // Mark as revealed
+          }
+        });
+      },
       onComplete: () => {
-        this.manager.trigger("revealProps", index, name);
+        missingSteps.forEach((index) => {
+          this.manager.trigger("revealProps", index);
+        });
+        this.manager.trigger("revealProps", index);
       },
     });
   }

@@ -3,8 +3,8 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import Experience from "../Experience";
 
-import markers from "../Data/markers.js";
-const markersArray = Object.values(markers).flat();
+import { findMaxConsecutive } from "../Utils/utils.js";
+import { markers, markersArray } from "../Data/markers.js";
 
 export default class Markers {
   constructor() {
@@ -101,25 +101,6 @@ export default class Markers {
     return markers[this.currentChapter].find((item) => item.name === name);
   }
 
-  revealMarker(index, name) {
-    const markerMesh = this.markers[index];
-    if (!markerMesh.visible) {
-      this.manager.trigger("revealOverlay", index, name);
-      markerMesh.visible = true;
-      markerMesh.position.y = markersArray[index].position.y - 1;
-      gsap.to(markerMesh.position, {
-        y: markersArray[index].position.y,
-        duration: 1.5,
-        ease: "power4.inOut",
-        onComplete: () => {
-          if (index === 0) {
-            this.manager.trigger("revealProps", index, name);
-          }
-        },
-      });
-    }
-  }
-
   bounce() {
     const bounceStrength = 0.05;
 
@@ -147,7 +128,7 @@ export default class Markers {
           // Start the timer if it's not already running
           markerCloseTimer = setTimeout(() => {
             // Trigger revealMarker after 400ms
-            this.revealMarker(index, name);
+            this.manageReveals(index, name);
             this.manageSteps(name);
             markerCloseTimer = null; // Reset the timer
           }, this.options.markerCloseTimer);
@@ -174,6 +155,30 @@ export default class Markers {
     });
   }
 
+  manageReveals(index, name) {
+    const markerMesh = this.markers[index];
+    const marker = this.getMarkerByName(name);
+    if (!markerMesh.visible) {
+      // Reveal Overlay only if in current chapter
+      if (marker) {
+        this.manager.trigger("revealOverlay", index, name);
+      }
+      // Reveal Marker
+      markerMesh.visible = true;
+      markerMesh.position.y = markersArray[index].position.y - 1;
+      gsap.to(markerMesh.position, {
+        y: markersArray[index].position.y,
+        duration: 1.5,
+        ease: "power4.inOut",
+        onComplete: () => {
+          if (index === 0) {
+            this.manager.trigger("revealProps", index);
+          }
+        },
+      });
+    }
+  }
+
   manageSteps(name) {
     const marker = this.getMarkerByName(name);
 
@@ -188,7 +193,7 @@ export default class Markers {
         );
 
         if (allPreviousStepsRevealed) {
-          const currentStep = this.revealedSteps.length - 1;
+          const currentStep = findMaxConsecutive(this.revealedSteps) - 1;
           this.showPath(currentStep, name);
           console.log(
             `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`

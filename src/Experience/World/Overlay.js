@@ -26,13 +26,19 @@ export default class Overlay {
     this.options = {
       uAlpha: 1,
       uCirclePos: [
-        new THREE.Vector2(0, 0),
-        new THREE.Vector2(0.5709589045068721, 0.7096687321470818),
-        new THREE.Vector2(0.5077445414629836, 0.6746022993310021),
-        new THREE.Vector2(0.47512453334237614, 0.6858865351558925),
-        new THREE.Vector2(0.4256830893906932, 0.7012801433406837),
+        new THREE.Vector2(0, 0), // Mouse position
+        new THREE.Vector2(0.5709589045068721, 0.7096687321470818), // Syabru Besi
+        new THREE.Vector2(0.5077445414629836, 0.6746022993310021), // Pairo
+        new THREE.Vector2(0.47512453334237614, 0.6858865351558925), // Bamboo
+        new THREE.Vector2(0.4256830893906932, 0.7012801433406837), // Lama Hotel
+        new THREE.Vector2(0.28152391589700954, 0.8545268048548473), // Langtang
+        new THREE.Vector2(0.2084770396380733, 0.852437698451759), // Kyanjin Gompa
+        new THREE.Vector2(0.19701931240843318, 0.8622552370376909), // Kyanjin Ri
+        new THREE.Vector2(0.14921005272124777, 0.8487431163471764), // Tserko Ri
+        new THREE.Vector2(0.5413955982456653, 0.6508027193055853), // Thulo Syabru
+        // TODO: the rest
       ],
-      uCircleRadius: [0, 0, 0, 0, 0],
+      uCircleRadius: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       offsetPosY: 0.001,
 
       // Overlay 1
@@ -57,6 +63,9 @@ export default class Overlay {
       uSqueeze: false,
       uSqueezeMin: 0.2,
       uSqueezeMax: 1,
+
+      // gsap options
+      circleSizes: [1.8, 0.6, 0.6, 1.8, 1.8, 1.8, 0.6, 1.2, 1.2],
     };
 
     // Setup
@@ -223,7 +232,7 @@ export default class Overlay {
   revealOverlay(index, name) {
     console.log("revealOverlay: ", index, name);
     const animationProps = {};
-    animationProps[index + 1] = 1.8;
+    animationProps[index + 1] = this.options.circleSizes[index] || 1.8;
 
     gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
       duration: 0.5,
