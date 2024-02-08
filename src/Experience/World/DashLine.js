@@ -111,20 +111,19 @@ export default class DashLine {
 
   showPath(index, name) {
     const progressTarget = this.options.progress[index];
+    // We add the index to the revealed Steps
     this.revealSteps.push(index);
+    // We find if there are some missings steps along the path
     const missingSteps = findMissingSteps(this.revealSteps);
-    console.log(
-      `Show Path ${progressTarget} going to ${name}, missing steps: ${missingSteps}`
-    );
     // Track which steps have been revealed to prevent duplicate triggers
     const revealed = {};
-
-    // animation of the DashLine
+    // Animation of the DashLine
     gsap.to(this.material.uniforms.visibility, {
       value: progressTarget,
-      duration: 3,
+      duration: 3 * (missingSteps.length + 1),
       ease: "power4.inOut",
       onUpdate: () => {
+        // on Update we want to ensure we are not missing any props to reveal
         const currentProgress = this.material.uniforms.visibility.value;
         // Iterate through missingSteps to see if any matches current progress
         missingSteps.forEach((missingIndex) => {
@@ -133,20 +132,24 @@ export default class DashLine {
           // and that it hasn't been revealed yet
           if (
             !revealed[missingIndex] &&
-            Math.abs(currentProgress - missingProgress) < 0.01
+            Math.abs(currentProgress - missingProgress) < 0.01 // since we don't exactly get the values of the dash we are using a threshold
           ) {
+            // we add the missing index to the revealedSteps
+            this.revealSteps.push(missingIndex);
             this.manager.trigger("revealProps", missingIndex);
-            revealed[missingIndex] = true; // Mark as revealed
+            // we mark the steps as revealed to ensure it's not triggering twice because of the threshold
+            revealed[missingIndex] = true;
           }
         });
       },
       onComplete: () => {
-        missingSteps.forEach((index) => {
-          this.manager.trigger("revealProps", index);
-        });
         this.manager.trigger("revealProps", index);
       },
     });
+    // Debug
+    console.log(
+      `Show Path ${progressTarget} going to ${name}, missing steps: ${missingSteps}`
+    );
   }
 
   initEvents() {
