@@ -99,7 +99,7 @@ export default class Helpers {
       this.debugFolder = this.debug.debugEditorFolder;
       this.debugFolder.close();
 
-      this.debugFolder
+      let controlButton = this.debugFolder
         .add(
           {
             button: () => {
@@ -107,11 +107,16 @@ export default class Helpers {
               if (!this.transformControls.enabled) {
                 this.transformControls.detach();
               }
+              controlButton.name(
+                this.transformControls.enabled
+                  ? "Disable Controls"
+                  : "Enable Controls"
+              );
             },
           },
           "button"
         )
-        .name("Toggle Controls");
+        .name("Enable Controls");
       // this.debugFolder
       //   .add(
       //     {

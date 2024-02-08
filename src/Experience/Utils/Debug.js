@@ -5,10 +5,9 @@ export default class Debug {
     this.active = window.location.hash === "#debug";
 
     if (this.active) {
-      this.ui = new dat.GUI();
+      this.ui = new dat.GUI({ width: 190 });
 
       this.ui.close();
-      // this.debugOverlayFolder = this.ui.addFolder("Overlays");
       this.debugEditorFolder = this.ui.addFolder("Editor");
     }
   }
