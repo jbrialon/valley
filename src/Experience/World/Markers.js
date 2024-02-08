@@ -203,7 +203,9 @@ export default class Markers {
             `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`
           );
         } else {
-          console.log(`All previous steps for ${name} are not revealed.`);
+          const tooltipText = "I must have missed a step along the way...";
+          this.manager.trigger("ui-tooltip", tooltipText);
+          // console.log(`All previous steps for ${name} are not revealed.`);
         }
         if (this.revealedSteps.length === markers[this.currentChapter].length) {
           // we should wait for all animations to be hover actually
@@ -211,7 +213,8 @@ export default class Markers {
         }
       }
     } else if (!marker) {
-      this.manager.trigger("ui-tooltip-later");
+      const tooltipText = "I can't go there yet, but I can come back later.";
+      this.manager.trigger("ui-tooltip", tooltipText);
       // console.log(`Marker not found, probably not in the current chapter.`);
     }
   }

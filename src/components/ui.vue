@@ -9,15 +9,28 @@ export default {
   },
   data() {
     return {
-      showtooltip: false,
+      showTitle: "",
+      title: "",
+      subtitle: "",
+      showTooltip: false,
+      tooltipText: "",
     };
   },
   mounted() {
-    this.manager.on("ui-tooltip-later", () => {
-      this.showtooltip = true;
+    this.manager.on("ui-title-show", (title, subtitle) => {
+      this.showTitle = true;
+    });
+
+    this.manager.on("ui-title-hide", (title, subtitle) => {
+      this.showTitle = false;
+    });
+
+    this.manager.on("ui-tooltip", (tooltipText) => {
+      this.tooltipText = tooltipText;
+      this.showTooltip = true;
 
       setTimeout(() => {
-        this.showtooltip = false;
+        this.showTooltip = false;
       }, 3000);
     });
   },
@@ -26,9 +39,15 @@ export default {
 
 <template>
   <div class="ui">
-    <Transition name="slide-fade">
-      <div class="ui--speech-bubble" v-if="showtooltip">
-        I can't go there yet, but I can come back later.
+    <Transition name="slide-fade-title">
+      <div class="ui--chapter" v-if="showTitle">
+        <h2>Chapter 1</h2>
+        <h3>Langtang Valley</h3>
+      </div>
+    </Transition>
+    <Transition name="slide-fade-tooltip">
+      <div class="ui--speech-bubble" v-if="showTooltip">
+        {{ tooltipText }}
       </div>
     </Transition>
   </div>
@@ -41,6 +60,26 @@ export default {
   width: 100vw;
   height: 100vh;
   z-index: $z-ui;
+
+  &--chapter {
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 10px;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+
+    h2 {
+      font-size: 130px;
+    }
+
+    h3 {
+      font-size: 35px;
+    }
+  }
 
   &--speech-bubble {
     position: absolute;

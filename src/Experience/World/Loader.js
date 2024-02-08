@@ -61,12 +61,14 @@ export default class Loader {
 
   hideLoader() {
     this.hasLoader = true;
+
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 0,
       duration: 4,
       ease: "expo.in",
       onComplete: () => {
         this.manager.trigger("loaded");
+        this.manager.trigger("ui-title-show");
         if (!this.debug.active) {
           this.destroy();
         }

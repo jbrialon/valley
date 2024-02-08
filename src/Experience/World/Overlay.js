@@ -180,6 +180,7 @@ export default class Overlay {
 
   onMouseMove() {
     if (!this.transformControls.enabled) {
+      this.manager.trigger("ui-title-hide");
       // calculate the position of the mouse based with center as origin
       const mouse = new THREE.Vector2(
         (this.inputEvents.mouse.x / this.sizes.width) * 2 - 1,
