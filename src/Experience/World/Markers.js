@@ -20,7 +20,7 @@ export default class Markers {
     // Options
     this.options = {
       range: 45,
-      markerCloseTimer: 400,
+      markerCloseTimer: 800,
       defaultColor: new THREE.Color(0x992625),
       secondaryColor: new THREE.Color(0x2c4d38),
       mountainColor: new THREE.Color(0x5a5444),
@@ -121,21 +121,25 @@ export default class Markers {
   showClosestMarkers() {
     let markerCloseTimer = null;
     markersArray.forEach((marker, index) => {
-      const distance = marker.position.distanceTo(this.point) * 100;
-      const name = marker.name;
-      if (distance <= this.options.range) {
-        if (!markerCloseTimer) {
-          // Start the timer if it's not already running
-          markerCloseTimer = setTimeout(() => {
-            // Trigger revealMarker after 400ms
-            this.manageReveals(index, name);
-            this.manageSteps(name);
-            markerCloseTimer = null; // Reset the timer
-          }, this.options.markerCloseTimer);
-        } else {
-          // Reset the timer if the distance exceeds 45 units
-          clearTimeout(markerCloseTimer);
-          markerCloseTimer = null;
+      const markerMesh = this.markers[index];
+      if (!markerMesh.visible) {
+        const distance = marker.position.distanceTo(this.point) * 100;
+        const name = marker.name;
+        if (distance <= this.options.range) {
+          if (!markerCloseTimer) {
+            // Start the timer if it's not already running
+            markerCloseTimer = setTimeout(() => {
+              // Trigger revealMarker after 800ms
+              this.manageReveals(index, name);
+              this.manageSteps(name);
+              clearTimeout(markerCloseTimer);
+              markerCloseTimer = null; // Reset the timer
+            }, this.options.markerCloseTimer);
+          } else {
+            // Reset the timer if the distance exceeds 45 units
+            clearTimeout(markerCloseTimer);
+            markerCloseTimer = null;
+          }
         }
       }
       // if (distance > 20 && distance <= 90) {
@@ -202,15 +206,13 @@ export default class Markers {
           console.log(`All previous steps for ${name} are not revealed.`);
         }
         if (this.revealedSteps.length === markers[this.currentChapter].length) {
-          console.log(
-            `All steps from ${this.currentChapter} are revealed, go to next chapter.`
-          );
           // we should wait for all animations to be hover actually
           this.manager.goToNextChapter();
         }
       }
     } else if (!marker) {
-      console.log(`Marker not found, probably not in the current chapter.`);
+      this.manager.trigger("ui-tooltip-later");
+      // console.log(`Marker not found, probably not in the current chapter.`);
     }
   }
 

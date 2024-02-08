@@ -23,10 +23,17 @@ export default class Manager extends EventEmitter {
   }
 
   goToNextChapter() {
+    console.log(
+      `All steps from ${this.currentChapter} are revealed, go to next chapter.`
+    );
     if (this.currentChapter < this.chapters.length) {
       this.currentChapter++;
       console.log(`Going to Chapter ${this.currentChapter + 1}`);
     }
+  }
+
+  showTooltip(message) {
+    console.log(message);
   }
 
   addClickEventToMesh(mesh, clickHandlerFunction) {

@@ -9,6 +9,7 @@
     "build": "vite build"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.3",
     "sass": "^1.69.5",
     "vite": "^5.1.0",
     "vite-plugin-glsl": "^1.2.1"
@@ -21,6 +22,7 @@
     "stats-gl": "^2.0.1",
     "three": "^0.161.0",
     "three-mesh-bvh": "^0.7.0",
-    "three.interactive": "^1.7.0"
+    "three.interactive": "^1.7.0",
+    "vue": "^3.4.16"
   }
 }
