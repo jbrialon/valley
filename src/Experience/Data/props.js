@@ -104,7 +104,19 @@ export default [
     objects: [
       {
         type: "tree",
-        position: new THREE.Vector3(15.28, 3.66, -15.62),
+        position: new THREE.Vector3(15.41, 3.61, -15.67),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+      },
+      {
+        type: "rock",
+        position: new THREE.Vector3(15.37, 3.49, -15.35),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+      },
+      {
+        type: "tree",
+        position: new THREE.Vector3(15.92, 3.53, -15.44),
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
@@ -116,6 +128,25 @@ export default [
       {
         type: "tree",
         position: new THREE.Vector3(20.86, 3.93, -15.53),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+      },
+      {
+        type: "rock",
+        position: new THREE.Vector3(20.82, 3.89, -15.23),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+      },
+      {
+        type: "tree",
+        position: new THREE.Vector3(20.5, 3.87, -15.25),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+      },
+      ,
+      {
+        type: "tree",
+        position: new THREE.Vector3(20.34, 3.88, -15.58),
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
