@@ -164,6 +164,7 @@ export default class DashLine {
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Dash Line");
+      this.debugFolder.close();
       this.debugFolder
         .addColor(this.options, "color")
         .name("Color")
@@ -213,7 +214,7 @@ export default class DashLine {
         .onChange(() => {
           this.material.uniforms.visibility.value = this.options.visibility;
         });
-      this.debugFolder
+      this.debug.debugEditorFolder
         .add(
           {
             button: () => {
@@ -231,7 +232,7 @@ export default class DashLine {
           },
           "button"
         )
-        .name("Toggle Helper");
+        .name("Dash Line Helper");
 
       this.transformControls.addEventListener("dragging-changed", (event) => {
         const transformedPoint = this.transformControls.object;

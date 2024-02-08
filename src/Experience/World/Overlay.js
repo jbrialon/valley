@@ -243,7 +243,7 @@ export default class Overlay {
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder = this.debug.debugOverlayFolder.addFolder("Mask Effect");
+      this.debugFolder = this.debug.ui.addFolder("Overlay");
       this.debugFolder.close();
 
       let isOverlay2Active = true;

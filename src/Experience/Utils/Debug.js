@@ -8,7 +8,8 @@ export default class Debug {
       this.ui = new dat.GUI();
 
       this.ui.close();
-      this.debugOverlayFolder = this.ui.addFolder("Overlays");
+      // this.debugOverlayFolder = this.ui.addFolder("Overlays");
+      this.debugEditorFolder = this.ui.addFolder("Editor");
     }
   }
 }

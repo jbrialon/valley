@@ -41,6 +41,5 @@ export function findMissingSteps(revealedSteps) {
   }
 
   // Return the array of missing steps
-  console.log(revealedSteps, missingSteps);
   return missingSteps;
 }

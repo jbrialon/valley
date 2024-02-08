@@ -89,6 +89,7 @@ export default class Props {
         mesh.index = index;
         mesh.visible = false;
         mesh.scale.set(0, 0, 0);
+        mesh.finalScale = object.scale;
         mesh.position.set(
           object.position.x,
           object.position.y,
@@ -123,13 +124,13 @@ export default class Props {
       .forEach((mesh, index) => {
         if (!mesh.visible) {
           mesh.visible = true;
-          const size = 0.15 + Math.random() * 0.09;
+          const size = mesh.finalScale;
           gsap.to(mesh.scale, {
             duration: 1.2,
             delay: index * 0.3, // Stagger the animation
-            x: size,
-            y: size,
-            z: size,
+            x: size.x,
+            y: size.y,
+            z: size.z,
             ease: "elastic.out",
           });
         }
@@ -138,7 +139,7 @@ export default class Props {
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Meshes");
+      this.debugFolder = this.debug.ui.addFolder("Props");
       this.debugFolder.close();
 
       this.debugFolder.add(this.options.uLightDirection, "x").onChange(() => {

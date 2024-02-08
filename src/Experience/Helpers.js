@@ -95,7 +95,8 @@ export default class Helpers {
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Helpers");
+      // this.debugFolder = this.debug.ui.addFolder("Helpers");
+      this.debugFolder = this.debug.debugEditorFolder;
       this.debugFolder.close();
 
       this.debugFolder
@@ -103,6 +104,9 @@ export default class Helpers {
           {
             button: () => {
               this.transformControls.enabled = !this.transformControls.enabled;
+              if (!this.transformControls.enabled) {
+                this.transformControls.detach();
+              }
             },
           },
           "button"
