@@ -211,6 +211,9 @@ export default class Markers {
           // we should wait for all animations to be hover actually
           this.manager.goToNextChapter();
         }
+      } else if (this.revealedSteps.length === 1 && marker.order === 1) {
+        // tutorial mode, we hide the loader if we reveal the first step
+        this.manager.trigger("loader-hide");
       }
     } else if (!marker) {
       const tooltipText = "I can't go there yet, but I can come back later.";

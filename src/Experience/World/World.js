@@ -29,8 +29,8 @@ export default class World {
       this.dashLine = new DashLine();
       this.camera.setPaths();
 
-      // Show Experience
-      this.loader.hideLoader();
+      // Reveal Tutorial
+      this.loader.revealTutorial();
     });
   }
 
@@ -39,7 +39,7 @@ export default class World {
   }
 
   update() {
-    // if (this.loader) this.loader.update();
+    if (this.loader) this.loader.update();
     if (this.map) this.map.update();
     if (this.overlay) this.overlay.update();
     if (this.markers) this.markers.update();

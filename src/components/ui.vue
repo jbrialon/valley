@@ -1,3 +1,25 @@
+<template>
+  <div class="ui">
+    <Transition name="slide-fade-title">
+      <div class="ui--title" v-if="showTitle">
+        <h1>Valley</h1>
+        <h3>a Explorative Experiment</h3>
+      </div>
+    </Transition>
+    <Transition name="slide-fade-title">
+      <div class="ui--chapter" v-if="showChapter">
+        <h2>Chapter 1</h2>
+        <h3>Langtang Valley</h3>
+      </div>
+    </Transition>
+    <Transition name="slide-fade-tooltip">
+      <div class="ui--speech-bubble" v-if="showTooltip">
+        {{ tooltipText }}
+      </div>
+    </Transition>
+  </div>
+</template>
+
 <script>
 export default {
   name: "ui",
@@ -9,7 +31,8 @@ export default {
   },
   data() {
     return {
-      showTitle: "",
+      showChapter: false,
+      showTitle: true,
       title: "",
       subtitle: "",
       showTooltip: false,
@@ -21,8 +44,16 @@ export default {
       this.showTitle = true;
     });
 
-    this.manager.on("ui-title-hide", (title, subtitle) => {
+    this.manager.on("ui-title-hide", () => {
       this.showTitle = false;
+    });
+
+    this.manager.on("ui-chapter-show", (title, subtitle) => {
+      this.showChapter = true;
+    });
+
+    this.manager.on("ui-chapter-hide", () => {
+      this.showChapter = false;
     });
 
     this.manager.on("ui-tooltip", (tooltipText) => {
@@ -37,29 +68,29 @@ export default {
 };
 </script>
 
-<template>
-  <div class="ui">
-    <Transition name="slide-fade-title">
-      <div class="ui--chapter" v-if="showTitle">
-        <h2>Chapter 1</h2>
-        <h3>Langtang Valley</h3>
-      </div>
-    </Transition>
-    <Transition name="slide-fade-tooltip">
-      <div class="ui--speech-bubble" v-if="showTooltip">
-        {{ tooltipText }}
-      </div>
-    </Transition>
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .ui {
   position: relative;
   pointer-events: none;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: $z-ui;
+
+  &--title {
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 10px;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+
+    h1 {
+      font-size: 150px;
+    }
+  }
 
   &--chapter {
     position: absolute;

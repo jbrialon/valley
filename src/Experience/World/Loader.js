@@ -9,23 +9,28 @@ export default class Loader {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
+    this.sizes = this.experience.sizes;
     this.time = this.experience.time;
     this.debug = this.experience.debug;
     this.manager = this.experience.manager;
 
     // Options
     this.options = {
-      uColor: "#968677",
+      uColor: "#b9a998",
     };
 
     // Setup
-    this.loader = document.querySelectorAll(".js-loader");
     this.setGeometry();
     this.setMaterial();
     this.setMesh();
+    this.initEvents();
 
     // Debug
-    // this.setDebug();
+    this.setDebug();
+  }
+
+  initEvents() {
+    this.manager.on("loader-hide", this.hideLoader.bind(this));
   }
 
   setGeometry() {
@@ -40,13 +45,16 @@ export default class Loader {
           value: 1,
         },
         uCircleRadius: {
-          value: 14.5,
+          value: 0,
+        },
+        uScreenRatio: {
+          value: this.sizes.width / this.sizes.height,
         },
         uColor: { value: new THREE.Color(this.options.uColor) },
 
         uTime: { value: 0 },
         uCirclePos: {
-          value: new THREE.Vector2(-1, 1),
+          value: new THREE.Vector2(0.804, 0.765),
         },
       },
       vertexShader: vertexShader,
@@ -60,25 +68,37 @@ export default class Loader {
   }
 
   hideLoader() {
-    this.hasLoader = true;
-
     gsap.to(this.material.uniforms.uCircleRadius, {
-      value: 0,
-      duration: 4,
-      ease: "expo.in",
+      delay: 1.5,
+      value: 12,
+      duration: 1.5,
+      ease: "power4.inOut",
+      onStart: () => {
+        this.manager.trigger("ui-title-hide");
+      },
       onComplete: () => {
-        this.manager.trigger("loaded");
-        this.manager.trigger("ui-title-show");
+        this.manager.trigger("ui-chapter-show");
         if (!this.debug.active) {
           this.destroy();
         }
       },
     });
-    gsap.to(this.loader, {
-      autoAlpha: 0,
-      duration: 2,
-      ease: "expo.in",
-      delay: 1,
+  }
+
+  revealTutorial() {
+    this.hasLoader = true;
+
+    gsap.to(this.material.uniforms.uCircleRadius, {
+      value: 0.23,
+      duration: 1.5,
+      ease: "power4.inOut",
+      onComplete: () => {
+        this.manager.trigger("loaded");
+        this.manager.trigger("ui-title-show");
+        if (!this.debug.active) {
+          // this.destroy();
+        }
+      },
     });
   }
 
@@ -137,7 +157,7 @@ export default class Loader {
   }
 
   update() {
-    this.material.uniforms.uTime.value = this.time.elapsedTime * 0.15;
+    this.material.uniforms.uTime.value = this.time.elapsedTime * 0.5;
   }
 
   destroy() {

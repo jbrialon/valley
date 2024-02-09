@@ -1,13 +1,12 @@
-export default class EventEmitter {
+export default class EventEmitter extends EventTarget {
   constructor() {
-    this.callbacks = {};
-    this.callbacks.base = {};
+    super();
   }
 
-  on(_names, callback) {
+  on(eventName, callback) {
     // Errors
-    if (typeof _names === "undefined" || _names === "") {
-      console.warn("wrong names");
+    if (typeof eventName === "undefined" || eventName === "") {
+      console.warn("wrong eventName");
       return false;
     }
 
@@ -16,162 +15,60 @@ export default class EventEmitter {
       return false;
     }
 
-    // Resolve names
-    const names = this.resolveNames(_names);
+    // Wrap the callback to directly apply eventData as arguments
+    const wrappedCallback = (event) => {
+      callback(...event.detail);
+    };
 
-    // Each name
-    names.forEach((_name) => {
-      // Resolve name
-      const name = this.resolveName(_name);
+    // Store the wrapped callback to enable removal later
+    if (!this._callbacks) {
+      this._callbacks = new Map();
+    }
 
-      // Create namespace if not exist
-      if (!(this.callbacks[name.namespace] instanceof Object))
-        this.callbacks[name.namespace] = {};
+    let callbacksForEvent = this._callbacks.get(eventName);
+    if (!callbacksForEvent) {
+      callbacksForEvent = new Map();
+      this._callbacks.set(eventName, callbacksForEvent);
+    }
 
-      // Create callback if not exist
-      if (!(this.callbacks[name.namespace][name.value] instanceof Array))
-        this.callbacks[name.namespace][name.value] = [];
+    // Associate the original callback with its wrapper
+    callbacksForEvent.set(callback, wrappedCallback);
 
-      // Add callback
-      this.callbacks[name.namespace][name.value].push(callback);
-    });
+    this.addEventListener(eventName, wrappedCallback);
+    return this;
+  }
+
+  off(eventName, callback) {
+    // Errors
+    if (typeof eventName === "undefined" || eventName === "") {
+      console.warn("wrong eventName");
+      return false;
+    }
+
+    // Retrieve and remove the wrapped callback
+    const callbacksForEvent = this._callbacks?.get(eventName);
+    const wrappedCallback = callbacksForEvent?.get(callback);
+
+    if (wrappedCallback) {
+      this.removeEventListener(eventName, wrappedCallback);
+      callbacksForEvent.delete(callback);
+      if (callbacksForEvent.size === 0) {
+        this._callbacks.delete(eventName);
+      }
+    }
 
     return this;
   }
 
-  off(_names) {
+  trigger(eventName, ...eventData) {
     // Errors
-    if (typeof _names === "undefined" || _names === "") {
-      console.warn("wrong name");
+    if (typeof eventName === "undefined" || eventName === "") {
+      console.warn("wrong eventName");
       return false;
     }
 
-    // Resolve names
-    const names = this.resolveNames(_names);
-
-    // Each name
-    names.forEach((_name) => {
-      // Resolve name
-      const name = this.resolveName(_name);
-
-      // Remove namespace
-      if (name.namespace !== "base" && name.value === "") {
-        delete this.callbacks[name.namespace];
-      }
-
-      // Remove specific callback in namespace
-      else {
-        // Default
-        if (name.namespace === "base") {
-          // Try to remove from each namespace
-          for (const namespace in this.callbacks) {
-            if (
-              this.callbacks[namespace] instanceof Object &&
-              this.callbacks[namespace][name.value] instanceof Array
-            ) {
-              delete this.callbacks[namespace][name.value];
-
-              // Remove namespace if empty
-              if (Object.keys(this.callbacks[namespace]).length === 0)
-                delete this.callbacks[namespace];
-            }
-          }
-        }
-
-        // Specified namespace
-        else if (
-          this.callbacks[name.namespace] instanceof Object &&
-          this.callbacks[name.namespace][name.value] instanceof Array
-        ) {
-          delete this.callbacks[name.namespace][name.value];
-
-          // Remove namespace if empty
-          if (Object.keys(this.callbacks[name.namespace]).length === 0)
-            delete this.callbacks[name.namespace];
-        }
-      }
-    });
-
+    const event = new CustomEvent(eventName, { detail: eventData });
+    this.dispatchEvent(event);
     return this;
-  }
-
-  trigger(_name, ..._args) {
-    // Errors
-    if (typeof _name === "undefined" || _name === "") {
-      console.warn("wrong name");
-      return false;
-    }
-
-    let finalResult = null;
-    let result = null;
-
-    // Default args
-    const args = !(_args instanceof Array) ? [] : _args;
-
-    // Resolve names (should only have one event)
-    let name = this.resolveNames(_name);
-
-    // Resolve name
-    name = this.resolveName(name[0]);
-
-    // Default namespace
-    if (name.namespace === "base") {
-      // Try to find callback in each namespace
-      for (const namespace in this.callbacks) {
-        if (
-          this.callbacks[namespace] instanceof Object &&
-          this.callbacks[namespace][name.value] instanceof Array
-        ) {
-          this.callbacks[namespace][name.value].forEach(function (callback) {
-            result = callback.apply(this, args);
-
-            if (typeof finalResult === "undefined") {
-              finalResult = result;
-            }
-          });
-        }
-      }
-    }
-
-    // Specified namespace
-    else if (this.callbacks[name.namespace] instanceof Object) {
-      if (name.value === "") {
-        console.warn("wrong name");
-        return this;
-      }
-
-      this.callbacks[name.namespace][name.value].forEach(function (callback) {
-        result = callback.apply(this, args);
-
-        if (typeof finalResult === "undefined") finalResult = result;
-      });
-    }
-
-    return finalResult;
-  }
-
-  resolveNames(_names) {
-    let names = _names;
-    names = names.replace(/[^a-zA-Z0-9 ,/.]/g, "");
-    names = names.replace(/[,/]+/g, " ");
-    names = names.split(" ");
-
-    return names;
-  }
-
-  resolveName(name) {
-    const newName = {};
-    const parts = name.split(".");
-
-    newName.original = name;
-    newName.value = parts[0];
-    newName.namespace = "base"; // Base namespace
-
-    // Specified namespace
-    if (parts.length > 1 && parts[1] !== "") {
-      newName.namespace = parts[1];
-    }
-
-    return newName;
   }
 }
