@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { gsap } from "gsap";
 import Experience from "../Experience";
 
 import { addBarycentricCoordinates } from "../Utils/Geometry";
@@ -116,6 +115,7 @@ export default class Map {
       if (child instanceof THREE.Mesh && child.name === "map") {
         child.geometry = child.geometry.toNonIndexed();
         addBarycentricCoordinates(child.geometry, true);
+        child.geometry.computeBoundsTree();
         this.mapModel = child;
       } else if (child instanceof THREE.Mesh && child.name.includes("Lake")) {
         child.material = this.lakeMaterial;
