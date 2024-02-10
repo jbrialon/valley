@@ -28,9 +28,6 @@ export default class World {
 
       this.dashLine = new DashLine();
       this.camera.setPaths();
-
-      // Reveal Tutorial
-      this.loader.revealTutorial();
     });
   }
 

@@ -31,6 +31,7 @@ export default class Loader {
 
   initEvents() {
     this.manager.on("loader-hide", this.hideLoader.bind(this));
+    this.manager.on("loader-tutorial", this.revealTutorial.bind(this));
   }
 
   setGeometry() {
@@ -64,12 +65,12 @@ export default class Loader {
 
   setMesh() {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh.position.set(-4.29, 1.56, -9.07);
     this.scene.add(this.mesh);
   }
 
   hideLoader() {
     gsap.to(this.material.uniforms.uCircleRadius, {
-      delay: 1.5,
       value: 12,
       duration: 1.5,
       ease: "power4.inOut",
@@ -78,6 +79,8 @@ export default class Loader {
       },
       onComplete: () => {
         this.manager.trigger("ui-chapter-show");
+        this.manager.setMode("game");
+
         if (!this.debug.active) {
           this.destroy();
         }
@@ -143,13 +146,13 @@ export default class Loader {
         .name("circle radius");
       this.debugFolder
         .add(this.material.uniforms.uCirclePos.value, "x")
-        .min(-1)
+        .min(0)
         .max(1)
         .step(0.001)
         .name("pos x");
       this.debugFolder
         .add(this.material.uniforms.uCirclePos.value, "y")
-        .min(-1)
+        .min(0)
         .max(1)
         .step(0.001)
         .name("pos y");

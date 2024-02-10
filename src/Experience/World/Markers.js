@@ -203,21 +203,29 @@ export default class Markers {
             `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`
           );
         } else {
-          const tooltipText = "I must have missed a step along the way...";
-          this.manager.trigger("ui-tooltip", tooltipText);
+          const text = "I must have missed a step along the way...";
+          this.manager.trigger("ui-tooltip-auto-hide", text);
           // console.log(`All previous steps for ${name} are not revealed.`);
         }
         if (this.revealedSteps.length === markers[this.currentChapter].length) {
           // we should wait for all animations to be hover actually
           this.manager.goToNextChapter();
         }
-      } else if (this.revealedSteps.length === 1 && marker.order === 1) {
+      } else if (
+        this.revealedSteps.length === 1 &&
+        marker.order === 1 &&
+        this.manager.getMode() === "tutorial"
+      ) {
         // tutorial mode, we hide the loader if we reveal the first step
         this.manager.trigger("loader-hide");
+        this.manager.trigger("ui-tooltip-hide", () => {
+          const text = "Use your mouse scroll to travel along the valley.";
+          this.manager.trigger("ui-tooltip-show", text);
+        });
       }
     } else if (!marker) {
-      const tooltipText = "I can't go there yet, but I can come back later.";
-      this.manager.trigger("ui-tooltip", tooltipText);
+      const text = "I can't go there yet, but I can come back later.";
+      this.manager.trigger("ui-tooltip-auto-hide", text);
       // console.log(`Marker not found, probably not in the current chapter.`);
     }
   }

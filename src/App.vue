@@ -16,12 +16,5 @@ const manager = experience.manager;
   position: relative;
   width: 100vw;
   height: 100vh;
-
-  @supports (-webkit-touch-callout: none) {
-    #app {
-      /* The hack for Safari */
-      min-height: -webkit-fill-available;
-    }
-  }
 }
 </style>

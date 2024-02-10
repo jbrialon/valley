@@ -26,6 +26,7 @@ export default class Camera {
     this.cameraCurve = null;
     this.targetCurve = null;
     this.fakeTarget = null;
+    this.hasScrolled = false;
     this.setInstance();
     this.initEvents();
     // this.setOrbitControls();
@@ -77,7 +78,20 @@ export default class Camera {
   }
 
   onMouseWheel() {
-    if (this.scrollProgress >= 0 && this.canScroll) {
+    if (
+      this.scrollProgress >= 0 &&
+      this.canScroll &&
+      this.manager.getMode() !== "tutorial"
+    ) {
+      if (!this.hasScrolled) {
+        this.hasScrolled = true;
+        this.manager.trigger("ui-tooltip-hide", () => {
+          const text = "Have fun exploring :)!";
+          this.manager.trigger("ui-tooltip-auto-hide", text);
+          this.manager.trigger("ui-chapter-hide");
+        });
+      }
+
       let delta = 0.025;
       if (this.inputEvents.mouse.z < 0) {
         delta = -0.025;
@@ -115,37 +129,39 @@ export default class Camera {
   }
 
   onMouseMove() {
-    // calculate the position of the mouse based with center as origin
-    const mouse = new THREE.Vector2(
-      this.inputEvents.mouse.x - this.sizes.width / 2,
-      this.inputEvents.mouse.y - this.sizes.height / 2
-    );
+    if (this.manager.getMode() !== "tutorial") {
+      // calculate the position of the mouse based with center as origin
+      const mouse = new THREE.Vector2(
+        this.inputEvents.mouse.x - this.sizes.width / 2,
+        this.inputEvents.mouse.y - this.sizes.height / 2
+      );
 
-    // normalize the mouse position
-    const position = new THREE.Vector2(
-      mouse.x / (this.sizes.width / 2),
-      mouse.y / (this.sizes.height / 2)
-    );
+      // normalize the mouse position
+      const position = new THREE.Vector2(
+        mouse.x / (this.sizes.width / 2),
+        mouse.y / (this.sizes.height / 2)
+      );
 
-    // Create a movement vector based on the mouse position
-    const movementVector = new THREE.Vector3(
-      position.x / 4,
-      position.y / -4,
-      0
-    );
+      // Create a movement vector based on the mouse position
+      const movementVector = new THREE.Vector3(
+        position.x / 4,
+        position.y / -4,
+        0
+      );
 
-    // Apply the camera's current rotation to the movement vector
-    movementVector.applyQuaternion(this.instance.quaternion);
+      // Apply the camera's current rotation to the movement vector
+      movementVector.applyQuaternion(this.instance.quaternion);
 
-    // Update the camera's position by adding the transformed movement vector
-    gsap.to(this.instance.position, {
-      delay: 0.1,
-      x: movementVector.x,
-      y: movementVector.y,
-      z: movementVector.z,
-      duration: 2,
-      ease: "power4.easeInOut",
-    });
+      // Update the camera's position by adding the transformed movement vector
+      gsap.to(this.instance.position, {
+        delay: 0.1,
+        x: movementVector.x,
+        y: movementVector.y,
+        z: movementVector.z,
+        duration: 2,
+        ease: "power4.easeInOut",
+      });
+    }
   }
 
   animateMove(direction) {

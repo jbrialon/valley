@@ -11,11 +11,20 @@ export default class Manager extends EventEmitter {
 
     // Setup
     this.interactiveMeshes = [];
+    this.mode = "tutorial";
     this.chapters = ["chapterOne", "chapterTwo", "chapterTree"];
     this.currentChapter = 0;
 
     // Debug
     this.setDebug();
+  }
+
+  getMode() {
+    return this.mode;
+  }
+
+  setMode(mode) {
+    this.mode = mode;
   }
 
   getCurrentChapter() {
@@ -30,10 +39,6 @@ export default class Manager extends EventEmitter {
       this.currentChapter++;
       console.log(`Going to Chapter ${this.currentChapter + 1}`);
     }
-  }
-
-  showTooltip(message) {
-    console.log(message);
   }
 
   addClickEventToMesh(mesh, clickHandlerFunction) {

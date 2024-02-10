@@ -1,18 +1,28 @@
 <template>
   <div class="ui">
-    <Transition name="slide-fade-title">
+    <Transition name="slide-fade">
       <div class="ui--title" v-if="showTitle">
         <h1>Valley</h1>
-        <h3>a Explorative Experiment</h3>
+        <h3>an Explorative Experiment</h3>
       </div>
     </Transition>
-    <Transition name="slide-fade-title">
+
+    <Transition name="fade">
+      <div class="ui--title-menu" v-if="showMenu">
+        <div class="ui--title-menu-container">
+          <button @click="start('game')">Start Game</button>
+          <button @click="start('tutorial')">Start Tutorial</button>
+        </div>
+      </div>
+    </Transition>
+
+    <Transition name="slide-fade">
       <div class="ui--chapter" v-if="showChapter">
         <h2>Chapter 1</h2>
         <h3>Langtang Valley</h3>
       </div>
     </Transition>
-    <Transition name="slide-fade-tooltip">
+    <Transition name="slide-fade">
       <div class="ui--speech-bubble" v-if="showTooltip">
         {{ tooltipText }}
       </div>
@@ -31,13 +41,51 @@ export default {
   },
   data() {
     return {
+      showMenu: true,
       showChapter: false,
       showTitle: true,
       title: "",
       subtitle: "",
       showTooltip: false,
       tooltipText: "",
+      autoHideDuration: 4000,
     };
+  },
+  methods: {
+    start(mode) {
+      this.showMenu = false;
+      if (mode === "game") {
+        this.manager.trigger("loader-hide");
+      } else if (mode === "tutorial") {
+        this.manager.trigger("loader-tutorial");
+        this.uiShowTooltip(
+          "Navigate your mouse to the zone and click to expose it."
+        );
+      }
+    },
+    uiShowTooltip(text, callback) {
+      this.tooltipText = text;
+      this.showTooltip = true;
+
+      if (callback && typeof callback === "function") {
+        setTimeout(callback, 1000);
+      }
+    },
+    uiHideTooltip(callback) {
+      this.showTooltip = false;
+
+      if (callback && typeof callback === "function") {
+        setTimeout(callback, 1000);
+      }
+    },
+    uiShowAndHideTooltip(text) {
+      this.tooltipText = text;
+      this.showTooltip = true;
+
+      setTimeout(() => {
+        this.showTooltip = false;
+      }, this.autoHideDuration);
+    },
   },
   mounted() {
     this.manager.on("ui-title-show", (title, subtitle) => {
@@ -56,14 +104,14 @@ export default {
       this.showChapter = false;
     });
 
-    this.manager.on("ui-tooltip", (tooltipText) => {
-      this.tooltipText = tooltipText;
-      this.showTooltip = true;
+    this.manager.on("ui-tooltip-show", this.uiShowTooltip.bind(this));
 
-      setTimeout(() => {
-        this.showTooltip = false;
-      }, 3000);
-    });
+    this.manager.on("ui-tooltip-hide", this.uiHideTooltip.bind(this));
+
+    this.manager.on(
+      "ui-tooltip-auto-hide",
+      this.uiShowAndHideTooltip.bind(this)
+    );
   },
 };
 </script>
@@ -82,14 +130,46 @@ export default {
     text-transform: uppercase;
     font-weight: 500;
     letter-spacing: 10px;
-    top: 60px;
+    top: 0;
+    padding-top: 65px;
     left: 50%;
     transform: translateX(-50%);
     color: white;
+    white-space: nowrap;
 
     h1 {
       font-size: 150px;
     }
+
+    h3 {
+      margin-top: -15px;
+    }
+  }
+
+  &--title-menu {
+    display: flex;
+    pointer-events: all;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    button {
+      cursor: pointer;
+      background: none;
+      border: 2px solid white;
+      padding: 15px;
+      text-transform: uppercase;
+      min-width: 165px;
+      color: white;
+      font-weight: 500;
+      letter-spacing: 1px;
+      margin: 0 15px;
+    }
+  }
+
+  &--title-menu-container {
+    flex-grow: 0;
   }
 
   &--chapter {
@@ -102,6 +182,7 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     color: white;
+    white-space: nowrap;
 
     h2 {
       font-size: 130px;
