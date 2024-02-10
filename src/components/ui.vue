@@ -4,6 +4,10 @@
       <div class="ui--title" v-if="showTitle">
         <h1>Valley</h1>
         <h3>an Explorative Experiment</h3>
+        <p>
+          Follow our footsteps in a 3D Experiment through Nepal, uncovering
+          hidden photos and moments from our two-week trek as you go.
+        </p>
       </div>
     </Transition>
 
@@ -41,7 +45,7 @@ export default {
   },
   data() {
     return {
-      showMenu: true,
+      showMenu: false,
       showChapter: false,
       showTitle: true,
       title: "",
@@ -88,6 +92,10 @@ export default {
     },
   },
   mounted() {
+    this.manager.on("loaded", () => {
+      this.showMenu = true;
+    });
+
     this.manager.on("ui-title-show", (title, subtitle) => {
       this.showTitle = true;
     });
@@ -143,6 +151,16 @@ export default {
 
     h3 {
       margin-top: -15px;
+    }
+
+    p {
+      white-space: break-spaces;
+      max-width: 500px;
+      text-transform: none;
+      letter-spacing: 2px;
+      margin: auto;
+      padding: 50px 25px 25px 50px;
+      line-height: 2;
     }
   }
 

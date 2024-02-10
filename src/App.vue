@@ -1,5 +1,8 @@
 <script setup>
+// Vue Components
 import ui from "./components/ui.vue";
+
+// Three.js app
 import Experience from "./Experience/Experience";
 const experience = new Experience();
 const manager = experience.manager;
@@ -15,6 +18,6 @@ const manager = experience.manager;
 #app {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: var(--vh);
 }
 </style>

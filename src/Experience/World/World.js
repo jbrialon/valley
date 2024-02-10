@@ -32,6 +32,7 @@ export default class World {
   }
 
   resize() {
+    if (this.loader) this.loader.resize();
     if (this.dashLine) this.dashLine.resize();
   }
 

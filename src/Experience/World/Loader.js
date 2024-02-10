@@ -96,7 +96,6 @@ export default class Loader {
       duration: 1.5,
       ease: "power4.inOut",
       onComplete: () => {
-        this.manager.trigger("loaded");
         this.manager.trigger("ui-title-show");
         if (!this.debug.active) {
           // this.destroy();
@@ -157,6 +156,11 @@ export default class Loader {
         .step(0.001)
         .name("pos y");
     }
+  }
+
+  resize() {
+    this.material.uniforms.uScreenRatio.value =
+      this.sizes.width / this.sizes.height;
   }
 
   update() {
