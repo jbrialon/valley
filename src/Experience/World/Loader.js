@@ -97,40 +97,22 @@ export default class Loader {
       ease: "power4.inOut",
       onComplete: () => {
         this.manager.trigger("ui-title-show");
-        if (!this.debug.active) {
-          // this.destroy();
-        }
       },
     });
+  }
+
+  resize() {
+    this.material.uniforms.uScreenRatio.value =
+      this.sizes.width / this.sizes.height;
+  }
+
+  update() {
+    this.material.uniforms.uTime.value = this.time.elapsedTime * 0.5;
   }
 
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Loader");
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              gsap.to(this.material.uniforms.uCircleRadius, {
-                value: 14.5,
-                duration: 1.5,
-                ease: "power4.inOut",
-              });
-            },
-          },
-          "button"
-        )
-        .name("show Loader");
-      this.debugFolder
-        .add(
-          {
-            button: () => {
-              this.hideLoader();
-            },
-          },
-          "button"
-        )
-        .name("hide Loader");
       this.debugFolder
         .add(this.material.uniforms.uAlpha, "value")
         .min(0)
@@ -156,15 +138,6 @@ export default class Loader {
         .step(0.001)
         .name("pos y");
     }
-  }
-
-  resize() {
-    this.material.uniforms.uScreenRatio.value =
-      this.sizes.width / this.sizes.height;
-  }
-
-  update() {
-    this.material.uniforms.uTime.value = this.time.elapsedTime * 0.5;
   }
 
   destroy() {

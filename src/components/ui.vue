@@ -155,7 +155,8 @@ export default {
 
     p {
       white-space: break-spaces;
-      max-width: 500px;
+      font-family: Libre Baskerville;
+      max-width: 750px;
       text-transform: none;
       letter-spacing: 2px;
       margin: auto;
