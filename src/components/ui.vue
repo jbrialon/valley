@@ -5,8 +5,7 @@
         <h1>Valley</h1>
         <h3>an Explorative Experiment</h3>
         <p>
-          Follow our footsteps in a 3D Experiment through Nepal, uncovering
-          hidden photos and moments from our two-week trek as you go.
+          {{ $t("title.paragraph") }}
         </p>
       </div>
     </Transition>
@@ -14,8 +13,8 @@
     <Transition name="fade">
       <div class="ui--title-menu" v-if="showMenu">
         <div class="ui--title-menu-container">
-          <button @click="start('game')">Start Game</button>
-          <button @click="start('tutorial')">Start Tutorial</button>
+          <button @click="start('game')">{{ $t("menu.start") }}</button>
+          <button @click="start('tutorial')">{{ $t("menu.tuto") }}</button>
         </div>
       </div>
     </Transition>
@@ -64,8 +63,8 @@ export default {
         this.manager.goToTutorialStep(1);
       }
     },
-    uiShowTooltip(text, callback) {
-      this.tooltipText = text;
+    uiShowTooltip(key, callback) {
+      this.tooltipText = this.$t(key);
       this.showTooltip = true;
 
       if (callback && typeof callback === "function") {
@@ -79,8 +78,8 @@ export default {
         setTimeout(callback, 1000);
       }
     },
-    uiShowAndHideTooltip(text) {
-      this.tooltipText = text;
+    uiShowAndHideTooltip(key, arrayParam) {
+      this.tooltipText = this.$t(key, arrayParam);
       this.showTooltip = true;
 
       setTimeout(() => {
@@ -101,9 +100,9 @@ export default {
       this.showTitle = false;
     });
 
-    this.manager.on("ui-chapter-show", (title, subtitle) => {
-      this.title = title;
-      this.subtitle = subtitle;
+    this.manager.on("ui-chapter-show", (chapterNumber) => {
+      this.title = this.$t(`chapter.title${chapterNumber}`);
+      this.subtitle = this.$t(`chapter.subtitle${chapterNumber}`);
       this.showChapter = true;
 
       setTimeout(() => {

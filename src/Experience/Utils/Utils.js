@@ -69,3 +69,17 @@ export function findMarkerByName(markers, name) {
 
   return foundMarker;
 }
+
+export function getNavigatorLanguage() {
+  let lang = "en";
+  if (navigator.languages && navigator.languages.length) {
+    lang = navigator.languages[0];
+  } else {
+    lang =
+      navigator.userLanguage ||
+      navigator.language ||
+      navigator.browserLanguage ||
+      "en";
+  }
+  return lang.substring(0, 2);
+}

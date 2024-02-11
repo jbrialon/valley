@@ -47,7 +47,7 @@ export default class Manager extends EventEmitter {
       this.setMouseMoveState(true);
       this.setMaxScrollProgress(1);
       this.tutorialStep = 4;
-      this.trigger("ui-chapter-show", "Chapter 1", "Langtang Valley");
+      this.trigger("ui-chapter-show", this.currentChapter);
     });
   }
 
@@ -59,10 +59,7 @@ export default class Manager extends EventEmitter {
         case 1:
           this.tutorialStep = 1;
           this.setSearchState(true);
-          this.trigger(
-            "ui-tooltip-show",
-            "Navigate your mouse to the zone and hold click to expose it."
-          );
+          this.trigger("ui-tooltip-show", "tooltip.tutorial.one");
           this.trigger("loader-tutorial-one");
           break;
 
@@ -72,12 +69,11 @@ export default class Manager extends EventEmitter {
           this.trigger("loader-tutorial-hide", () => {
             this.setScrollState(true);
             this.setMouseMoveState(true);
-            this.trigger("ui-chapter-show", "Chapter 1", "Langtang Valley");
+            this.trigger("ui-chapter-show", this.currentChapter);
           });
 
           this.trigger("ui-tooltip-hide", () => {
-            const text = "Use your mouse scroll to travel along the valley.";
-            this.trigger("ui-tooltip-show", text);
+            this.trigger("ui-tooltip-show", "tooltip.tutorial.two");
           });
           break;
 
@@ -87,9 +83,7 @@ export default class Manager extends EventEmitter {
           this.setMouseMoveState(false);
           this.setSearchState(true);
           this.trigger("ui-tooltip-hide", () => {
-            const text =
-              "Navigate your mouse to the zone and click to expose the next step of our journey.";
-            this.trigger("ui-tooltip-show", text);
+            this.trigger("ui-tooltip-show", "tooltip.tutorial.three");
           });
           this.trigger("loader-tutorial-two");
           break;
@@ -98,9 +92,7 @@ export default class Manager extends EventEmitter {
           this.tutorialStep = 4;
           this.trigger("loader-tutorial-hide");
           this.trigger("ui-tooltip-hide", () => {
-            const text =
-              "Good job! have fun discovering! track your progress with your travel log! (TODO)";
-            this.trigger("ui-tooltip-auto-hide", text);
+            this.trigger("ui-tooltip-auto-hide", "tooltip.tutorial.four");
             this.setScrollState(true);
             this.setMouseMoveState(true);
             this.setMaxScrollProgress(1);
@@ -172,8 +164,7 @@ export default class Manager extends EventEmitter {
             this.trigger("showDashLine", currentStep, name);
           } else {
             // All previous steps for are not revealed.
-            const text = "I must have missed a step along the way...";
-            this.trigger("ui-tooltip-auto-hide", text);
+            this.trigger("ui-tooltip-auto-hide", "tooltip.message.missed");
           }
         } else if (
           this.revealedSteps[currentChapter].length === 1 &&
@@ -188,11 +179,12 @@ export default class Manager extends EventEmitter {
           this.goToTutorialStep(4);
         }
       } else if (chapter !== currentChapter && chapter !== "bonus") {
-        const text = "I can't go there yet, but I can come back later.";
-        this.trigger("ui-tooltip-auto-hide", text);
+        this.trigger("ui-tooltip-auto-hide", "tooltip.message.later");
       } else if (chapter === "bonus") {
-        const text = `Achievement! you found ${marker.displayName}!`;
-        this.trigger("ui-tooltip-auto-hide", text);
+        console.log("bonus!!");
+        this.trigger("ui-tooltip-auto-hide", "tooltip.message.achievement", [
+          marker.displayName,
+        ]);
       }
     }
   }
@@ -214,11 +206,7 @@ export default class Manager extends EventEmitter {
     // All steps from this.currentChapter are revealed, go to next chapter.
     if (this.currentChapter < this.chapters.length) {
       this.currentChapter++;
-      this.trigger(
-        "ui-chapter-show",
-        `Chapter ${this.currentChapter + 1}`,
-        "Acclimatization"
-      );
+      this.trigger("ui-chapter-show", this.currentChapter);
       console.log(`Going to Chapter ${this.currentChapter + 1}`);
     }
   }

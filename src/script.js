@@ -1,9 +1,25 @@
 import "./styles/style.scss";
-import { createApp } from "vue";
+
+import messages from "./Experience/Data/i18n";
+import { getNavigatorLanguage } from "./Experience/Utils/Utils.js";
+
+import { createI18n } from "vue-i18n";
+import { createApp, h } from "vue";
 import App from "./App.vue";
 
 import Experience from "./Experience/Experience.js";
 
 const experience = new Experience(document.querySelector("canvas.webgl"));
 
-createApp(App).mount("#app");
+const i18n = new createI18n({
+  locale: getNavigatorLanguage(),
+  messages,
+  fallbackLocale: "fr",
+});
+
+const app = createApp({
+  render: () => h(App),
+});
+
+app.use(i18n);
+app.mount("#app");
