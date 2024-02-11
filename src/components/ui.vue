@@ -22,8 +22,8 @@
 
     <Transition name="slide-fade">
       <div class="ui--chapter" v-if="showChapter">
-        <h2>Chapter 1</h2>
-        <h3>Langtang Valley</h3>
+        <h2>{{ title }}</h2>
+        <h3>{{ subtitle }}</h3>
       </div>
     </Transition>
     <Transition name="slide-fade">
@@ -96,7 +96,7 @@ export default {
       this.showMenu = true;
     });
 
-    this.manager.on("ui-title-show", (title, subtitle) => {
+    this.manager.on("ui-title-show", () => {
       this.showTitle = true;
     });
 
@@ -105,7 +105,13 @@ export default {
     });
 
     this.manager.on("ui-chapter-show", (title, subtitle) => {
+      this.title = title;
+      this.subtitle = subtitle;
       this.showChapter = true;
+
+      setTimeout(() => {
+        this.showChapter = false;
+      }, this.autoHideDuration);
     });
 
     this.manager.on("ui-chapter-hide", () => {

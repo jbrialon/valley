@@ -37,6 +37,11 @@ export default class Manager extends EventEmitter {
     );
     if (this.currentChapter < this.chapters.length) {
       this.currentChapter++;
+      this.trigger(
+        "ui-chapter-show",
+        `Chapter ${this.currentChapter + 1}`,
+        "Acclimatization"
+      );
       console.log(`Going to Chapter ${this.currentChapter + 1}`);
     }
   }

@@ -88,7 +88,6 @@ export default class Camera {
         this.manager.trigger("ui-tooltip-hide", () => {
           const text = "Have fun exploring :)!";
           this.manager.trigger("ui-tooltip-auto-hide", text);
-          this.manager.trigger("ui-chapter-hide");
         });
       }
 

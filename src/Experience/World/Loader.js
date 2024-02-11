@@ -78,7 +78,7 @@ export default class Loader {
         this.manager.trigger("ui-title-hide");
       },
       onComplete: () => {
-        this.manager.trigger("ui-chapter-show");
+        this.manager.trigger("ui-chapter-show", "Chapter 1", "Langtang Valley");
         this.manager.setMode("game");
 
         if (!this.debug.active) {
