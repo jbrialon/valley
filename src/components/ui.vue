@@ -14,7 +14,7 @@
     <Transition name="fade">
       <div class="ui--title-menu" v-if="showMenu">
         <div class="ui--title-menu-container">
-          <!-- <button @click="start('game')">Start Game</button> -->
+          <button @click="start('game')">Start Game</button>
           <button @click="start('tutorial')">Start Tutorial</button>
         </div>
       </div>
@@ -59,7 +59,7 @@ export default {
     start(mode) {
       this.showMenu = false;
       if (mode === "game") {
-        // this.manager.trigger("loader-hide");
+        this.manager.startGame();
       } else if (mode === "tutorial") {
         this.manager.goToTutorialStep(1);
       }
@@ -172,7 +172,7 @@ export default {
     display: flex;
     pointer-events: all;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     height: 100%;
     width: 100%;
 
@@ -191,6 +191,7 @@ export default {
   }
 
   &--title-menu-container {
+    padding-bottom: 75px;
     flex-grow: 0;
   }
 

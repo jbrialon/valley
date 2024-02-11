@@ -31,7 +31,8 @@ export default class Loader {
   }
 
   initEvents() {
-    this.manager.on("loader-hide", this.hideLoader.bind(this));
+    this.manager.on("loader-intro-hide", this.hideLoaderIntro.bind(this));
+    this.manager.on("loader-tutorial-hide", this.hideLoaderTutorial.bind(this));
     this.manager.on(
       "loader-tutorial-one",
       this.revealTutorialStepOne.bind(this)
@@ -77,7 +78,7 @@ export default class Loader {
     this.scene.add(this.mesh);
   }
 
-  hideLoader(callback) {
+  hideLoaderTutorial(callback) {
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 12,
       duration: 1.5,
@@ -122,6 +123,24 @@ export default class Loader {
         if (callback && typeof callback === "function") {
           callback();
         }
+      },
+    });
+  }
+
+  hideLoaderIntro(callback) {
+    this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.5, 0.5);
+    gsap.to(this.material.uniforms.uCircleRadius, {
+      value: 12,
+      duration: 1.5,
+      ease: "power4.inOut",
+      onStart: () => {
+        this.manager.trigger("ui-title-hide");
+      },
+      onComplete: () => {
+        if (callback && typeof callback === "function") {
+          callback();
+        }
+        this.destroy();
       },
     });
   }

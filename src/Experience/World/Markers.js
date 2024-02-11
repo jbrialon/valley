@@ -119,46 +119,44 @@ export default class Markers {
   }
 
   showClosestMarkers() {
-    if (this.manager.isSearchingEnabled()) {
-      let markerCloseTimer = null;
-      markersArray.forEach((marker, index) => {
-        const markerMesh = this.markers[index];
-        if (!markerMesh.visible) {
-          const distance = marker.position.distanceTo(this.point) * 100;
-          const name = marker.name;
-          if (distance <= this.options.range) {
-            if (!markerCloseTimer) {
-              // Start the timer if it's not already running
-              markerCloseTimer = setTimeout(() => {
-                // Trigger revealMarker after 800ms
-                this.manageReveals(index, name);
-                this.manageSteps(name);
-                clearTimeout(markerCloseTimer);
-                markerCloseTimer = null; // Reset the timer
-              }, this.options.markerCloseTimer);
-            } else {
-              // Reset the timer if the distance exceeds 45 units
+    let markerCloseTimer = null;
+    markersArray.forEach((marker, index) => {
+      const markerMesh = this.markers[index];
+      if (!markerMesh.visible) {
+        const distance = marker.position.distanceTo(this.point) * 100;
+        const name = marker.name;
+        if (distance <= this.options.range) {
+          if (!markerCloseTimer) {
+            // Start the timer if it's not already running
+            markerCloseTimer = setTimeout(() => {
+              // Trigger revealMarker after 800ms
+              this.manageReveals(index, name);
+              this.manageSteps(name);
               clearTimeout(markerCloseTimer);
-              markerCloseTimer = null;
-            }
+              markerCloseTimer = null; // Reset the timer
+            }, this.options.markerCloseTimer);
+          } else {
+            // Reset the timer if the distance exceeds 45 units
+            clearTimeout(markerCloseTimer);
+            markerCloseTimer = null;
           }
         }
-        // if (distance > 20 && distance <= 90) {
-        //   const markerMesh = this.markers[index];
-        //   const posY = THREE.MathUtils.mapLinear(
-        //     distance,
-        //     20,
-        //     90,
-        //     marker.position.y,
-        //     marker.position.y - 1
-        //   );
-        //   markerMesh.visible = true;
-        //   markerMesh.position.y = posY;
-        // } else if (distance <= 20) {
-        // this.revealMarker(index);
-        // }
-      });
-    }
+      }
+      // if (distance > 20 && distance <= 90) {
+      //   const markerMesh = this.markers[index];
+      //   const posY = THREE.MathUtils.mapLinear(
+      //     distance,
+      //     20,
+      //     90,
+      //     marker.position.y,
+      //     marker.position.y - 1
+      //   );
+      //   markerMesh.visible = true;
+      //   markerMesh.position.y = posY;
+      // } else if (distance <= 20) {
+      // this.revealMarker(index);
+      // }
+    });
   }
 
   manageReveals(index, name) {
@@ -190,7 +188,6 @@ export default class Markers {
 
     if (marker && !this.revealedSteps.includes(marker.order)) {
       this.revealedSteps.push(marker.order);
-
       if (this.revealedSteps.length > 1) {
         const previousSteps = markers[this.currentChapter].filter(
           (item) => item.order < marker.order
@@ -320,7 +317,11 @@ export default class Markers {
   }
 
   update() {
-    if (this.inputEvents.isPressed && this.point) {
+    if (
+      this.inputEvents.isPressed &&
+      this.point &&
+      this.manager.isSearchingEnabled()
+    ) {
       this.showClosestMarkers();
     }
 

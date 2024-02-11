@@ -11,7 +11,7 @@ export default class Manager extends EventEmitter {
 
     // App State
     this.isScrollEnabled = false;
-    this.isSearchEnabled = true;
+    this.isSearchEnabled = false;
     this.maxScrollProgress = 0.034;
     this.mouseMoveEnabled = false;
     this.tutorialStep = 0;
@@ -25,6 +25,17 @@ export default class Manager extends EventEmitter {
     this.setDebug();
   }
 
+  startGame() {
+    this.trigger("loader-intro-hide", () => {
+      this.setScrollState(true);
+      this.setSearchState(true);
+      this.setMouseMoveState(true);
+      this.setMaxScrollProgress(1);
+      this.tutorialStep = 4;
+      this.trigger("ui-chapter-show", "Chapter 1", "Langtang Valley");
+    });
+  }
+
   // Tutorial State Management
   goToTutorialStep(step) {
     // we can only go to a further step
@@ -32,6 +43,7 @@ export default class Manager extends EventEmitter {
       switch (step) {
         case 1:
           this.tutorialStep = 1;
+          this.setSearchState(true);
           this.trigger(
             "ui-tooltip-show",
             "Navigate your mouse to the zone and hold click to expose it."
@@ -42,7 +54,7 @@ export default class Manager extends EventEmitter {
         case 2:
           this.tutorialStep = 2;
           this.setSearchState(false);
-          this.trigger("loader-hide", () => {
+          this.trigger("loader-tutorial-hide", () => {
             this.setScrollState(true);
             this.setMouseMoveState(true);
             this.trigger("ui-chapter-show", "Chapter 1", "Langtang Valley");
@@ -69,7 +81,7 @@ export default class Manager extends EventEmitter {
 
         case 4:
           this.tutorialStep = 4;
-          this.trigger("loader-hide");
+          this.trigger("loader-tutorial-hide");
           this.trigger("ui-tooltip-hide", () => {
             const text =
               "Good job! have fun discovering! track your progress with your travel log! (TODO)";
@@ -85,10 +97,10 @@ export default class Manager extends EventEmitter {
     }
   }
 
+  // State Management Search/Browse
   isSearchingEnabled() {
     return this.isSearchEnabled;
   }
-
   setSearchState(state) {
     this.isSearchEnabled = state;
   }
@@ -97,7 +109,6 @@ export default class Manager extends EventEmitter {
   isScrollingEnabled() {
     return this.isScrollEnabled;
   }
-
   setScrollState(state) {
     this.isScrollEnabled = state;
   }
@@ -106,24 +117,22 @@ export default class Manager extends EventEmitter {
   getMaxScrollProgress() {
     return this.maxScrollProgress;
   }
-
   setMaxScrollProgress(max) {
     this.maxScrollProgress = max;
   }
 
-  // State Management mouse movement
+  // State Management Mouse Movement
   isMouseMoveEnabled() {
     return this.mouseMoveEnabled;
   }
-
   setMouseMoveState(state) {
     this.mouseMoveEnabled = state;
   }
 
+  // Chapter Manegement
   getCurrentChapter() {
     return this.chapters[this.currentChapter];
   }
-
   goToNextChapter() {
     console.log(
       `All steps from ${this.currentChapter} are revealed, go to next chapter.`
