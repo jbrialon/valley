@@ -23,6 +23,7 @@ export function findMaxConsecutive(revealedSteps) {
 }
 
 export function findMissingSteps(revealedSteps) {
+  console.log(revealedSteps);
   // Sort the array to ensure we're working with the steps in order
   revealedSteps.sort((a, b) => a - b);
 
@@ -42,4 +43,30 @@ export function findMissingSteps(revealedSteps) {
 
   // Return the array of missing steps
   return missingSteps;
+}
+
+export function findMarkerChapter(markers, name) {
+  let chapterName = null;
+
+  Object.entries(markers).forEach(([chapter, markers]) => {
+    const hasMarker = markers.some((marker) => marker.name === name);
+    if (hasMarker) {
+      chapterName = chapter;
+    }
+  });
+
+  return chapterName;
+}
+
+export function findMarkerByName(markers, name) {
+  let foundMarker = null;
+
+  Object.values(markers).forEach((chapter) => {
+    const marker = chapter.find((marker) => marker.name === name);
+    if (marker) {
+      foundMarker = marker;
+    }
+  });
+
+  return foundMarker;
 }

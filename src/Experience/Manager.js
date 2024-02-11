@@ -1,6 +1,14 @@
 import Experience from "./Experience.js";
 import EventEmitter from "./Utils/EventEmitter.js";
 
+import {
+  findMarkerChapter,
+  findMarkerByName,
+  findMaxConsecutive,
+} from "./Utils/Utils.js";
+
+import { markers } from "./Data/markers.js";
+
 export default class Manager extends EventEmitter {
   constructor() {
     super();
@@ -15,6 +23,13 @@ export default class Manager extends EventEmitter {
     this.maxScrollProgress = 0.034;
     this.mouseMoveEnabled = false;
     this.tutorialStep = 0;
+
+    this.revealedSteps = {
+      chapterOne: [],
+      chapterTwo: [],
+      chapterTree: [],
+      bonus: [],
+    };
 
     // Setup
     this.interactiveMeshes = [];
@@ -127,6 +142,70 @@ export default class Manager extends EventEmitter {
   }
   setMouseMoveState(state) {
     this.mouseMoveEnabled = state;
+  }
+
+  // Revealed Steps Managements
+  addToRevealedSteps(name) {
+    const chapter = findMarkerChapter(markers, name);
+    console.log(chapter);
+    const currentChapter = this.chapters[this.currentChapter];
+
+    if (chapter) {
+      const marker = findMarkerByName(markers, name);
+      if (!this.revealedSteps[chapter].includes(marker.order)) {
+        this.revealedSteps[chapter].push(marker.order);
+        if (
+          chapter === currentChapter &&
+          this.revealedSteps[currentChapter].length > 1
+        ) {
+          const previousSteps = markers[currentChapter].filter(
+            (item) => item.order < marker.order
+          );
+          const allPreviousStepsRevealed = previousSteps.every((item) =>
+            this.revealedSteps[currentChapter].includes(item.order)
+          );
+
+          if (allPreviousStepsRevealed) {
+            const currentStep =
+              findMaxConsecutive(this.revealedSteps[chapter]) - 1;
+
+            this.trigger("showDashLine", currentStep, name);
+            console.log(
+              `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`
+            );
+          } else {
+            const text = "I must have missed a step along the way...";
+            this.trigger("ui-tooltip-auto-hide", text);
+            // console.log(`All previous steps for ${name} are not revealed.`);
+          }
+          // if (
+          //   this.revealedSteps[currentChapter].length ===
+          //   markers[currentChapter].length
+          // ) {
+          //   // we should wait for all animations to be hover actually
+          //   // this.goToNextChapter();
+          // }
+        } else if (
+          this.revealedSteps[currentChapter].length === 1 &&
+          marker.order === 1 &&
+          currentChapter === "chapterOne"
+        ) {
+          // tutorial mode, we hide the loader if we reveal the first step
+          this.goToTutorialStep(2);
+        }
+        // Tutorial mode
+        if (marker.order === 2 && currentChapter === "chapterOne") {
+          this.goToTutorialStep(4);
+        }
+      } else if (chapter !== currentChapter && chapter !== "bonus") {
+        const text = "I can't go there yet, but I can come back later.";
+        this.trigger("ui-tooltip-auto-hide", text);
+        // console.log(`Marker not found, probably not in the current chapter.`);
+      } else if (chapter === "bonus") {
+        const text = `Achievement! your found ${marker.displayName}!`;
+        this.trigger("ui-tooltip-auto-hide", text);
+      }
+    }
   }
 
   // Chapter Manegement

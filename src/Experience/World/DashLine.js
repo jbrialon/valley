@@ -3,7 +3,7 @@ import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import { gsap } from "gsap";
 
 import Experience from "../Experience";
-import { findMissingSteps } from "../Utils/utils.js";
+import { findMissingSteps } from "../Utils/Utils.js";
 
 // import { Maf } from "../Utils/Maf";
 
@@ -109,7 +109,7 @@ export default class DashLine {
     this.scene.add(this.mesh);
   }
 
-  showPath(index, name) {
+  showDashLine(index) {
     const progressTarget = this.options.progress[index];
     // We add the index to the revealed Steps
     this.revealSteps.push(index);
@@ -146,14 +146,10 @@ export default class DashLine {
         this.manager.trigger("revealProps", index);
       },
     });
-    // Debug
-    console.log(
-      `Show Path ${progressTarget} going to ${name}, missing steps: ${missingSteps}`
-    );
   }
 
   initEvents() {
-    this.manager.on("showDashLine", this.showPath.bind(this));
+    this.manager.on("showDashLine", this.showDashLine.bind(this));
   }
 
   resize() {

@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import Experience from "../Experience";
 
-import { findMaxConsecutive } from "../Utils/utils.js";
+import { findMaxConsecutive } from "../Utils/Utils.js";
 import { markers, markersArray } from "../Data/markers.js";
 
 export default class Markers {
@@ -131,7 +131,7 @@ export default class Markers {
             markerCloseTimer = setTimeout(() => {
               // Trigger revealMarker after 800ms
               this.manageReveals(index, name);
-              this.manageSteps(name);
+              this.manager.addToRevealedSteps(name);
               clearTimeout(markerCloseTimer);
               markerCloseTimer = null; // Reset the timer
             }, this.options.markerCloseTimer);
@@ -181,57 +181,6 @@ export default class Markers {
         },
       });
     }
-  }
-
-  manageSteps(name) {
-    const marker = this.getMarkerByName(name);
-
-    if (marker && !this.revealedSteps.includes(marker.order)) {
-      this.revealedSteps.push(marker.order);
-      if (this.revealedSteps.length > 1) {
-        const previousSteps = markers[this.currentChapter].filter(
-          (item) => item.order < marker.order
-        );
-        const allPreviousStepsRevealed = previousSteps.every((item) =>
-          this.revealedSteps.includes(item.order)
-        );
-
-        if (allPreviousStepsRevealed) {
-          const currentStep = findMaxConsecutive(this.revealedSteps) - 1;
-          this.showPath(currentStep, name);
-          console.log(
-            `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`
-          );
-        } else {
-          const text = "I must have missed a step along the way...";
-          this.manager.trigger("ui-tooltip-auto-hide", text);
-          // console.log(`All previous steps for ${name} are not revealed.`);
-        }
-        if (this.revealedSteps.length === markers[this.currentChapter].length) {
-          // we should wait for all animations to be hover actually
-          this.manager.goToNextChapter();
-        }
-      } else if (
-        this.revealedSteps.length === 1 &&
-        marker.order === 1 &&
-        this.currentChapter === "chapterOne"
-      ) {
-        // tutorial mode, we hide the loader if we reveal the first step
-        this.manager.goToTutorialStep(2);
-      }
-      // Tutorial mode
-      if (marker.order === 2 && this.currentChapter === "chapterOne") {
-        this.manager.goToTutorialStep(4);
-      }
-    } else if (!marker) {
-      const text = "I can't go there yet, but I can come back later.";
-      this.manager.trigger("ui-tooltip-auto-hide", text);
-      // console.log(`Marker not found, probably not in the current chapter.`);
-    }
-  }
-
-  showPath(index, name) {
-    this.manager.trigger("showDashLine", index, name);
   }
 
   initEvents() {
