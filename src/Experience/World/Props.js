@@ -27,6 +27,7 @@ export default class Props {
     this.setMaterial();
     this.setModels();
     this.initEvents();
+
     // Debug
     this.setDebug();
   }
@@ -107,34 +108,37 @@ export default class Props {
   }
 
   initEvents() {
-    // expecting name as parameter
+    // expecting index as parameter
     this.manager.on("revealProps", this.revealProps.bind(this));
-  }
-
-  getMarkerByName(name) {
-    return markers[this.currentChapter].find((item) => item.name === name);
   }
 
   revealProps(index) {
     const name = markersArray[index].name;
+    const meshes = this.propsMeshes.filter((mesh) => mesh.name.includes(name));
+    meshes.forEach((mesh, index) => {
+      if (!mesh.visible) {
+        mesh.visible = true;
+        const size = mesh.finalScale;
+        gsap.to(mesh.scale, {
+          duration: 1.2,
+          delay: index * 0.3, // Stagger the animation
+          x: size.x,
+          y: size.y,
+          z: size.z,
+          ease: "elastic.out",
+          onComplete: () => {
+            if (
+              index === meshes.length - 1 &&
+              this.manager.isLastStepOfChapter()
+            ) {
+              this.manager.goToNextChapter();
+            }
+          },
+        });
+      }
+    });
+    // Debug
     console.log("Reveal Props:", index, name);
-
-    this.propsMeshes
-      .filter((mesh) => mesh.name.includes(name))
-      .forEach((mesh, index) => {
-        if (!mesh.visible) {
-          mesh.visible = true;
-          const size = mesh.finalScale;
-          gsap.to(mesh.scale, {
-            duration: 1.2,
-            delay: index * 0.3, // Stagger the animation
-            x: size.x,
-            y: size.y,
-            z: size.z,
-            ease: "elastic.out",
-          });
-        }
-      });
   }
 
   setDebug() {

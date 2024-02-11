@@ -23,7 +23,6 @@ export function findMaxConsecutive(revealedSteps) {
 }
 
 export function findMissingSteps(revealedSteps) {
-  console.log(revealedSteps);
   // Sort the array to ensure we're working with the steps in order
   revealedSteps.sort((a, b) => a - b);
 

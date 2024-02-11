@@ -147,7 +147,6 @@ export default class Manager extends EventEmitter {
   // Revealed Steps Managements
   addToRevealedSteps(name) {
     const chapter = findMarkerChapter(markers, name);
-    console.log(chapter);
     const currentChapter = this.chapters[this.currentChapter];
 
     if (chapter) {
@@ -166,25 +165,16 @@ export default class Manager extends EventEmitter {
           );
 
           if (allPreviousStepsRevealed) {
+            // All previous steps are revealed. Showing path to currentStep.
             const currentStep =
               findMaxConsecutive(this.revealedSteps[chapter]) - 1;
 
             this.trigger("showDashLine", currentStep, name);
-            console.log(
-              `All previous steps for ${name} are revealed. Showing path to ${currentStep}.`
-            );
           } else {
+            // All previous steps for are not revealed.
             const text = "I must have missed a step along the way...";
             this.trigger("ui-tooltip-auto-hide", text);
-            // console.log(`All previous steps for ${name} are not revealed.`);
           }
-          // if (
-          //   this.revealedSteps[currentChapter].length ===
-          //   markers[currentChapter].length
-          // ) {
-          //   // we should wait for all animations to be hover actually
-          //   // this.goToNextChapter();
-          // }
         } else if (
           this.revealedSteps[currentChapter].length === 1 &&
           marker.order === 1 &&
@@ -200,12 +190,20 @@ export default class Manager extends EventEmitter {
       } else if (chapter !== currentChapter && chapter !== "bonus") {
         const text = "I can't go there yet, but I can come back later.";
         this.trigger("ui-tooltip-auto-hide", text);
-        // console.log(`Marker not found, probably not in the current chapter.`);
       } else if (chapter === "bonus") {
-        const text = `Achievement! your found ${marker.displayName}!`;
+        const text = `Achievement! you found ${marker.displayName}!`;
         this.trigger("ui-tooltip-auto-hide", text);
       }
     }
+  }
+
+  isLastStepOfChapter() {
+    const currentChapter = this.chapters[this.currentChapter];
+
+    return (
+      this.revealedSteps[currentChapter].length ===
+      markers[currentChapter].length
+    );
   }
 
   // Chapter Manegement
@@ -213,9 +211,7 @@ export default class Manager extends EventEmitter {
     return this.chapters[this.currentChapter];
   }
   goToNextChapter() {
-    console.log(
-      `All steps from ${this.currentChapter} are revealed, go to next chapter.`
-    );
+    // All steps from this.currentChapter are revealed, go to next chapter.
     if (this.currentChapter < this.chapters.length) {
       this.currentChapter++;
       this.trigger(

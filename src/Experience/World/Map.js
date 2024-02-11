@@ -261,7 +261,6 @@ export default class Map {
         .addColor(this.options, "uFill")
         .name("Fill color")
         .onChange(() => {
-          console.log(this.options.uFill);
           this.wireframeMaterial.uniforms.uFill.value = this.options.uFill;
         });
       this.debugVisualFolder

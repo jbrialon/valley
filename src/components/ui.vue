@@ -52,7 +52,7 @@ export default {
       subtitle: "",
       showTooltip: false,
       tooltipText: "",
-      autoHideDuration: 4000,
+      autoHideDuration: 6000,
     };
   },
   methods: {
