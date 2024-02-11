@@ -76,11 +76,7 @@ export default class Camera {
   }
 
   onMouseWheel() {
-    if (
-      this.scrollProgress >= 0 &&
-      this.scrollProgress <= this.manager.getMaxScrollProgress() &&
-      this.manager.isScrollingEnabled()
-    ) {
+    if (this.scrollProgress >= 0 && this.manager.isScrollingEnabled()) {
       let delta = 0.025;
       if (this.inputEvents.mouse.z < 0) {
         delta = -0.025;
@@ -89,7 +85,7 @@ export default class Camera {
       const targetScrollProgress = this.scrollProgress + delta;
       const clampedScrollProgress = Math.max(
         0,
-        Math.min(targetScrollProgress, 1)
+        Math.min(targetScrollProgress, this.manager.getMaxScrollProgress())
       );
 
       gsap.to(this, {
@@ -106,10 +102,9 @@ export default class Camera {
             this.fakeTarget.position.y,
             this.fakeTarget.position.z
           );
-
-          if (this.scrollProgress > 0.05) {
-            this.manager.goToTutorialStep(3);
-          }
+        },
+        onComplete: () => {
+          this.manager.goToTutorialStep(3);
         },
       });
     }

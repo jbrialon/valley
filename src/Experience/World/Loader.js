@@ -112,7 +112,7 @@ export default class Loader {
 
   revealTutorialStepTwo(callback) {
     this.mesh.position.set(0.08, 1.89, -7.57);
-    this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.397, 0.686);
+    this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.453, 0.615);
 
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 0.07,

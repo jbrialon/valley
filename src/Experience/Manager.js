@@ -34,7 +34,7 @@ export default class Manager extends EventEmitter {
           this.tutorialStep = 1;
           this.trigger(
             "ui-tooltip-show",
-            "Navigate your mouse to the zone and click to expose it."
+            "Navigate your mouse to the zone and hold click to expose it."
           );
           this.trigger("loader-tutorial-one");
           break;
