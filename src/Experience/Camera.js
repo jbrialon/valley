@@ -20,13 +20,12 @@ export default class Camera {
     this.options = {};
 
     // Setup
-    this.canScroll = false;
     this.isAnimated = false;
     this.scrollProgress = 0;
     this.cameraCurve = null;
     this.targetCurve = null;
     this.fakeTarget = null;
-    this.hasScrolled = false;
+
     this.setInstance();
     this.initEvents();
     // this.setOrbitControls();
@@ -64,7 +63,6 @@ export default class Camera {
     this.cameraCurve = this.experience.world.paths.cameraCurve;
     this.targetCurve = this.experience.world.paths.targetCurve;
     this.fakeTarget = this.experience.world.paths.fakeTarget;
-    this.canScroll = true;
     this.manager.trigger("loaded");
   }
 
@@ -80,17 +78,9 @@ export default class Camera {
   onMouseWheel() {
     if (
       this.scrollProgress >= 0 &&
-      this.canScroll &&
-      this.manager.getMode() !== "tutorial"
+      this.scrollProgress <= this.manager.getMaxScrollProgress() &&
+      this.manager.isScrollingEnabled()
     ) {
-      if (!this.hasScrolled) {
-        this.hasScrolled = true;
-        this.manager.trigger("ui-tooltip-hide", () => {
-          const text = "Have fun exploring :)!";
-          this.manager.trigger("ui-tooltip-auto-hide", text);
-        });
-      }
-
       let delta = 0.025;
       if (this.inputEvents.mouse.z < 0) {
         delta = -0.025;
@@ -116,19 +106,17 @@ export default class Camera {
             this.fakeTarget.position.y,
             this.fakeTarget.position.z
           );
-        },
-        onStart: () => {
-          this.manager.trigger("onScrollStart");
-        },
-        onComplete: () => {
-          this.manager.trigger("onScrollComplete");
+
+          if (this.scrollProgress > 0.05) {
+            this.manager.goToTutorialStep(3);
+          }
         },
       });
     }
   }
 
   onMouseMove() {
-    if (this.manager.getMode() !== "tutorial") {
+    if (this.manager.isMouseMoveEnabled()) {
       // calculate the position of the mouse based with center as origin
       const mouse = new THREE.Vector2(
         this.inputEvents.mouse.x - this.sizes.width / 2,

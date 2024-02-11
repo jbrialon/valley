@@ -17,6 +17,7 @@ export default class Loader {
     // Options
     this.options = {
       uColor: "#b9a998",
+      uCirclePos: new THREE.Vector2(0.804, 0.765),
     };
 
     // Setup
@@ -31,7 +32,14 @@ export default class Loader {
 
   initEvents() {
     this.manager.on("loader-hide", this.hideLoader.bind(this));
-    this.manager.on("loader-tutorial", this.revealTutorial.bind(this));
+    this.manager.on(
+      "loader-tutorial-one",
+      this.revealTutorialStepOne.bind(this)
+    );
+    this.manager.on(
+      "loader-tutorial-two",
+      this.revealTutorialStepTwo.bind(this)
+    );
   }
 
   setGeometry() {
@@ -55,7 +63,7 @@ export default class Loader {
 
         uTime: { value: 0 },
         uCirclePos: {
-          value: new THREE.Vector2(0.804, 0.765),
+          value: this.options.uCirclePos,
         },
       },
       vertexShader: vertexShader,
@@ -69,7 +77,7 @@ export default class Loader {
     this.scene.add(this.mesh);
   }
 
-  hideLoader() {
+  hideLoader(callback) {
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 12,
       duration: 1.5,
@@ -78,25 +86,42 @@ export default class Loader {
         this.manager.trigger("ui-title-hide");
       },
       onComplete: () => {
-        this.manager.trigger("ui-chapter-show", "Chapter 1", "Langtang Valley");
-        this.manager.setMode("game");
-
-        if (!this.debug.active) {
-          this.destroy();
+        if (callback && typeof callback === "function") {
+          callback();
         }
+
+        // if (!this.debug.active) {
+        //   this.destroy();
+        // }
       },
     });
   }
 
-  revealTutorial() {
-    this.hasLoader = true;
-
+  revealTutorialStepOne(callback) {
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 0.23,
       duration: 1.5,
       ease: "power4.inOut",
       onComplete: () => {
-        this.manager.trigger("ui-title-show");
+        if (callback && typeof callback === "function") {
+          callback();
+        }
+      },
+    });
+  }
+
+  revealTutorialStepTwo(callback) {
+    this.mesh.position.set(0.08, 1.89, -7.57);
+    this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.397, 0.686);
+
+    gsap.to(this.material.uniforms.uCircleRadius, {
+      value: 0.07,
+      duration: 1.5,
+      ease: "power4.inOut",
+      onComplete: () => {
+        if (callback && typeof callback === "function") {
+          callback();
+        }
       },
     });
   }
@@ -126,17 +151,23 @@ export default class Loader {
         .step(0.001)
         .name("circle radius");
       this.debugFolder
-        .add(this.material.uniforms.uCirclePos.value, "x")
+        .add(this.options.uCirclePos, "x")
         .min(0)
         .max(1)
         .step(0.001)
-        .name("pos x");
+        .name("pos x")
+        .onChange(() => {
+          this.material.uniforms.uCirclePos.value.x = this.options.uCirclePos.x;
+        });
       this.debugFolder
-        .add(this.material.uniforms.uCirclePos.value, "y")
+        .add(this.options.uCirclePos, "y")
         .min(0)
         .max(1)
         .step(0.001)
-        .name("pos y");
+        .name("pos y")
+        .onChange(() => {
+          this.material.uniforms.uCirclePos.value.y = this.options.uCirclePos.y;
+        });
     }
   }
 

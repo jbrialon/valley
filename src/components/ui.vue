@@ -14,7 +14,7 @@
     <Transition name="fade">
       <div class="ui--title-menu" v-if="showMenu">
         <div class="ui--title-menu-container">
-          <button @click="start('game')">Start Game</button>
+          <!-- <button @click="start('game')">Start Game</button> -->
           <button @click="start('tutorial')">Start Tutorial</button>
         </div>
       </div>
@@ -59,12 +59,9 @@ export default {
     start(mode) {
       this.showMenu = false;
       if (mode === "game") {
-        this.manager.trigger("loader-hide");
+        // this.manager.trigger("loader-hide");
       } else if (mode === "tutorial") {
-        this.manager.trigger("loader-tutorial");
-        this.uiShowTooltip(
-          "Navigate your mouse to the zone and click to expose it."
-        );
+        this.manager.goToTutorialStep(1);
       }
     },
     uiShowTooltip(text, callback) {
@@ -220,6 +217,7 @@ export default {
 
   &--speech-bubble {
     position: absolute;
+    max-width: 510px;
     padding: 25px 25px 25px 45px;
     right: 50px;
     bottom: 50px;

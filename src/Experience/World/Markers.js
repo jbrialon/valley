@@ -119,44 +119,46 @@ export default class Markers {
   }
 
   showClosestMarkers() {
-    let markerCloseTimer = null;
-    markersArray.forEach((marker, index) => {
-      const markerMesh = this.markers[index];
-      if (!markerMesh.visible) {
-        const distance = marker.position.distanceTo(this.point) * 100;
-        const name = marker.name;
-        if (distance <= this.options.range) {
-          if (!markerCloseTimer) {
-            // Start the timer if it's not already running
-            markerCloseTimer = setTimeout(() => {
-              // Trigger revealMarker after 800ms
-              this.manageReveals(index, name);
-              this.manageSteps(name);
+    if (this.manager.isSearchingEnabled()) {
+      let markerCloseTimer = null;
+      markersArray.forEach((marker, index) => {
+        const markerMesh = this.markers[index];
+        if (!markerMesh.visible) {
+          const distance = marker.position.distanceTo(this.point) * 100;
+          const name = marker.name;
+          if (distance <= this.options.range) {
+            if (!markerCloseTimer) {
+              // Start the timer if it's not already running
+              markerCloseTimer = setTimeout(() => {
+                // Trigger revealMarker after 800ms
+                this.manageReveals(index, name);
+                this.manageSteps(name);
+                clearTimeout(markerCloseTimer);
+                markerCloseTimer = null; // Reset the timer
+              }, this.options.markerCloseTimer);
+            } else {
+              // Reset the timer if the distance exceeds 45 units
               clearTimeout(markerCloseTimer);
-              markerCloseTimer = null; // Reset the timer
-            }, this.options.markerCloseTimer);
-          } else {
-            // Reset the timer if the distance exceeds 45 units
-            clearTimeout(markerCloseTimer);
-            markerCloseTimer = null;
+              markerCloseTimer = null;
+            }
           }
         }
-      }
-      // if (distance > 20 && distance <= 90) {
-      //   const markerMesh = this.markers[index];
-      //   const posY = THREE.MathUtils.mapLinear(
-      //     distance,
-      //     20,
-      //     90,
-      //     marker.position.y,
-      //     marker.position.y - 1
-      //   );
-      //   markerMesh.visible = true;
-      //   markerMesh.position.y = posY;
-      // } else if (distance <= 20) {
-      // this.revealMarker(index);
-      // }
-    });
+        // if (distance > 20 && distance <= 90) {
+        //   const markerMesh = this.markers[index];
+        //   const posY = THREE.MathUtils.mapLinear(
+        //     distance,
+        //     20,
+        //     90,
+        //     marker.position.y,
+        //     marker.position.y - 1
+        //   );
+        //   markerMesh.visible = true;
+        //   markerMesh.position.y = posY;
+        // } else if (distance <= 20) {
+        // this.revealMarker(index);
+        // }
+      });
+    }
   }
 
   manageReveals(index, name) {
@@ -188,6 +190,7 @@ export default class Markers {
 
     if (marker && !this.revealedSteps.includes(marker.order)) {
       this.revealedSteps.push(marker.order);
+
       if (this.revealedSteps.length > 1) {
         const previousSteps = markers[this.currentChapter].filter(
           (item) => item.order < marker.order
@@ -214,14 +217,14 @@ export default class Markers {
       } else if (
         this.revealedSteps.length === 1 &&
         marker.order === 1 &&
-        this.manager.getMode() === "tutorial"
+        this.currentChapter === "chapterOne"
       ) {
         // tutorial mode, we hide the loader if we reveal the first step
-        this.manager.trigger("loader-hide");
-        this.manager.trigger("ui-tooltip-hide", () => {
-          const text = "Use your mouse scroll to travel along the valley.";
-          this.manager.trigger("ui-tooltip-show", text);
-        });
+        this.manager.goToTutorialStep(2);
+      }
+      // Tutorial mode
+      if (marker.order === 2 && this.currentChapter === "chapterOne") {
+        this.manager.goToTutorialStep(4);
       }
     } else if (!marker) {
       const text = "I can't go there yet, but I can come back later.";
