@@ -29,31 +29,82 @@ export default class DashLine {
       dashRatio: 0.5,
       dashOffset: 0,
       visibility: 0,
-      progress: [0, 0.285, 0.361, 0.49, 0.852, 1],
     };
 
     // Setup
-    this.revealSteps = [0];
-    this.point = new THREE.Vector3();
-    this.points = [
-      new THREE.Vector3(-4.29, 1.43, -9.07),
-      new THREE.Vector3(-3.61, 1.8, -8.42),
-      new THREE.Vector3(-2.49, 1.69, -7.47),
-      new THREE.Vector3(-1.57, 1.74, -7.69),
-      new THREE.Vector3(0.08, 1.92, -7.57),
-      new THREE.Vector3(2.17, 2.16, -8.01),
-      new THREE.Vector3(4.87, 2.67, -8.23),
-      new THREE.Vector3(5.7, 2.65, -8.74),
-      new THREE.Vector3(6.46, 2.87, -10.08),
-      new THREE.Vector3(7.04, 2.97, -11.61),
-      new THREE.Vector3(8.23, 3.2, -12.99),
-      new THREE.Vector3(12.16, 3.44, -15.14),
-      new THREE.Vector3(15.63, 3.62, -15.48),
-      new THREE.Vector3(19.45, 4.02, -14.67),
-      new THREE.Vector3(20.67, 4, -15.35),
-    ];
-    this.curvePoint = [];
+    this.progress = {
+      chapterOne: [0, 0.285, 0.361, 0.49, 0.852, 1],
+      chapterTwo: [0.5, 1],
+      chapterTree: [],
+    };
+    this.revealedSteps = {
+      chapterOne: [0],
+      chapterTwo: [0],
+      chapterTree: [0],
+    };
+    this.materials = {};
 
+    this.points = {
+      chapterOne: [
+        new THREE.Vector3(-4.29, 1.43, -9.07),
+        new THREE.Vector3(-3.61, 1.8, -8.42),
+        new THREE.Vector3(-2.49, 1.69, -7.47),
+        new THREE.Vector3(-1.57, 1.74, -7.69),
+        new THREE.Vector3(0.08, 1.92, -7.57),
+        new THREE.Vector3(2.17, 2.16, -8.01),
+        new THREE.Vector3(4.87, 2.67, -8.23),
+        new THREE.Vector3(5.7, 2.65, -8.74),
+        new THREE.Vector3(6.46, 2.87, -10.08),
+        new THREE.Vector3(7.04, 2.97, -11.61),
+        new THREE.Vector3(8.23, 3.2, -12.99),
+        new THREE.Vector3(12.16, 3.44, -15.14),
+        new THREE.Vector3(15.63, 3.62, -15.48),
+        new THREE.Vector3(19.45, 3.75, -14.67),
+        new THREE.Vector3(20.67, 4, -15.35),
+      ],
+      chapterTwo: [
+        new THREE.Vector3(20.67, 4, -15.35),
+        new THREE.Vector3(21.28, 3.95, -15.03),
+        new THREE.Vector3(21.39, 4.29, -15.85),
+        new THREE.Vector3(21.59, 4.03, -15.03),
+        new THREE.Vector3(22.41, 3.94, -14.34),
+        new THREE.Vector3(23.4, 4.31, -14.34),
+        new THREE.Vector3(24.69, 5.0, -15.29),
+        new THREE.Vector3(25.23, 4.89, -14.35),
+        new THREE.Vector3(25.05, 4.33, -13.75),
+        new THREE.Vector3(24.39, 4.42, -13.93),
+        new THREE.Vector3(23.18, 4.05, -13.98),
+        new THREE.Vector3(22.47, 3.94, -14.28),
+      ],
+      chapterTree: [
+        new THREE.Vector3(25.67, 4, -15.35),
+        new THREE.Vector3(25.39, 4.39, -15.85),
+        new THREE.Vector3(25.69, 5.14, -15.29),
+      ],
+    };
+
+    this.curvePoints = {
+      chapterOne: [],
+      chapterTwo: [],
+      chapterTree: [],
+    };
+
+    this.curves = {
+      chapterOne: [],
+      chapterTwo: [],
+      chapterTree: [],
+    };
+
+    this.geometries = {
+      chapterOne: [],
+      chapterTwo: [],
+      chapterTree: [],
+    };
+    this.meshes = {
+      chapterOne: [],
+      chapterTwo: [],
+      chapterTree: [],
+    };
     this.setMaterial();
     this.setDashLine();
     this.initEvents();
@@ -63,7 +114,7 @@ export default class DashLine {
   }
 
   setMaterial() {
-    this.material = new MeshLineMaterial({
+    const material = new MeshLineMaterial({
       color: this.options.color,
       lineWidth: this.options.lineWidth,
       resolution: new THREE.Vector2(this.sizes.width, this.sizes.height),
@@ -75,59 +126,75 @@ export default class DashLine {
       depthTest: true,
       transparent: true,
     });
+
+    this.materials = {
+      chapterOne: material.clone(),
+      chapterTwo: material.clone(),
+      chapterTree: material.clone(),
+    };
   }
 
   // Working Demo : https://lume.github.io/three-meshline/demo/index.html
   setDashLine() {
-    this.geometry = new MeshLineGeometry();
+    Object.entries(this.points).forEach(([chapter, points]) => {
+      this.geometries[chapter] = new MeshLineGeometry();
 
-    this.points.forEach((point, index) => {
-      const curvePoint = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 1, 1),
-        new THREE.MeshNormalMaterial()
-      );
-      curvePoint.position.set(point.x, point.y, point.z);
-      curvePoint.scale.set(0.1, 0.1, 0.1);
-      curvePoint.index = index;
-      curvePoint.type = "dashLine";
-      curvePoint.visible = false;
-      curvePoint.name = `dashLine.curvepoint.${index}`;
+      points.forEach((point, index) => {
+        const curvePoint = new THREE.Mesh(
+          new THREE.BoxGeometry(1, 1, 1),
+          new THREE.MeshNormalMaterial()
+        );
+        curvePoint.position.set(point.x, point.y, point.z);
+        curvePoint.scale.set(0.1, 0.1, 0.1);
+        curvePoint.index = index;
+        curvePoint.type = "dashLine";
+        curvePoint.visible = false;
+        curvePoint.chapter = chapter;
+        curvePoint.name = `dashLine.curvepoint.${chapter}.${index}`;
 
-      this.curvePoint.push(curvePoint);
-      this.scene.add(curvePoint);
+        this.curvePoints[chapter].push(curvePoint);
+        this.scene.add(curvePoint);
 
-      this.manager.addClickEventToMesh(curvePoint, () => {
-        this.helpers.setActiveMesh(curvePoint);
+        this.manager.addClickEventToMesh(curvePoint, () => {
+          this.helpers.setActiveMesh(curvePoint);
+        });
       });
+
+      this.curves[chapter] = new THREE.CatmullRomCurve3(
+        this.points[chapter]
+      ).getPoints(500);
+
+      this.geometries[chapter].setPoints(this.curves[chapter]);
+
+      this.meshes[chapter] = new THREE.Mesh(
+        this.geometries[chapter],
+        this.materials[chapter]
+      );
+      this.scene.add(this.meshes[chapter]);
     });
-
-    this.curve = new THREE.CatmullRomCurve3(this.points).getPoints(500);
-
-    this.geometry.setPoints(this.curve);
-
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.mesh);
   }
 
-  showDashLine(index) {
-    const progressTarget = this.options.progress[index];
+  showDashLine(index, name) {
+    const currentChapter = this.manager.getCurrentChapter();
+    const progressTarget = this.progress[currentChapter][index];
     // We add the index to the revealed Steps
-    this.revealSteps.push(index);
+    this.revealedSteps[currentChapter].push(index);
     // We find if there are some missings steps along the path
-    const missingSteps = findMissingSteps(this.revealSteps);
+    const missingSteps = findMissingSteps(this.revealedSteps[currentChapter]);
     // Track which steps have been revealed to prevent duplicate triggers
     const revealed = {};
     // Animation of the DashLine
-    gsap.to(this.material.uniforms.visibility, {
+    const material = this.materials[currentChapter];
+    gsap.to(material.uniforms.visibility, {
       value: progressTarget,
-      duration: 3 * (missingSteps.length + 1),
-      ease: "power4.inOut",
+      duration: 3,
+      ease: "power1.inOut",
       onUpdate: () => {
         // on Update we want to ensure we are not missing any props to reveal
-        const currentProgress = this.material.uniforms.visibility.value;
+        const currentProgress = material.uniforms.visibility.value;
         // Iterate through missingSteps to see if any matches current progress
         missingSteps.forEach((missingIndex) => {
-          const missingProgress = this.options.progress[missingIndex];
+          const missingProgress = this.progress[currentChapter][missingIndex];
           // Check if the current progress is close enough to the missingProgress
           // and that it hasn't been revealed yet
           if (
@@ -135,15 +202,21 @@ export default class DashLine {
             Math.abs(currentProgress - missingProgress) < 0.01 // since we don't exactly get the values of the dash we are using a threshold
           ) {
             // we add the missing index to the revealedSteps
-            this.revealSteps.push(missingIndex);
-            this.manager.trigger("revealProps", missingIndex);
+            this.revealedSteps[currentChapter].push(missingIndex);
+            console.log(
+              `Revealed dashLine for missing Step ${missingIndex}(${name}) of ${currentChapter}`
+            );
+            this.manager.trigger("revealProps", missingIndex, name);
             // we mark the steps as revealed to ensure it's not triggering twice because of the threshold
             revealed[missingIndex] = true;
           }
         });
       },
       onComplete: () => {
-        this.manager.trigger("revealProps", index);
+        console.log(
+          `Revealed dashLine for Step ${index}(${name}) of ${currentChapter}`
+        );
+        this.manager.trigger("revealProps", index, name);
       },
     });
   }
@@ -153,8 +226,10 @@ export default class DashLine {
   }
 
   resize() {
-    this.material.uniforms.resolution.value.x = this.sizes.width;
-    this.material.uniforms.resolution.value.y = this.sizes.height;
+    Object.entries(this.materials).forEach(([chapter, material]) => {
+      material.uniforms.resolution.value.x = this.sizes.width;
+      material.uniforms.resolution.value.y = this.sizes.height;
+    });
   }
 
   setDebug() {
@@ -165,7 +240,9 @@ export default class DashLine {
         .addColor(this.options, "color")
         .name("Color")
         .onChange(() => {
-          this.material.color = new THREE.Color(this.options.color);
+          Object.entries(this.materials).forEach(([chapter, material]) => {
+            material.color = new THREE.Color(this.options.color);
+          });
         });
       this.debugFolder
         .add(this.options, "lineWidth")
@@ -174,7 +251,9 @@ export default class DashLine {
         .max(30)
         .step(0.001)
         .onChange(() => {
-          this.material.uniforms.lineWidth.value = this.options.lineWidth;
+          Object.entries(this.materials).forEach(([chapter, material]) => {
+            material.uniforms.lineWidth.value = this.options.lineWidth;
+          });
         });
       this.debugFolder
         .add(this.options, "dashArray")
@@ -183,7 +262,9 @@ export default class DashLine {
         .max(1)
         .step(0.001)
         .onChange(() => {
-          this.material.uniforms.dashArray.value = this.options.dashArray;
+          Object.entries(this.materials).forEach(([chapter, material]) => {
+            material.uniforms.dashArray.value = this.options.dashArray;
+          });
         });
       this.debugFolder
         .add(this.options, "dashRatio")
@@ -192,7 +273,9 @@ export default class DashLine {
         .max(1)
         .step(0.001)
         .onChange(() => {
-          this.material.uniforms.dashRatio.value = this.options.dashRatio;
+          Object.entries(this.materials).forEach(([chapter, material]) => {
+            material.uniforms.dashRatio.value = this.options.dashRatio;
+          });
         });
       this.debugFolder
         .add(this.options, "dashOffset")
@@ -200,7 +283,9 @@ export default class DashLine {
         .min(-20)
         .max(20)
         .onChange(() => {
-          this.material.uniforms.dashOffset.value = this.options.visibility;
+          Object.entries(this.materials).forEach(([chapter, material]) => {
+            material.uniforms.dashOffset.value = this.options.visibility;
+          });
         });
       this.debugFolder
         .add(this.options, "visibility")
@@ -208,22 +293,31 @@ export default class DashLine {
         .min(0)
         .max(1)
         .onChange(() => {
-          this.material.uniforms.visibility.value = this.options.visibility;
+          Object.entries(this.materials).forEach(([chapter, material]) => {
+            material.uniforms.visibility.value = this.options.visibility;
+          });
         });
       this.debug.debugEditorFolder
         .add(
           {
             button: () => {
               this.options.visibility = 1;
-              this.material.uniforms.visibility.value = this.options.visibility;
+              Object.entries(this.materials).forEach(([chapter, material]) => {
+                material.uniforms.visibility.value = this.options.visibility;
+              });
               this.debugFolder.controllers.forEach((controller) => {
                 controller.updateDisplay();
               });
 
               this.transformControls.detach();
-              this.curvePoint.forEach((curvePoint) => {
-                curvePoint.visible = !curvePoint.visible;
-              });
+
+              Object.entries(this.curvePoints).forEach(
+                ([chapter, curvePoints]) => {
+                  curvePoints.forEach((curvePoint) => {
+                    curvePoint.visible = !curvePoint.visible;
+                  });
+                }
+              );
             },
           },
           "button"
@@ -234,18 +328,21 @@ export default class DashLine {
         const transformedPoint = this.transformControls.object;
         const index = transformedPoint.index;
         const type = transformedPoint.type;
+        const chapter = transformedPoint.chapter;
 
         if (!event.value && type === "dashLine") {
-          this.points[index] = new THREE.Vector3(
+          this.points[chapter][index] = new THREE.Vector3(
             transformedPoint.position.x,
             transformedPoint.position.y,
             transformedPoint.position.z
           );
-          this.curve = new THREE.CatmullRomCurve3(this.points).getPoints(500);
+          this.curves[chapter] = new THREE.CatmullRomCurve3(
+            this.points[chapter]
+          ).getPoints(500);
 
-          this.geometry.setPoints(this.curve);
+          this.geometries[chapter].setPoints(this.curves[chapter]);
 
-          this.mesh.geometry = this.geometry;
+          this.meshes[chapter].geometry = this.geometries[chapter];
           // if point is from camera type we update the target curve
           console.log(
             "New dashLine Position:",

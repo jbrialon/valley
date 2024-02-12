@@ -166,6 +166,7 @@ export default class Paths {
             );
 
             this.cameraCurveMesh.geometry = this.cameraGeometry;
+            this.camera.setPaths();
             // if point is from camera type we update the target curve
           } else if (type === "target") {
             paths.target[index] = new THREE.Vector3(
@@ -180,6 +181,7 @@ export default class Paths {
             );
 
             this.targetCurveMesh.geometry = this.targetGeometry;
+            this.camera.setPaths();
           }
           console.log(
             `New ${type} Position:`,
@@ -191,7 +193,6 @@ export default class Paths {
             )},${transformedPoint.position.z.toFixed(2)})`
           );
         }
-        this.camera.setPaths();
       });
     }
   }

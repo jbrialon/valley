@@ -176,7 +176,7 @@ export default class Markers {
         ease: "power4.inOut",
         onComplete: () => {
           if (index === 0) {
-            this.manager.trigger("revealProps", index);
+            this.manager.trigger("revealProps", index, name);
           }
         },
       });

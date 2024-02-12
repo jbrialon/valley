@@ -5,7 +5,7 @@ import Experience from "../Experience.js";
 import props from "../Data/props.js";
 import toonMaterial from "../Materials/ToonMaterial.js";
 
-import { markers, markersArray } from "../Data/markers.js";
+import { markersArray } from "../Data/markers.js";
 
 export default class Props {
   constructor() {
@@ -108,7 +108,7 @@ export default class Props {
   }
 
   initEvents() {
-    // expecting index as parameter
+    // expecting index and name as parameter
     this.manager.on("revealProps", this.revealProps.bind(this));
   }
 
