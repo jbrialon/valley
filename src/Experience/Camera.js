@@ -72,10 +72,37 @@ export default class Camera {
     this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
     // Keyboard Events
     this.inputEvents.on("keydown", this.onKeyDown.bind(this));
+    //Info Window
+    this.manager.on("infowindow-click", (marker) => {
+      if (marker) {
+        // Calculate the new camera position
+        this.previousPosition = this.cameraParent.position.clone();
+        const distance = -0.7; // Distance from the marker
+        const direction = new THREE.Vector3()
+          .subVectors(marker.position, this.cameraParent.position)
+          .normalize();
+        const newPosition = new THREE.Vector3()
+          .copy(direction)
+          .multiplyScalar(distance)
+          .add(marker.position);
+
+        gsap.to(this.cameraParent.position, {
+          x: newPosition.x,
+          y: newPosition.y,
+          z: newPosition.z,
+          duration: 2,
+          ease: "power2.inOut",
+        });
+      }
+    });
   }
 
   onMouseWheel() {
-    if (this.scrollProgress >= 0 && this.manager.isScrollingEnabled()) {
+    if (
+      this.scrollProgress >= 0 &&
+      this.manager.isScrollingEnabled() &&
+      !this.manager.getZoomState()
+    ) {
       let delta = 0.025;
       if (this.inputEvents.mouse.z < 0) {
         delta = -0.025;
@@ -106,6 +133,21 @@ export default class Camera {
           this.manager.goToTutorialStep(3);
         },
       });
+    } else if (
+      this.manager.getZoomState() &&
+      this.inputEvents.direction === "backward"
+    ) {
+      // unzoom
+      gsap.to(this.cameraParent.position, {
+        x: this.previousPosition.x,
+        y: this.previousPosition.y,
+        z: this.previousPosition.z,
+        duration: 2.5,
+        ease: "power2.out",
+        onComplete: () => {
+          this.manager.setZoomState(false);
+        },
+      });
     }
   }
 
@@ -125,8 +167,8 @@ export default class Camera {
 
       // Create a movement vector based on the mouse position
       const movementVector = new THREE.Vector3(
-        position.x / 4,
-        position.y / -4,
+        position.x / 8,
+        position.y / -8,
         0
       );
 

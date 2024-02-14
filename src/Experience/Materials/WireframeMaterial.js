@@ -8,9 +8,6 @@ const terrainMaterial = (options) => {
     extensions: {
       derivatives: true,
     },
-    transparent: false,
-    side: THREE.DoubleSide,
-    // depthTest: true,
     uniforms: {
       uTime: { value: 0 },
       // Visual

@@ -8,7 +8,7 @@ export default class InputEvents extends EventEmitter {
     // Setup
     this.mouse = new THREE.Vector3(0, 0, 0);
     this.touch = new THREE.Vector2(0, 0);
-
+    this.direction = "";
     this.keys = {};
 
     // Mouse events
@@ -58,6 +58,9 @@ export default class InputEvents extends EventEmitter {
     let delta = event.deltaY || -event.wheelDelta || event.detail;
     delta = delta / (event.deltaMode === 1 ? 3 : 100);
 
+    // Determine the scroll direction
+    this.direction = delta > 0 ? "backward" : "forward";
+
     this.mouse.z = delta;
     this.trigger("wheel");
   }
@@ -92,6 +95,9 @@ export default class InputEvents extends EventEmitter {
 
       // Adjust this.mouse.z based on the delta, 100 as scaling factor for mobile
       this.mouse.z = delta / 100;
+
+      // Determine the scroll direction
+      this.direction = delta > 0 ? "backward" : "forward";
 
       // Trigger the custom 'wheel' event or equivalent functionality
       this.trigger("wheel");

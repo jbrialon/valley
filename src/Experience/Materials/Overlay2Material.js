@@ -8,8 +8,6 @@ const overlay2Material = (options) => {
     extensions: {
       derivatives: true,
     },
-    transparent: false,
-    side: THREE.DoubleSide,
     uniforms: {
       uTime: { value: 0 },
       uAlpha: { value: options.uAlpha || 0 },

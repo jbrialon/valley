@@ -22,6 +22,7 @@ export default class Manager extends EventEmitter {
     this.isSearchEnabled = false;
     this.maxScrollProgress = 0.034;
     this.mouseMoveEnabled = false;
+    this.isZoomed = false;
     this.tutorialStep = 0;
 
     this.revealedSteps = {
@@ -134,6 +135,14 @@ export default class Manager extends EventEmitter {
   }
   setMouseMoveState(state) {
     this.mouseMoveEnabled = state;
+  }
+
+  // State Management Zoomed app
+  getZoomState() {
+    return this.isZoomed;
+  }
+  setZoomState(state) {
+    this.isZoomed = state;
   }
 
   // Revealed Steps Managements

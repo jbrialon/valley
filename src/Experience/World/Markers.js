@@ -3,7 +3,6 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import Experience from "../Experience";
 
-import { findMaxConsecutive } from "../Utils/Utils.js";
 import { markers, markersArray } from "../Data/markers.js";
 
 export default class Markers {
@@ -12,6 +11,8 @@ export default class Markers {
     this.scene = this.experience.scene;
     this.debug = this.experience.debug;
     this.time = this.experience.time;
+    this.sizes = this.experience.sizes;
+    this.camera = this.experience.camera;
     this.inputEvents = this.experience.inputEvents;
     this.manager = this.experience.manager;
     this.resources = this.experience.resources;
@@ -31,6 +32,7 @@ export default class Markers {
     this.point = new THREE.Vector3();
     this.markers = [];
     this.revealedSteps = [];
+    this.activeMarker = null;
     this.setMaterial();
     this.setMarkers();
     this.initEvents();
@@ -60,7 +62,7 @@ export default class Markers {
   }
 
   setMarkers() {
-    markersArray.forEach((marker) => {
+    markersArray.forEach((marker, index) => {
       let material = this.material.clone();
       let geometry = new THREE.OctahedronGeometry(1, 0);
       let scale = new THREE.Vector3(0.075, 0.1, 0.075);
@@ -81,6 +83,7 @@ export default class Markers {
       }
 
       const markerMesh = new THREE.Mesh(geometry, material);
+      markerMesh.index = index;
       markerMesh.name = marker.name;
       markerMesh.type = marker.type;
       markerMesh.position.set(
@@ -94,6 +97,13 @@ export default class Markers {
 
       this.markers.push(markerMesh);
       this.scene.add(markerMesh);
+
+      this.manager.addClickEventToMesh(markerMesh, () => {
+        if (!this.manager.getZoomState()) {
+          this.manager.trigger("infowindow-show", markerMesh.index);
+          this.activeMarker = markerMesh;
+        }
+      });
     });
   }
 
@@ -142,20 +152,6 @@ export default class Markers {
           }
         }
       }
-      // if (distance > 20 && distance <= 90) {
-      //   const markerMesh = this.markers[index];
-      //   const posY = THREE.MathUtils.mapLinear(
-      //     distance,
-      //     20,
-      //     90,
-      //     marker.position.y,
-      //     marker.position.y - 1
-      //   );
-      //   markerMesh.visible = true;
-      //   markerMesh.position.y = posY;
-      // } else if (distance <= 20) {
-      // this.revealMarker(index);
-      // }
     });
   }
 
@@ -169,10 +165,10 @@ export default class Markers {
       }
       // Reveal Marker
       markerMesh.visible = true;
-      markerMesh.position.y = markersArray[index].position.y - 1;
+      markerMesh.position.y = markersArray[index].position.y - 0.5;
       gsap.to(markerMesh.position, {
         y: markersArray[index].position.y,
-        duration: 1.5,
+        duration: 0.5,
         ease: "power4.inOut",
         onComplete: () => {
           if (index === 0) {
@@ -272,6 +268,17 @@ export default class Markers {
       this.manager.isSearchingEnabled()
     ) {
       this.showClosestMarkers();
+    }
+
+    if (this.activeMarker) {
+      const screenPosition = this.activeMarker.position.clone();
+      screenPosition.project(this.camera.instance);
+
+      const position = new THREE.Vector3(
+        screenPosition.x * this.sizes.width * 0.5,
+        -screenPosition.y * this.sizes.height * 0.5
+      );
+      this.manager.trigger("infowindow-update-position", position);
     }
 
     this.markers.forEach((marker) => {
