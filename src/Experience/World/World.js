@@ -14,6 +14,7 @@ export default class World {
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
     this.resources = this.experience.resources;
+    this.manager = this.experience.manager;
 
     // Wait for resources to be loaded
     this.loader = new Loader();
@@ -28,6 +29,7 @@ export default class World {
 
       this.dashLine = new DashLine();
       this.camera.setPaths();
+      this.manager.trigger("loaded");
     });
   }
 

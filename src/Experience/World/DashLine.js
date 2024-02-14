@@ -23,18 +23,36 @@ export default class DashLine {
     // Options
     this.options = {
       // Line
-      color: new THREE.Color(0xffffff),
-      lineWidth: 18,
-      dashArray: 0.01,
-      dashRatio: 0.5,
-      dashOffset: 0,
-      visibility: 0,
+      chapterOne: {
+        color: new THREE.Color(0xffffff),
+        lineWidth: 18,
+        dashArray: 0.01,
+        dashRatio: 0.5,
+        dashOffset: 0,
+        visibility: 0,
+      },
+      chapterTwo: {
+        color: new THREE.Color(0xffffff),
+        lineWidth: 18,
+        dashArray: 0.01,
+        dashRatio: 0.5,
+        dashOffset: 0,
+        visibility: 0,
+      },
+      chapterTree: {
+        color: new THREE.Color(0xffffff),
+        lineWidth: 18,
+        dashArray: 0.01,
+        dashRatio: 0.5,
+        dashOffset: 0,
+        visibility: 0,
+      },
     };
 
     // Setup
     this.progress = {
-      chapterOne: [0, 0.285, 0.361, 0.49, 0.852, 1],
-      chapterTwo: [0.5, 1],
+      chapterOne: [0, 0.285, 0.361, 0.49, 0.68, 0.852, 1],
+      chapterTwo: [0.177, 0.545, 1],
       chapterTree: [],
     };
     this.revealedSteps = {
@@ -70,7 +88,7 @@ export default class DashLine {
         new THREE.Vector3(22.41, 3.94, -14.34),
         new THREE.Vector3(23.4, 4.31, -14.34),
         new THREE.Vector3(24.69, 5.0, -15.29),
-        new THREE.Vector3(25.23, 4.89, -14.35),
+        new THREE.Vector3(25.23, 4.74, -14.35),
         new THREE.Vector3(25.05, 4.33, -13.75),
         new THREE.Vector3(24.39, 4.42, -13.93),
         new THREE.Vector3(23.18, 4.05, -13.98),
@@ -115,13 +133,13 @@ export default class DashLine {
 
   setMaterial() {
     const material = new MeshLineMaterial({
-      color: this.options.color,
-      lineWidth: this.options.lineWidth,
+      color: this.options.chapterOne.color,
+      lineWidth: this.options.chapterOne.lineWidth,
       resolution: new THREE.Vector2(this.sizes.width, this.sizes.height),
-      dashArray: this.options.dashArray,
-      dashRatio: this.options.dashRatio,
-      dashOffset: this.options.dashOffset,
-      visibility: this.options.visibility,
+      dashArray: this.options.chapterOne.dashArray,
+      dashRatio: this.options.chapterOne.dashRatio,
+      dashOffset: this.options.chapterOne.dashOffset,
+      visibility: this.options.chapterOne.visibility,
       sizeAttenuation: false,
       depthTest: true,
       transparent: true,
@@ -236,67 +254,74 @@ export default class DashLine {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Dash Line");
       this.debugFolder.close();
-      this.debugFolder
-        .addColor(this.options, "color")
-        .name("Color")
-        .onChange(() => {
-          Object.entries(this.materials).forEach(([chapter, material]) => {
-            material.color = new THREE.Color(this.options.color);
+
+      this.debugFolders = {
+        chapterOne: this.debugFolder.addFolder("chapter One"),
+        chapterTwo: this.debugFolder.addFolder("chapter Two"),
+        chapterTree: this.debugFolder.addFolder("chapter Tree"),
+      };
+
+      Object.entries(this.materials).forEach(([chapter, material]) => {
+        const debugFolder = this.debugFolders[chapter];
+        debugFolder.close();
+        debugFolder
+          .addColor(this.options[chapter], "color")
+          .name("Color")
+          .onChange(() => {
+            this.materials[chapter].color = new THREE.Color(
+              this.options[chapter].color
+            );
           });
-        });
-      this.debugFolder
-        .add(this.options, "lineWidth")
-        .name("Line Width")
-        .min(0)
-        .max(30)
-        .step(0.001)
-        .onChange(() => {
-          Object.entries(this.materials).forEach(([chapter, material]) => {
-            material.uniforms.lineWidth.value = this.options.lineWidth;
+        debugFolder
+          .add(this.options[chapter], "lineWidth")
+          .name("Line Width")
+          .min(0)
+          .max(30)
+          .step(0.001)
+          .onChange(() => {
+            this.materials[chapter].uniforms.lineWidth.value =
+              this.options[chapter].lineWidth;
           });
-        });
-      this.debugFolder
-        .add(this.options, "dashArray")
-        .name("Dash Array")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .onChange(() => {
-          Object.entries(this.materials).forEach(([chapter, material]) => {
-            material.uniforms.dashArray.value = this.options.dashArray;
+        debugFolder
+          .add(this.options[chapter], "dashArray")
+          .name("Dash Array")
+          .min(0)
+          .max(1)
+          .step(0.001)
+          .onChange(() => {
+            this.materials[chapter].uniforms.dashArray.value =
+              this.options[chapter].dashArray;
           });
-        });
-      this.debugFolder
-        .add(this.options, "dashRatio")
-        .name("Dash Ratio")
-        .min(-0)
-        .max(1)
-        .step(0.001)
-        .onChange(() => {
-          Object.entries(this.materials).forEach(([chapter, material]) => {
-            material.uniforms.dashRatio.value = this.options.dashRatio;
+        debugFolder
+          .add(this.options[chapter], "dashRatio")
+          .name("Dash Ratio")
+          .min(-0)
+          .max(1)
+          .step(0.001)
+          .onChange(() => {
+            this.materials[chapter].uniforms.dashRatio.value =
+              this.options[chapter].dashRatio;
           });
-        });
-      this.debugFolder
-        .add(this.options, "dashOffset")
-        .name("Dash Offset")
-        .min(-20)
-        .max(20)
-        .onChange(() => {
-          Object.entries(this.materials).forEach(([chapter, material]) => {
-            material.uniforms.dashOffset.value = this.options.visibility;
+        debugFolder
+          .add(this.options[chapter], "dashOffset")
+          .name("Dash Offset")
+          .min(-20)
+          .max(20)
+          .onChange(() => {
+            this.materials[chapter].uniforms.dashOffset.value =
+              this.options[chapter].visibility;
           });
-        });
-      this.debugFolder
-        .add(this.options, "visibility")
-        .name("Visibility")
-        .min(0)
-        .max(1)
-        .onChange(() => {
-          Object.entries(this.materials).forEach(([chapter, material]) => {
-            material.uniforms.visibility.value = this.options.visibility;
+        debugFolder
+          .add(this.options[chapter], "visibility")
+          .name("Visibility")
+          .min(0)
+          .max(1)
+          .onChange(() => {
+            this.materials[chapter].uniforms.visibility.value =
+              this.options[chapter].visibility;
           });
-        });
+      });
+
       this.debug.debugEditorFolder
         .add(
           {
@@ -345,7 +370,7 @@ export default class DashLine {
           this.meshes[chapter].geometry = this.geometries[chapter];
           // if point is from camera type we update the target curve
           console.log(
-            "New dashLine Position:",
+            `New dashLine ${chapter} Position:`,
             index,
             `new THREE.Vector3(${transformedPoint.position.x.toFixed(
               2

@@ -147,7 +147,7 @@ export default class Manager extends EventEmitter {
         this.revealedSteps[chapter].push(marker.order);
         if (
           chapter === currentChapter &&
-          this.revealedSteps[currentChapter].length > 1
+          this.revealedSteps["chapterOne"].length > 1
         ) {
           const previousSteps = markers[currentChapter].filter(
             (item) => item.order < marker.order
@@ -181,7 +181,6 @@ export default class Manager extends EventEmitter {
       } else if (chapter !== currentChapter && chapter !== "bonus") {
         this.trigger("ui-tooltip-auto-hide", "tooltip.message.later");
       } else if (chapter === "bonus") {
-        console.log("bonus!!");
         this.trigger("ui-tooltip-auto-hide", "tooltip.message.achievement", [
           marker.displayName,
         ]);

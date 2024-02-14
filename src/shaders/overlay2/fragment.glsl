@@ -23,8 +23,8 @@ uniform vec3 uFill;
 
 uniform float uAlpha;
 uniform float uNoiseIntensity;
-uniform float uCircleRadius[10];
-uniform vec2 uCirclePos[10];
+uniform float uCircleRadius[11];
+uniform vec2 uCirclePos[11];
 
 // This is like
 float aastep(float threshold, float dist) {
@@ -92,7 +92,7 @@ void main() {
   float offy = vUv.y - uTime * 0.1 - cos(uTime * .001) * .01;
   float noise = snoise3(vec3(offx, offy, uTime * 0.1) * uNoiseIntensity) - 1.0;
 
-  for(int i = 0; i < 10; ++i) {
+  for(int i = 0; i < 11; ++i) {
     // I don't now if it's better in terms of performances to draw a 0 radius circle or doing an if > 0.0 
     if(uCircleRadius[i] > 0.0) {
       vec2 circlePos = vUv + (uCirclePos[i]) - vec2(1.0);

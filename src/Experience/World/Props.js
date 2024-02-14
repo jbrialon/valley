@@ -68,7 +68,6 @@ export default class Props {
     });
 
     this.rock = this.resources.items.rockModel.scene;
-
     this.rock.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         if (child.name === "rockB") {

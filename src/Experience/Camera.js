@@ -63,7 +63,6 @@ export default class Camera {
     this.cameraCurve = this.experience.world.paths.cameraCurve;
     this.targetCurve = this.experience.world.paths.targetCurve;
     this.fakeTarget = this.experience.world.paths.fakeTarget;
-    this.manager.trigger("loaded");
   }
 
   initEvents() {
