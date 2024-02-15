@@ -39,7 +39,7 @@ export default class Camera {
     this.instance = new THREE.PerspectiveCamera(
       75,
       this.sizes.width / this.sizes.height,
-      0.01,
+      0.1,
       100
     );
 
@@ -77,18 +77,19 @@ export default class Camera {
     this.manager.on("camera-unzoom", this.unzoom.bind(this));
   }
 
-  zoom(position) {
-    if (position) {
-      // Calculate the new camera position
+  zoom() {
+    const activeMarker = this.manager.getActiveMarker();
+    if (activeMarker) {
       this.previousPosition = this.cameraParent.position.clone();
+      // Calculate the new camera position
       const distance = -0.7; // Distance from the marker
       const direction = new THREE.Vector3()
-        .subVectors(position, this.cameraParent.position)
+        .subVectors(activeMarker.position, this.cameraParent.position)
         .normalize();
       const newPosition = new THREE.Vector3()
         .copy(direction)
         .multiplyScalar(distance)
-        .add(position);
+        .add(activeMarker.position);
 
       gsap.to(this.cameraParent.position, {
         x: newPosition.x,

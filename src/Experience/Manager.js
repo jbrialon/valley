@@ -23,6 +23,7 @@ export default class Manager extends EventEmitter {
     this.maxScrollProgress = 0.034;
     this.mouseMoveEnabled = false;
     this.isZoomed = false;
+    this.activeMarker = null;
     this.tutorialStep = 0;
 
     this.revealedSteps = {
@@ -145,6 +146,13 @@ export default class Manager extends EventEmitter {
     this.isZoomed = state;
   }
 
+  getActiveMarker() {
+    return this.activeMarker;
+  }
+
+  setActiveMarker(marker) {
+    this.activeMarker = marker;
+  }
   // Revealed Steps Managements
   addToRevealedSteps(name) {
     const chapter = findMarkerChapter(markers, name);

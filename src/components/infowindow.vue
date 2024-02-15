@@ -37,15 +37,15 @@ export default {
   },
   methods: {
     selectMarker() {
-      this.manager.setZoomState(true);
-      const position = this.activeMarker.position;
-      this.manager.trigger("camera-zoom", position);
-      this.show = false;
-      this.activeMarker = null;
+      if (!this.manager.setZoomState(true)) {
+        this.manager.setZoomState(true);
+        this.manager.trigger("camera-zoom");
+        this.show = false;
+      }
     },
     hideInfowindow() {
+      this.manager.trigger("marker-mouseout");
       this.show = false;
-      this.activeMarker = null;
     },
   },
   computed: {

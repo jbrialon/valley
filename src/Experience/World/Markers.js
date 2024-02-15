@@ -32,7 +32,6 @@ export default class Markers {
     this.point = new THREE.Vector3();
     this.markers = [];
     this.revealedSteps = [];
-    this.activeMarker = null;
     this.setMaterial();
     this.setMarkers();
     this.initEvents();
@@ -97,20 +96,6 @@ export default class Markers {
 
       this.markers.push(markerMesh);
       this.scene.add(markerMesh);
-
-      this.manager.addHoverEventToMesh(markerMesh, () => {
-        if (!this.manager.getZoomState()) {
-          this.manager.trigger("infowindow-show", markerMesh.index);
-          this.activeMarker = markerMesh;
-        }
-      });
-
-      this.manager.addClickEventToMesh(markerMesh, () => {
-        if (this.manager.getZoomState()) {
-          this.manager.trigger("camera-unzoom");
-          this.activeMarker = null;
-        }
-      });
     });
   }
 
@@ -178,6 +163,23 @@ export default class Markers {
         duration: 0.5,
         ease: "power4.inOut",
         onComplete: () => {
+          // when marker is revealed we add the events
+          this.manager.addHoverEventToMesh(markerMesh, () => {
+            if (!this.manager.getZoomState()) {
+              this.manager.trigger("infowindow-show", markerMesh.index);
+              this.manager.setActiveMarker(markerMesh);
+            }
+          });
+
+          this.manager.addClickEventToMesh(markerMesh, () => {
+            if (
+              this.manager.getZoomState() &&
+              markerMesh.name === this.manager.getActiveMarker().name
+            ) {
+              this.manager.trigger("camera-unzoom");
+              this.manager.setActiveMarker(null);
+            }
+          });
           if (index === 0) {
             this.manager.trigger("revealProps", index, name);
           }
@@ -277,8 +279,8 @@ export default class Markers {
       this.showClosestMarkers();
     }
 
-    if (this.activeMarker) {
-      const screenPosition = this.activeMarker.position.clone();
+    if (this.manager.getActiveMarker()) {
+      const screenPosition = this.manager.getActiveMarker().position.clone();
       screenPosition.project(this.camera.instance);
 
       const position = new THREE.Vector3(
