@@ -180,7 +180,7 @@ export default class Overlay {
   }
 
   onMouseMove() {
-    if (!this.transformControls.enabled) {
+    if (!this.transformControls?.enabled) {
       // calculate the position of the mouse based with center as origin
       const mouse = new THREE.Vector2(
         (this.inputEvents.mouse.x / this.sizes.width) * 2 - 1,
@@ -210,7 +210,7 @@ export default class Overlay {
   }
 
   onPressDown() {
-    if (!this.transformControls.enabled) {
+    if (!this.transformControls?.enabled) {
       gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
         duration: 0.5,
         0: 3,
@@ -220,7 +220,7 @@ export default class Overlay {
   }
 
   onPressUp() {
-    if (!this.transformControls.enabled) {
+    if (!this.transformControls?.enabled) {
       gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
         duration: 0.5,
         0: 0,

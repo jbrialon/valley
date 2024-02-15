@@ -157,26 +157,28 @@ export default class DashLine {
     Object.entries(this.points).forEach(([chapter, points]) => {
       this.geometries[chapter] = new MeshLineGeometry();
 
-      points.forEach((point, index) => {
-        const curvePoint = new THREE.Mesh(
-          new THREE.BoxGeometry(1, 1, 1),
-          new THREE.MeshNormalMaterial()
-        );
-        curvePoint.position.set(point.x, point.y, point.z);
-        curvePoint.scale.set(0.1, 0.1, 0.1);
-        curvePoint.index = index;
-        curvePoint.type = "dashLine";
-        curvePoint.visible = false;
-        curvePoint.chapter = chapter;
-        curvePoint.name = `dashLine.curvepoint.${chapter}.${index}`;
+      if (this.debug.active) {
+        points.forEach((point, index) => {
+          const curvePoint = new THREE.Mesh(
+            new THREE.BoxGeometry(1, 1, 1),
+            new THREE.MeshNormalMaterial()
+          );
+          curvePoint.position.set(point.x, point.y, point.z);
+          curvePoint.scale.set(0.1, 0.1, 0.1);
+          curvePoint.index = index;
+          curvePoint.type = "dashLine";
+          curvePoint.visible = false;
+          curvePoint.chapter = chapter;
+          curvePoint.name = `dashLine.curvepoint.${chapter}.${index}`;
 
-        this.curvePoints[chapter].push(curvePoint);
-        this.scene.add(curvePoint);
+          this.curvePoints[chapter].push(curvePoint);
+          this.scene.add(curvePoint);
 
-        this.manager.addClickEventToMesh(curvePoint, () => {
-          this.helpers.setActiveMesh(curvePoint);
+          this.manager.addClickEventToMesh(curvePoint, () => {
+            this.helpers.setActiveMesh(curvePoint);
+          });
         });
-      });
+      }
 
       this.curves[chapter] = new THREE.CatmullRomCurve3(
         this.points[chapter]

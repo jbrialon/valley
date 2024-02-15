@@ -7,7 +7,7 @@
         :style="infoWindowPosition"
         @click="selectMarker()"
       >
-        <div class="infowindow--inner">
+        <div class="infowindow--inner" @mouseout="hideInfowindow()">
           <div class="infowindow--content">{{ activeMarker.displayName }}</div>
         </div>
       </div>
@@ -38,8 +38,12 @@ export default {
   methods: {
     selectMarker() {
       this.manager.setZoomState(true);
-      const marker = this.activeMarker;
-      this.manager.trigger("infowindow-click", marker);
+      const position = this.activeMarker.position;
+      this.manager.trigger("camera-zoom", position);
+      this.show = false;
+      this.activeMarker = null;
+    },
+    hideInfowindow() {
       this.show = false;
       this.activeMarker = null;
     },
@@ -83,11 +87,11 @@ export default {
     left: -50%;
     bottom: 100px;
     padding-bottom: 100px;
+    cursor: pointer;
   }
 
   &--content {
     position: relative;
-    cursor: pointer;
     font-weight: 500;
     letter-spacing: 1px;
     color: #5a5444;

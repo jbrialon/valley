@@ -34,6 +34,7 @@ export default class Props {
 
   setMaterial() {
     this.toonTexture = this.resources.items.toonTexture;
+    this.toonTexture.magFilter = THREE.NearestFilter;
 
     this.foliageMaterial = toonMaterial({
       uColor: new THREE.Color(0x1e854d),
@@ -99,9 +100,11 @@ export default class Props {
         this.propsMeshes.push(mesh);
         this.scene.add(mesh);
 
-        this.manager.addClickEventToMesh(mesh, () => {
-          this.helpers.setActiveMesh(mesh);
-        });
+        if (this.debug.active) {
+          this.manager.addClickEventToMesh(mesh, () => {
+            this.helpers.setActiveMesh(mesh);
+          });
+        }
       });
     });
   }

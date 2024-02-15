@@ -221,30 +221,28 @@ export default class Manager extends EventEmitter {
 
   // Interactions
   addClickEventToMesh(mesh, clickHandlerFunction) {
-    if (this.debug.active) {
-      if (!this.interactionManager) {
-        this.interactionManager = this.experience.renderer.interactionManager;
+    if (!this.interactionManager) {
+      this.interactionManager = this.experience.renderer.interactionManager;
+    }
+
+    mesh.addEventListener("mouseover", (event) => {
+      document.body.style.cursor = "pointer";
+    });
+
+    mesh.addEventListener("mouseout", (event) => {
+      document.body.style.cursor = "grab";
+    });
+
+    mesh.addEventListener("click", (event) => {
+      if (typeof clickHandlerFunction === "function") {
+        clickHandlerFunction(event);
       }
+    });
 
-      mesh.addEventListener("mouseover", (event) => {
-        document.body.style.cursor = "pointer";
-      });
-
-      mesh.addEventListener("mouseout", (event) => {
-        document.body.style.cursor = "default";
-      });
-
-      mesh.addEventListener("click", (event) => {
-        if (typeof clickHandlerFunction === "function") {
-          clickHandlerFunction(event);
-        }
-      });
-
-      // we add the mesh to the interaction Manager if it's not already there
-      if (!this.interactiveMeshes.includes(mesh.name)) {
-        this.interactiveMeshes.push(mesh.name);
-        this.interactionManager.add(mesh);
-      }
+    // we add the mesh to the interaction Manager if it's not already there
+    if (!this.interactiveMeshes.includes(mesh.name)) {
+      this.interactiveMeshes.push(mesh.name);
+      this.interactionManager.add(mesh);
     }
   }
 

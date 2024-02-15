@@ -98,10 +98,17 @@ export default class Markers {
       this.markers.push(markerMesh);
       this.scene.add(markerMesh);
 
-      this.manager.addClickEventToMesh(markerMesh, () => {
+      this.manager.addHoverEventToMesh(markerMesh, () => {
         if (!this.manager.getZoomState()) {
           this.manager.trigger("infowindow-show", markerMesh.index);
           this.activeMarker = markerMesh;
+        }
+      });
+
+      this.manager.addClickEventToMesh(markerMesh, () => {
+        if (this.manager.getZoomState()) {
+          this.manager.trigger("camera-unzoom");
+          this.activeMarker = null;
         }
       });
     });

@@ -39,7 +39,7 @@ export default class Camera {
     this.instance = new THREE.PerspectiveCamera(
       75,
       this.sizes.width / this.sizes.height,
-      0.1,
+      0.01,
       100
     );
 
@@ -72,28 +72,44 @@ export default class Camera {
     this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
     // Keyboard Events
     this.inputEvents.on("keydown", this.onKeyDown.bind(this));
-    //Info Window
-    this.manager.on("infowindow-click", (marker) => {
-      if (marker) {
-        // Calculate the new camera position
-        this.previousPosition = this.cameraParent.position.clone();
-        const distance = -0.7; // Distance from the marker
-        const direction = new THREE.Vector3()
-          .subVectors(marker.position, this.cameraParent.position)
-          .normalize();
-        const newPosition = new THREE.Vector3()
-          .copy(direction)
-          .multiplyScalar(distance)
-          .add(marker.position);
+    // Camera Zoom
+    this.manager.on("camera-zoom", this.zoom.bind(this));
+    this.manager.on("camera-unzoom", this.unzoom.bind(this));
+  }
 
-        gsap.to(this.cameraParent.position, {
-          x: newPosition.x,
-          y: newPosition.y,
-          z: newPosition.z,
-          duration: 2,
-          ease: "power2.inOut",
-        });
-      }
+  zoom(position) {
+    if (position) {
+      // Calculate the new camera position
+      this.previousPosition = this.cameraParent.position.clone();
+      const distance = -0.7; // Distance from the marker
+      const direction = new THREE.Vector3()
+        .subVectors(position, this.cameraParent.position)
+        .normalize();
+      const newPosition = new THREE.Vector3()
+        .copy(direction)
+        .multiplyScalar(distance)
+        .add(position);
+
+      gsap.to(this.cameraParent.position, {
+        x: newPosition.x,
+        y: newPosition.y,
+        z: newPosition.z,
+        duration: 2,
+        ease: "power2.inOut",
+      });
+    }
+  }
+
+  unzoom() {
+    gsap.to(this.cameraParent.position, {
+      x: this.previousPosition.x,
+      y: this.previousPosition.y,
+      z: this.previousPosition.z,
+      duration: 2.5,
+      ease: "power2.out",
+      onComplete: () => {
+        this.manager.setZoomState(false);
+      },
     });
   }
 
@@ -133,22 +149,13 @@ export default class Camera {
           this.manager.goToTutorialStep(3);
         },
       });
-    } else if (
-      this.manager.getZoomState() &&
-      this.inputEvents.direction === "backward"
-    ) {
-      // unzoom
-      gsap.to(this.cameraParent.position, {
-        x: this.previousPosition.x,
-        y: this.previousPosition.y,
-        z: this.previousPosition.z,
-        duration: 2.5,
-        ease: "power2.out",
-        onComplete: () => {
-          this.manager.setZoomState(false);
-        },
-      });
     }
+    // else if (
+    //   this.manager.getZoomState() &&
+    //   this.inputEvents.direction === "backward"
+    // ) {
+    //   this.unzoom();
+    // }
   }
 
   onMouseMove() {
