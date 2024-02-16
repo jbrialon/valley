@@ -43,12 +43,13 @@ export default class Manager extends EventEmitter {
   }
 
   startGame() {
-    this.trigger("loader-intro-hide", () => {
+    this.trigger("ui-title-hide");
+    this.trigger("loader-hide", () => {
       this.setScrollState(true);
       this.setSearchState(true);
       this.setMouseMoveState(true);
       this.setMaxScrollProgress(1);
-      this.tutorialStep = 4;
+      this.tutorialStep = 5;
       this.trigger("ui-chapter-show", this.currentChapter);
     });
   }
@@ -60,44 +61,56 @@ export default class Manager extends EventEmitter {
       switch (step) {
         case 1:
           this.tutorialStep = 1;
-          this.setSearchState(true);
+          this.setMouseMoveState(true);
           this.trigger("ui-tooltip-show", "tooltip.tutorial.one");
           this.trigger("loader-tutorial-one");
+          setTimeout(() => {
+            this.trigger("ui-tooltip-hide", () => {
+              this.goToTutorialStep(2);
+            });
+          }, 6000);
           break;
-
         case 2:
           this.tutorialStep = 2;
+          this.setSearchState(true);
+          this.setMouseMoveState(false);
+          this.trigger("ui-tooltip-show", "tooltip.tutorial.two");
+          this.trigger("loader-tutorial-two");
+          break;
+        case 3:
+          this.tutorialStep = 3;
           this.setSearchState(false);
           this.trigger("loader-tutorial-hide", () => {
             this.setScrollState(true);
             this.setMouseMoveState(true);
-            this.trigger("ui-chapter-show", this.currentChapter);
           });
 
-          this.trigger("ui-tooltip-hide", () => {
-            this.trigger("ui-tooltip-show", "tooltip.tutorial.two");
-          });
-          break;
-
-        case 3:
-          this.tutorialStep = 3;
-          this.setScrollState(false);
-          this.setMouseMoveState(false);
-          this.setSearchState(true);
           this.trigger("ui-tooltip-hide", () => {
             this.trigger("ui-tooltip-show", "tooltip.tutorial.three");
           });
-          this.trigger("loader-tutorial-two");
           break;
 
         case 4:
           this.tutorialStep = 4;
-          this.trigger("loader-tutorial-hide");
+          this.setScrollState(false);
+          this.setMouseMoveState(false);
+          this.setSearchState(true);
           this.trigger("ui-tooltip-hide", () => {
-            this.trigger("ui-tooltip-auto-hide", "tooltip.tutorial.four");
+            this.trigger("ui-tooltip-show", "tooltip.tutorial.four");
+          });
+          this.trigger("loader-tutorial-four");
+          break;
+
+        case 5:
+          this.tutorialStep = 5;
+          this.trigger("loader-tutorial-hide");
+          this.trigger("ui-title-hide");
+          this.trigger("ui-tooltip-hide", () => {
+            this.trigger("ui-tooltip-auto-hide", "tooltip.tutorial.five");
             this.setScrollState(true);
             this.setMouseMoveState(true);
             this.setMaxScrollProgress(1);
+            this.trigger("ui-chapter-show", this.currentChapter);
           });
 
         default:
@@ -189,11 +202,11 @@ export default class Manager extends EventEmitter {
           currentChapter === "chapterOne"
         ) {
           // tutorial mode, we hide the loader if we reveal the first step
-          this.goToTutorialStep(2);
+          this.goToTutorialStep(3);
         }
         // Tutorial mode
         if (marker.order === 2 && currentChapter === "chapterOne") {
-          this.goToTutorialStep(4);
+          this.goToTutorialStep(5);
         }
       } else if (chapter !== currentChapter && chapter !== "bonus") {
         this.trigger("ui-tooltip-auto-hide", "tooltip.message.later");

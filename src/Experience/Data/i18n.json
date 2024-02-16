@@ -15,10 +15,11 @@
     },
     "tooltip": {
       "tutorial": {
-        "one": "Navigate your mouse to the zone and hold click to expose it.",
-        "two": "Use your mouse scroll to travel along the valley.",
-        "three": "Navigate your mouse to the zone and click to expose the next step of our journey.",
-        "four": "Good job! have fun discovering! track your progress with your travel log! (TODO)"
+        "one": "This is an <span class=\"bold\">Exploration Game</span where your goal is to reveal hidden steps on a map to retrace our journey.",
+        "two": "Use your <span class=\"bold\">mouse</span> and <span class=\"bold\">hold click</span> on the map to search.",
+        "three": "<span class=\"bold\">Scroll</span> can be used to travel along the valley.",
+        "four": "And reveal the next step of our journey.",
+        "five": "Good job! have fun discovering! track your progress with your travel log! (TODO)"
       },
       "message": {
         "later": "I can't go there yet, but I can come back later.",
@@ -43,10 +44,11 @@
     },
     "tooltip": {
       "tutorial": {
-        "one": "(🇫🇷) Navigate your mouse to the zone and hold click to expose it.",
-        "two": "(🇫🇷) Use your mouse scroll to travel along the valley.",
-        "three": "(🇫🇷) Navigate your mouse to the zone and click to expose the next step of our journey.",
-        "four": "(🇫🇷) Good job! have fun discovering! track your progress with your travel log! (TODO)"
+        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden steps on a map to retrace our journey.",
+        "two": "Use your <span class=\"bold\">mouse</span> and <span class=\"bold\">hold click</span> on the map to search.",
+        "three": "<span class=\"bold\">Scroll</span> can be used to travel along the valley.",
+        "four": "And reveal the next step of our journey.",
+        "five": "Good job! have fun discovering! track your progress with your travel log! (TODO)"
       },
       "message": {
         "later": "(🇫🇷) I can't go there yet, but I can come back later.",

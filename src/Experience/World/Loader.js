@@ -31,7 +31,7 @@ export default class Loader {
   }
 
   initEvents() {
-    this.manager.on("loader-intro-hide", this.hideLoaderIntro.bind(this));
+    this.manager.on("loader-hide", this.hideLoader.bind(this));
     this.manager.on("loader-tutorial-hide", this.hideLoaderTutorial.bind(this));
     this.manager.on(
       "loader-tutorial-one",
@@ -40,6 +40,10 @@ export default class Loader {
     this.manager.on(
       "loader-tutorial-two",
       this.revealTutorialStepTwo.bind(this)
+    );
+    this.manager.on(
+      "loader-tutorial-four",
+      this.revealTutorialStepFour.bind(this)
     );
   }
 
@@ -99,8 +103,9 @@ export default class Loader {
   }
 
   revealTutorialStepOne(callback) {
+    this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.5, 0.5);
     gsap.to(this.material.uniforms.uCircleRadius, {
-      value: 0.23,
+      value: 14,
       duration: 1.5,
       ease: "power4.inOut",
       onComplete: () => {
@@ -112,8 +117,22 @@ export default class Loader {
   }
 
   revealTutorialStepTwo(callback) {
+    (this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.804, 0.765)),
+      gsap.to(this.material.uniforms.uCircleRadius, {
+        value: 0.23,
+        duration: 1.5,
+        ease: "power4.inOut",
+        onComplete: () => {
+          if (callback && typeof callback === "function") {
+            callback();
+          }
+        },
+      });
+  }
+
+  revealTutorialStepFour(callback) {
     this.mesh.position.set(0.08, 1.89, -7.57);
-    this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.453, 0.615);
+    this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.485, 0.551);
 
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 0.07,
@@ -127,20 +146,31 @@ export default class Loader {
     });
   }
 
-  hideLoaderIntro(callback) {
+  hideLoader(callback) {
     this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.5, 0.5);
     gsap.to(this.material.uniforms.uCircleRadius, {
-      value: 12,
+      value: 14,
       duration: 1.5,
       ease: "power4.inOut",
-      onStart: () => {
-        this.manager.trigger("ui-title-hide");
-      },
       onComplete: () => {
         if (callback && typeof callback === "function") {
           callback();
         }
         this.destroy();
+      },
+    });
+  }
+
+  hideLoaderTutorial(callback) {
+    gsap.to(this.material.uniforms.uCircleRadius, {
+      value: 14,
+      duration: 1.5,
+      ease: "power4.inOut",
+      onComplete: () => {
+        if (callback && typeof callback === "function") {
+          callback();
+        }
+        // this.destroy();
       },
     });
   }

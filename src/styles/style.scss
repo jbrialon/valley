@@ -1,9 +1,7 @@
 @import "vars";
 @import "fonts";
 @import "transitions";
-
-@import "components/loader";
-@import "components/disclaimer";
+@import "helpers";
 
 * {
   margin: 0;

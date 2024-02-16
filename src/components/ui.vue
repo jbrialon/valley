@@ -1,12 +1,14 @@
 <template>
   <div class="ui">
-    <Transition name="slide-fade">
+    <Transition name="fade">
       <div class="ui--title" v-if="showTitle">
         <h1>Valley</h1>
         <h3>an Explorative Experiment</h3>
-        <p>
-          {{ $t("title.paragraph") }}
-        </p>
+        <Transition name="fade">
+          <p v-if="showParagraph">
+            {{ $t("title.paragraph") }}
+          </p>
+        </Transition>
       </div>
     </Transition>
 
@@ -26,9 +28,11 @@
       </div>
     </Transition>
     <Transition name="slide-fade">
-      <div class="ui--speech-bubble" v-if="showTooltip">
-        {{ tooltipText }}
-      </div>
+      <div
+        class="ui--speech-bubble"
+        v-if="showTooltip"
+        v-html="tooltipText"
+      ></div>
     </Transition>
   </div>
 </template>
@@ -45,6 +49,7 @@ export default {
   data() {
     return {
       showMenu: false,
+      showParagraph: true,
       showChapter: false,
       showTitle: true,
       title: "",
@@ -61,6 +66,7 @@ export default {
         this.manager.startGame();
       } else if (mode === "tutorial") {
         this.manager.goToTutorialStep(1);
+        this.showParagraph = false;
       }
     },
     uiShowTooltip(key, callback) {
@@ -158,11 +164,12 @@ export default {
     p {
       white-space: break-spaces;
       font-family: Libre Baskerville;
-      max-width: 750px;
+      max-width: 55vh;
       text-transform: none;
       letter-spacing: 2px;
+      font-size: 19;
       margin: auto;
-      padding: 50px 25px 25px 50px;
+      margin-top: 25vh;
       line-height: 2;
     }
   }
