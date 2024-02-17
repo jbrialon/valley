@@ -94,10 +94,10 @@ export default {
     position: relative;
     font-weight: 500;
     letter-spacing: 1px;
-    color: #5a5444;
+    color: var(--secondary-text-color);
     padding: 6px 12px;
-    background: #f4e2d6;
-    box-shadow: 4px 4px 0px 1px #5a5444;
+    background: var(--secondary-bg-color);
+    box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
   }
 }
 </style>

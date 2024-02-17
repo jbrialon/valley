@@ -26,7 +26,7 @@ html {
 body {
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
-  background-color: #b9a998;
+  background-color: var(--main-bg-color);
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;

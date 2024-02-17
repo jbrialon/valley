@@ -150,7 +150,7 @@ export default {
     padding-top: 65px;
     left: 50%;
     transform: translateX(-50%);
-    color: white;
+    color: var(--main-text-color);
     white-space: nowrap;
 
     h1 {
@@ -185,11 +185,11 @@ export default {
     button {
       cursor: pointer;
       background: none;
-      border: 2px solid white;
+      border: 2px solid var(--main-text-color);
       padding: 15px;
       text-transform: uppercase;
       min-width: 165px;
-      color: white;
+      color: var(--main-text-color);
       font-weight: 500;
       letter-spacing: 1px;
       margin: 0 15px;
@@ -210,7 +210,7 @@ export default {
     top: 60px;
     left: 50%;
     transform: translateX(-50%);
-    color: white;
+    color: var(--main-text-color);
     white-space: nowrap;
 
     h2 {
@@ -230,10 +230,10 @@ export default {
     bottom: 50px;
     letter-spacing: 1px;
     font-size: 18px;
-    background: #f4e2d6;
-    color: #5a5444;
+    background: var(--secondary-bg-color);
+    color: var(--secondary-text-color);
     border-radius: 0px 20px 0px 20px;
-    box-shadow: 4px 4px 0px 1px #5a5444;
+    box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
 
     &:after {
       font-size: 120px;
@@ -242,35 +242,8 @@ export default {
       top: -40px;
       left: 5px;
       content: "“";
-      color: #5a5444;
+      color: var(--secondary-text-color);
     }
   }
 }
 </style>
-
-<!-- .infowindow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 30;
-    display: none;
-  
-    .inner {
-      position: relative;
-      left: -50%;
-      bottom: 100px;
-      padding-bottom: 100px;
-    }
-  }
-  
-  .content {
-    position: relative;
-    opacity: 0;
-    cursor: pointer;
-    font-weight: 500;
-    letter-spacing: 1px;
-    color: #5a5444;
-    padding: 6px 12px;
-    background: #f4e2d6;
-    box-shadow: 4px 4px 0px 1px #5a5444;
-  } -->
