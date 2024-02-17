@@ -51,6 +51,7 @@ export default class Manager extends EventEmitter {
       this.setMaxScrollProgress(1);
       this.tutorialStep = 5;
       this.trigger("ui-chapter-show", this.currentChapter);
+      this.trigger("log-show");
     });
   }
 
@@ -111,6 +112,7 @@ export default class Manager extends EventEmitter {
             this.setMouseMoveState(true);
             this.setMaxScrollProgress(1);
             this.trigger("ui-chapter-show", this.currentChapter);
+            this.trigger("log-show");
           });
 
         default:
@@ -158,14 +160,23 @@ export default class Manager extends EventEmitter {
   setZoomState(state) {
     this.isZoomed = state;
   }
-
+  // State Management Active  marker
   getActiveMarker() {
     return this.activeMarker;
   }
-
   setActiveMarker(marker) {
     this.activeMarker = marker;
   }
+
+  getRevealedStepsPerChapter() {
+    const currentChapter = this.getCurrentChapter();
+    return this.revealedSteps[currentChapter];
+  }
+
+  getRevealedBonuses() {
+    return this.revealedSteps["bonus"];
+  }
+
   // Revealed Steps Managements
   addToRevealedSteps(name) {
     const chapter = findMarkerChapter(markers, name);
@@ -236,6 +247,7 @@ export default class Manager extends EventEmitter {
     if (this.currentChapter < this.chapters.length) {
       this.currentChapter++;
       this.trigger("ui-chapter-show", this.currentChapter);
+      this.trigger("log-update-total");
       console.log(`Going to Chapter ${this.currentChapter + 1}`);
     }
   }

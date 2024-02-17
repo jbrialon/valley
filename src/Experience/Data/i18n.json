@@ -15,16 +15,16 @@
     },
     "tooltip": {
       "tutorial": {
-        "one": "This is an <span class=\"bold\">Exploration Game</span where your goal is to reveal hidden steps on a map to retrace our journey.",
-        "two": "Use your <span class=\"bold\">mouse</span> and <span class=\"bold\">hold click</span> on the map to search.",
+        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden <span class=\"bold\">Milestones</span> on a map to retrace our journey.",
+        "two": "Use your <span class=\"bold\">mouse</span> and <span class=\"bold\">hold click</span> on the map to search for a <span class=\"bold\">Milestone</span>.",
         "three": "<span class=\"bold\">Scroll</span> can be used to travel along the valley.",
-        "four": "And reveal the next step of our journey.",
-        "five": "Good job! have fun discovering! track your progress with your travel log! (TODO)"
+        "four": "And <span class=\"bold\">reveal</span> the next <span class=\"bold\">Milestone</span> of our journey.",
+        "five": "<span class=\"bold\">Good job!</span> have fun discovering! track your progress with your <span class=\"bold\">Travel log!</span>"
       },
       "message": {
         "later": "I can't go there yet, but I can come back later.",
-        "missed": "I must have missed a step along the way...",
-        "achievement": "Achievement! you found {0}"
+        "missed": "I must have missed a <span class=\"bold\">Milestone</span> along the way...",
+        "achievement": "<span class=\"bold\">Achievement!</span> you found {0}"
       }
     }
   },
@@ -34,7 +34,7 @@
       "tuto": "Tutoriel"
     },
     "title": {
-      "paragraph": "(🇫🇷) Follow our footsteps in a 3D Experiment through Nepal, uncovering hidden photos and moments from our two-week trek as you go."
+      "paragraph": "Follow our footsteps in a 3D Experiment through Nepal, uncovering hidden photos and moments from our two-week trek as you go."
     },
     "chapter": {
       "title0": "Chapitre 1",
@@ -44,16 +44,16 @@
     },
     "tooltip": {
       "tutorial": {
-        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden steps on a map to retrace our journey.",
-        "two": "Use your <span class=\"bold\">mouse</span> and <span class=\"bold\">hold click</span> on the map to search.",
+        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden <span class=\"bold\">Milestones</span> on a map to retrace our journey.",
+        "two": "Use your <span class=\"bold\">mouse</span> and <span class=\"bold\">hold click</span> on the map to search for a <span class=\"bold\">Milestone</span>.",
         "three": "<span class=\"bold\">Scroll</span> can be used to travel along the valley.",
-        "four": "And reveal the next step of our journey.",
-        "five": "Good job! have fun discovering! track your progress with your travel log! (TODO)"
+        "four": "And <span class=\"bold\">reveal</span> the next <span class=\"bold\">Milestone</span> of our journey.",
+        "five": "<span class=\"bold\">Good job!</span> have fun discovering! track your progress with your <span class=\"bold\">Travel log!</span>"
       },
       "message": {
-        "later": "(🇫🇷) I can't go there yet, but I can come back later.",
-        "missed": "(🇫🇷) I must have missed a step along the way...",
-        "achievement": "(🇫🇷) Achievement! you found {0}"
+        "later": "I can't go there yet, but I can come back later.",
+        "missed": "I must have missed a <span class=\"bold\">Milestone</span> along the way...",
+        "achievement": "<span class=\"bold\">Achievement!</span> you found {0}"
       }
     }
   }

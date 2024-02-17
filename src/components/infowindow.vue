@@ -38,8 +38,10 @@ export default {
   methods: {
     selectMarker() {
       if (!this.manager.setZoomState(true)) {
+        const displayName = this.activeMarker.displayName;
         this.manager.setZoomState(true);
         this.manager.trigger("camera-zoom");
+        this.manager.trigger("ui-step-show", displayName);
         this.show = false;
       }
     },

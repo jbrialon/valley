@@ -21,12 +21,20 @@
       </div>
     </Transition>
 
-    <Transition name="slide-fade">
+    <Transition name="fade">
       <div class="ui--chapter" v-if="showChapter">
         <h2>{{ title }}</h2>
         <h3>{{ subtitle }}</h3>
       </div>
     </Transition>
+
+    <Transition name="fade">
+      <div class="ui--step" v-if="showStep">
+        <h2>{{ step }}</h2>
+        <!-- <h3>{{ subtitle }}</h3> -->
+      </div>
+    </Transition>
+
     <Transition name="slide-fade">
       <div
         class="ui--speech-bubble"
@@ -54,6 +62,8 @@ export default {
       showTitle: true,
       title: "",
       subtitle: "",
+      step: "",
+      showStep: false,
       showTooltip: false,
       tooltipText: "",
       autoHideDuration: 6000,
@@ -128,6 +138,15 @@ export default {
       "ui-tooltip-auto-hide",
       this.uiShowAndHideTooltip.bind(this)
     );
+
+    this.manager.on("ui-step-show", (displayName) => {
+      this.step = displayName;
+      this.showStep = true;
+    });
+
+    this.manager.on("ui-step-hide", () => {
+      this.showStep = false;
+    });
   },
 };
 </script>
@@ -219,6 +238,22 @@ export default {
 
     h3 {
       font-size: 35px;
+    }
+  }
+
+  &--step {
+    position: absolute;
+    text-align: left;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 10px;
+    top: 60px;
+    left: 60px;
+    color: var(--main-text-color);
+    white-space: nowrap;
+
+    h2 {
+      font-size: 76px;
     }
   }
 

@@ -162,6 +162,9 @@ export default class Markers {
         y: markersArray[index].position.y,
         duration: 0.5,
         ease: "power4.inOut",
+        onStart: () => {
+          this.manager.trigger("log-update-count");
+        },
         onComplete: () => {
           // when marker is revealed we add the events
           this.manager.addHoverEventToMesh(markerMesh, () => {
@@ -177,6 +180,7 @@ export default class Markers {
               markerMesh.name === this.manager.getActiveMarker().name
             ) {
               this.manager.trigger("camera-unzoom");
+              this.manager.trigger("ui-step-hide");
               this.manager.setActiveMarker(null);
             }
           });

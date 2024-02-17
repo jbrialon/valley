@@ -97,6 +97,9 @@ export default class Camera {
         z: newPosition.z,
         duration: 2,
         ease: "power2.inOut",
+        onStart: () => {
+          this.manager.trigger("log-open");
+        },
       });
     }
   }
@@ -108,6 +111,9 @@ export default class Camera {
       z: this.previousPosition.z,
       duration: 2.5,
       ease: "power2.out",
+      onStart: () => {
+        this.manager.trigger("log-close");
+      },
       onComplete: () => {
         this.manager.setZoomState(false);
       },
@@ -151,12 +157,6 @@ export default class Camera {
         },
       });
     }
-    // else if (
-    //   this.manager.getZoomState() &&
-    //   this.inputEvents.direction === "backward"
-    // ) {
-    //   this.unzoom();
-    // }
   }
 
   onMouseMove() {

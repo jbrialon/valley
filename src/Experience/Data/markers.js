@@ -146,6 +146,7 @@ export const bonus = [
     displayName: "Kyanjin Gompa Cheese Factory",
     position: new THREE.Vector3(20.86, 3.97, -14.75),
     type: "poi",
+    chapter: "chapterOne",
     day: [],
     photos: ["/photos/photo-7.jpg"],
   },
