@@ -30,8 +30,11 @@
 
     <Transition name="fade">
       <div class="ui--step" v-if="showStep">
-        <h2>{{ step }}</h2>
-        <!-- <h3>{{ subtitle }}</h3> -->
+        <h2>{{ activeMarker.displayName }}</h2>
+        <h3>
+          Altitude: {{ activeMarker.altitude }} // Day:
+          {{ activeMarker.day[0] }}
+        </h3>
       </div>
     </Transition>
 
@@ -62,8 +65,8 @@ export default {
       showTitle: true,
       title: "",
       subtitle: "",
-      step: "",
       showStep: false,
+      activeMarker: null,
       showTooltip: false,
       tooltipText: "",
       autoHideDuration: 6000,
@@ -139,12 +142,14 @@ export default {
       this.uiShowAndHideTooltip.bind(this)
     );
 
-    this.manager.on("ui-step-show", (displayName) => {
-      this.step = displayName;
+    this.manager.on("ui-step-show", (activeMarker) => {
+      this.activeMarker = activeMarker;
+      this.showChapter = false;
       this.showStep = true;
     });
 
     this.manager.on("ui-step-hide", () => {
+      this.activeMarker = null;
       this.showStep = false;
     });
   },

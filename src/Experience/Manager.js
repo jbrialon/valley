@@ -239,6 +239,10 @@ export default class Manager extends EventEmitter {
   }
 
   // Chapter Manegement
+  getCurrentChapterIndex() {
+    return this.currentChapter;
+  }
+
   getCurrentChapter() {
     return this.chapters[this.currentChapter];
   }

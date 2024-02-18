@@ -8,6 +8,7 @@ export const chapterOne = [
     position: new THREE.Vector3(-4.29, 1.56, -9.07),
     type: "main",
     day: [1],
+    altitude: "1400m",
     photos: [],
   },
   {
@@ -17,6 +18,7 @@ export const chapterOne = [
     position: new THREE.Vector3(0.08, 1.89, -7.57),
     type: "secondary",
     day: [1],
+    altitude: "1600m",
     photos: ["/photos/photo-1.jpg"],
   },
   {
@@ -26,6 +28,7 @@ export const chapterOne = [
     position: new THREE.Vector3(2.24, 2.26, -8.03),
     type: "secondary",
     day: [1],
+    altitude: "2000m",
     photos: ["/photos/photo-2.jpg"],
   },
   {
@@ -35,33 +38,28 @@ export const chapterOne = [
     position: new THREE.Vector3(5.7, 2.65, -8.74),
     type: "main",
     day: [1],
+    altitude: "2500m",
     photos: ["/photos/photo-3.jpg"],
   },
+
   {
     order: 5,
-    name: "langtang_river",
-    displayName: "Langtang River",
-    position: new THREE.Vector3(7.77, 2.91, -12.57),
-    type: "secondary",
-    day: [2],
-    photos: ["/photos/photo-3.jpg"],
-  },
-  {
-    order: 6,
     name: "langtang",
     displayName: "Langtang",
     position: new THREE.Vector3(15.63, 3.62, -15.48),
     type: "main",
     day: [2],
+    altitude: "3400m",
     photos: ["/photos/photo-4.jpg"],
   },
   {
-    order: 7,
+    order: 6,
     name: "kyanjin_gompa",
     displayName: "Kyanjin Gompa",
     position: new THREE.Vector3(20.67, 4, -15.35),
     type: "main",
     day: [3],
+    altitude: "3800m",
     photos: [],
   },
 ];
@@ -75,6 +73,7 @@ export const chapterTwo = [
     position: new THREE.Vector3(21.39, 4.39, -15.85),
     type: "mountain",
     day: [3],
+    altitude: "4310m",
     photos: ["/photos/photo-5.jpg", "/photos/photo-6.jpg"],
   },
   {
@@ -83,15 +82,7 @@ export const chapterTwo = [
     displayName: "Tserko Ri",
     position: new THREE.Vector3(24.69, 5.14, -15.29),
     type: "mountain",
-    day: [4],
-    photos: [],
-  },
-  {
-    order: 3,
-    name: "yoga_caro",
-    displayName: "Yoga Caro",
-    position: new THREE.Vector3(25.05, 4.33, -13.75),
-    type: "mountain",
+    altitude: "4900m",
     day: [4],
     photos: [],
   },
@@ -142,6 +133,16 @@ export const chapterTree = [
 export const bonus = [
   {
     order: null,
+    name: "langtang_river",
+    displayName: "Langtang River",
+    position: new THREE.Vector3(7.77, 2.91, -12.57),
+    chapter: "chapterOne",
+    type: "poi",
+    day: [],
+    photos: ["/photos/photo-3.jpg"],
+  },
+  {
+    order: null,
     name: "kyanjin_gompa_cheese_factory",
     displayName: "Kyanjin Gompa Cheese Factory",
     position: new THREE.Vector3(20.86, 3.97, -14.75),
@@ -149,6 +150,17 @@ export const bonus = [
     chapter: "chapterOne",
     day: [],
     photos: ["/photos/photo-7.jpg"],
+  },
+  {
+    order: 3,
+    name: "yoga_caro",
+    displayName: "",
+    position: new THREE.Vector3(25.05, 4.33, -13.75),
+    type: "mountain",
+    chapter: "chapterTwo",
+    altitude: "?",
+    day: [4],
+    photos: [],
   },
 ];
 

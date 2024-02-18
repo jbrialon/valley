@@ -51,8 +51,8 @@ export default class DashLine {
 
     // Setup
     this.progress = {
-      chapterOne: [0, 0.285, 0.361, 0.49, 0.68, 0.852, 1],
-      chapterTwo: [0.177, 0.545, 1],
+      chapterOne: [0, 0.285, 0.361, 0.49, 0.852, 1],
+      chapterTwo: [0.177, 1],
       chapterTree: [],
     };
     this.revealedSteps = {

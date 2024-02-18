@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pointer-none">
     <Transition name="fade">
       <div
         class="infowindow"
@@ -33,15 +33,15 @@ export default {
         x: 0,
         y: 0,
       },
+      activeMarker: null,
     };
   },
   methods: {
     selectMarker() {
       if (!this.manager.setZoomState(true)) {
-        const displayName = this.activeMarker.displayName;
         this.manager.setZoomState(true);
         this.manager.trigger("camera-zoom");
-        this.manager.trigger("ui-step-show", displayName);
+        this.manager.trigger("ui-step-show", this.activeMarker);
         this.show = false;
       }
     },
@@ -83,6 +83,7 @@ export default {
   top: 50%;
   left: 50%;
   z-index: $z-ui;
+  pointer-events: all;
 
   &--inner {
     position: relative;

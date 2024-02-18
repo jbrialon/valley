@@ -31,7 +31,7 @@ export default class Overlay {
         new THREE.Vector2(0.5077445414629836, 0.6746022993310021), // Pairo
         new THREE.Vector2(0.47512453334237614, 0.6858865351558925), // Bamboo
         new THREE.Vector2(0.4256830893906932, 0.7012801433406837), // Lama Hotel
-        new THREE.Vector2(0.39614378653702853, 0.7886999878761154), // Lang Tang River
+        // new THREE.Vector2(0.39614378653702853, 0.7886999878761154), // Lang Tang River
         new THREE.Vector2(0.28152391589700954, 0.8545268048548473), // Langtang
         new THREE.Vector2(0.2084770396380733, 0.852437698451759), // Kyanjin Gompa
         new THREE.Vector2(0.19701931240843318, 0.8622552370376909), // Kyanjin Ri
@@ -39,7 +39,7 @@ export default class Overlay {
         new THREE.Vector2(0.5413955982456653, 0.6508027193055853), // Thulo Syabru
         // TODO: the rest
       ],
-      uCircleRadius: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      uCircleRadius: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       offsetPosY: 0.001,
 
       // Overlay 1
@@ -66,7 +66,7 @@ export default class Overlay {
       uSqueezeMax: 1,
 
       // gsap options
-      circleSizes: [1.8, 0.6, 0.6, 1.8, 0.6, 1.8, 1.8, 0.6, 1.2, 1.2],
+      circleSizes: [1.8, 0.6, 0.6, 1.8, 1.8, 1.8, 0.6, 1.2, 1.2],
     };
 
     // Setup

@@ -177,7 +177,7 @@ export default class Markers {
           this.manager.addClickEventToMesh(markerMesh, () => {
             if (
               this.manager.getZoomState() &&
-              markerMesh.name === this.manager.getActiveMarker().name
+              markerMesh.name === this.manager.getActiveMarker()?.name
             ) {
               this.manager.trigger("camera-unzoom");
               this.manager.trigger("ui-step-hide");

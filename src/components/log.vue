@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <div class="pointer-none">
     <Transition name="slide-fade">
       <div class="log" v-show="show" ref="log" :class="{ open: open }">
         <h3>Travel Log</h3>
         <ul>
           <li>
-            <span>Day</span> <span>{{ currentDay }}</span>
+            <span>Chapter</span>
+            <span>{{ currentChapterIndex + 1 }}</span>
           </li>
+
           <li>
             <span>Milestones</span>
             <span>{{ step.count }}/{{ step.total }}</span>
@@ -37,9 +39,9 @@ export default {
     return {
       show: false,
       open: false,
+      currentChapterIndex: 0,
       currentChapter: "",
       revealedSteps: {},
-      currentDay: 1,
       step: {
         count: 0,
         total: 0,
@@ -60,19 +62,19 @@ export default {
           ],
           repeat: 3,
           yoyo: true, // Go back and forth
-          ease: "power1.inOut",
+          ease: "power4.inOut",
         });
       }
     },
     updateLogCount() {
       this.revealedSteps = this.manager.getRevealedStepsPerChapter();
       this.step.count = this.revealedSteps.length;
-
-      this.wiggle();
+      // this.wiggle();
     },
     updateLogTotal() {
       this.updateLogCount();
 
+      this.currentChapterIndex = this.manager.getCurrentChapterIndex();
       this.currentChapter = this.manager.getCurrentChapter();
       this.step.total = markers[this.currentChapter].length;
       this.bonus.total = markers["bonus"].filter(
