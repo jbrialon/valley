@@ -41,6 +41,7 @@ export default {
       if (!this.manager.setZoomState(true)) {
         this.manager.setZoomState(true);
         this.manager.trigger("camera-zoom");
+        this.manager.trigger("log-open", this.activeMarker);
         this.manager.trigger("ui-step-show", this.activeMarker);
         this.show = false;
       }

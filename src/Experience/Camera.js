@@ -97,9 +97,6 @@ export default class Camera {
         z: newPosition.z,
         duration: 2,
         ease: "power2.inOut",
-        onStart: () => {
-          this.manager.trigger("log-open");
-        },
       });
     }
   }

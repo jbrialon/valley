@@ -11,11 +11,9 @@ const manager = experience.manager;
 </script>
 
 <template>
-  <div id="app">
-    <ui :manager="manager"></ui>
-    <infowindow :manager="manager"></infowindow>
-    <log :manager="manager"></log>
-  </div>
+  <ui :manager="manager"></ui>
+  <infowindow :manager="manager"></infowindow>
+  <log :manager="manager"></log>
 </template>
 
 <style lang="scss">

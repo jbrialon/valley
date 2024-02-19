@@ -32,7 +32,7 @@
       <div class="ui--step" v-if="showStep">
         <h2>{{ activeMarker.displayName }}</h2>
         <h3>
-          Altitude: {{ activeMarker.altitude }} // Day:
+          Altitude {{ activeMarker.altitude }} // Day
           {{ activeMarker.day[0] }}
         </h3>
       </div>

@@ -21,3 +21,31 @@
   transform: translateX(5%);
   opacity: 0;
 }
+
+.fade-log-list-leave-active {
+  transition: opacity 300ms ease-in-out;
+}
+
+.fade-log-list-enter-active {
+  transition: opacity 300ms ease-in-out 1200ms;
+  transition-delay: 1200ms;
+}
+
+.fade-log-list-enter-from,
+.fade-log-list-leave-to {
+  opacity: 0;
+}
+
+.fade-log-content-leave-active {
+  transition: opacity 600ms ease-in-out;
+}
+
+.fade-log-content-enter-active {
+  transition: opacity 300ms ease-in-out;
+  transition-delay: 1200ms;
+}
+
+.fade-log-content-enter-from,
+.fade-log-content-leave-to {
+  opacity: 0;
+}

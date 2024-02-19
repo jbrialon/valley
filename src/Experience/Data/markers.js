@@ -144,7 +144,7 @@ export const bonus = [
   {
     order: null,
     name: "kyanjin_gompa_cheese_factory",
-    displayName: "Kyanjin Gompa Cheese Factory",
+    displayName: "Cheese Factory",
     position: new THREE.Vector3(20.86, 3.97, -14.75),
     type: "poi",
     chapter: "chapterOne",
