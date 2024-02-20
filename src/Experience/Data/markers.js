@@ -9,7 +9,8 @@ export const chapterOne = [
     type: "main",
     day: [1],
     altitude: "1400m",
-    photos: [],
+    photo: "",
+    orientation: "",
   },
   {
     order: 2,
@@ -19,7 +20,8 @@ export const chapterOne = [
     type: "secondary",
     day: [1],
     altitude: "1600m",
-    photos: ["/photos/photo-1.jpg"],
+    photo: "/photos/photo-1.jpg",
+    orientation: "landscape",
   },
   {
     order: 3,
@@ -29,7 +31,8 @@ export const chapterOne = [
     type: "secondary",
     day: [1],
     altitude: "2000m",
-    photos: ["/photos/photo-2.jpg"],
+    photo: "/photos/photo-2.jpg",
+    orientation: "landscape",
   },
   {
     order: 4,
@@ -39,7 +42,8 @@ export const chapterOne = [
     type: "main",
     day: [1],
     altitude: "2500m",
-    photos: ["/photos/photo-3.jpg"],
+    photo: "/photos/photo-3.jpg",
+    orientation: "portrait",
   },
 
   {
@@ -50,7 +54,8 @@ export const chapterOne = [
     type: "main",
     day: [2],
     altitude: "3400m",
-    photos: ["/photos/photo-4.jpg"],
+    photo: "/photos/photo-4.jpg",
+    orientation: "portrait",
   },
   {
     order: 6,
@@ -60,7 +65,8 @@ export const chapterOne = [
     type: "main",
     day: [3],
     altitude: "3800m",
-    photos: [],
+    photo: "",
+    orientation: "landscape",
   },
 ];
 
@@ -74,7 +80,8 @@ export const chapterTwo = [
     type: "mountain",
     day: [3],
     altitude: "4310m",
-    photos: ["/photos/photo-5.jpg", "/photos/photo-6.jpg"],
+    photo: "/photos/photo-6.jpg",
+    orientation: "portrait",
   },
   {
     order: 2,
@@ -84,7 +91,8 @@ export const chapterTwo = [
     type: "mountain",
     altitude: "4900m",
     day: [4],
-    photos: [],
+    photo: "/photos/photo-5.jpg",
+    orientation: "landscape",
   },
 ];
 

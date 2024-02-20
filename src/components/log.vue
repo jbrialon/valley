@@ -1,36 +1,36 @@
 <template>
   <div class="pointer-none">
-    <Transition name="slide-fade">
-      <div class="log" v-show="show" ref="log open" :class="{ open: open }">
+    <Transition name="slide-fade-log">
+      <div class="log" v-show="show" ref="log" :class="{ open: open }">
         <h3>Travel Log</h3>
-        <Transition name="fade-log-list">
-          <ul v-if="!open">
-            <li>
-              <span>Chapter</span>
-              <span>{{ currentChapterIndex + 1 }}</span>
-            </li>
+        <ul>
+          <li>
+            <span>Chapter</span>
+            <span>{{ currentChapterIndex + 1 }}</span>
+          </li>
 
-            <li>
-              <span>Milestones</span>
-              <span>{{ step.count }}/{{ step.total }}</span>
-            </li>
-            <li v-if="bonus.total > 0">
-              <span>Highlight</span>
-              <span>{{ bonus.count }}/{{ bonus.total }}</span>
-            </li>
-          </ul>
-        </Transition>
-        <Transition name="fade-log-content">
-          <div class="log--content" v-if="activeMarker && open">
-            <img :src="activeMarker.photos[0]" alt="" />
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              interdum velit et lectus consectetur, eget viverra lacus accumsan.
-              Praesent vel mi vel libero facilisis porttitor. Nam rutrum
-              interdum semper.
-            </p>
-          </div>
-        </Transition>
+          <li>
+            <span>Milestones</span>
+            <span>{{ step.count }}/{{ step.total }}</span>
+          </li>
+          <li v-if="bonus.total > 0">
+            <span>Highlight</span>
+            <span>{{ bonus.count }}/{{ bonus.total }}</span>
+          </li>
+        </ul>
+        <div class="log--content">
+          <img
+            v-if="activeMarker?.photo"
+            :src="activeMarker.photo"
+            :alt="`photo taken of ${activeMarker.displayName}`"
+          />
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+            interdum velit et lectus consectetur, eget viverra lacus accumsan.
+            Praesent vel mi vel libero facilisis porttitor. Nam rutrum interdum
+            semper.
+          </p>
+        </div>
       </div>
     </Transition>
   </div>
@@ -108,7 +108,7 @@ export default {
       this.open = true;
     });
     this.manager.on("log-close", () => {
-      this.activeMarker = null;
+      // this.activeMarker = null;
       this.open = false;
     });
   },
@@ -119,9 +119,8 @@ export default {
 .log {
   position: absolute;
   min-height: 177px;
-  min-width: 240px;
   max-height: 177px;
-  max-width: 240px;
+  width: 250px;
   padding: 25px 25px 15px 35px;
   right: 50px;
   top: 50px;
@@ -132,11 +131,24 @@ export default {
   border-radius: 0px 20px 0px 20px;
   box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
   z-index: $z-ui;
-  transition: all 600ms ease-in-out 150ms;
+  transition-property: all;
+  transition-duration: 600ms;
+  transition-timing-function: ease-in-out;
+  transition-delay: 600ms;
 
   &.open {
-    max-width: 490px;
+    width: 490px;
+    min-height: auto;
     max-height: 900px;
+    .log--content {
+      opacity: 1;
+      transition-delay: 1200ms;
+    }
+
+    ul {
+      opacity: 0;
+      transition-delay: 0s !important;
+    }
   }
 
   &:after {
@@ -150,12 +162,10 @@ export default {
   }
 
   &--content {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 300ms;
     padding: 25px 0px;
-    // position: absolute;
-    // top: 85px;
-    // right: 30px;
-    // left: 35px;
-    // bottom: 15px;
 
     img {
       display: block;
@@ -178,6 +188,10 @@ export default {
 
   ul {
     position: absolute;
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 300ms;
+    transition-delay: 600ms;
     top: 60px;
     padding-top: 16px;
     list-style: none;

@@ -22,30 +22,22 @@
   opacity: 0;
 }
 
-.fade-log-list-leave-active {
-  transition: opacity 300ms ease-in-out;
+.slide-fade-log-enter-active {
+  transition-property: all;
+  transition-duration: 900ms;
+  transition-timing-function: ease-in-out;
 }
 
-.fade-log-list-enter-active {
-  transition: opacity 300ms ease-in-out 1200ms;
-  transition-delay: 1200ms;
+.slide-fade-log-leave-active {
+  transition-property: all;
+  transition-duration: 900ms;
+  transition-timing-function: ease-in-out;
+  transition-delay: 300ms;
+  // transition: all 900ms ease-in-out 300ms;
 }
 
-.fade-log-list-enter-from,
-.fade-log-list-leave-to {
-  opacity: 0;
-}
-
-.fade-log-content-leave-active {
-  transition: opacity 600ms ease-in-out;
-}
-
-.fade-log-content-enter-active {
-  transition: opacity 300ms ease-in-out;
-  transition-delay: 1200ms;
-}
-
-.fade-log-content-enter-from,
-.fade-log-content-leave-to {
+.slide-fade-log-enter-from,
+.slide-fade-log-leave-to {
+  transform: translateX(5%);
   opacity: 0;
 }
