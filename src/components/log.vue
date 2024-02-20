@@ -1,7 +1,7 @@
 <template>
   <div class="pointer-none">
     <Transition name="slide-fade-log">
-      <div class="log" v-show="show" ref="log" :class="{ open: open }">
+      <div class="log" v-show="show" ref="log" :class="openClass">
         <h3>Travel Log</h3>
         <ul>
           <li>
@@ -65,6 +65,13 @@ export default {
       },
       activeMarker: null,
     };
+  },
+  computed: {
+    openClass() {
+      return this.activeMarker && this.open
+        ? `open ${this.activeMarker.orientation}`
+        : "";
+    },
   },
   methods: {
     wiggle() {
@@ -131,6 +138,7 @@ export default {
   border-radius: 0px 20px 0px 20px;
   box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
   z-index: $z-ui;
+  // transition: all 600ms ease-in-out;
   transition-property: all;
   transition-duration: 600ms;
   transition-timing-function: ease-in-out;
@@ -138,8 +146,7 @@ export default {
 
   &.open {
     width: 490px;
-    min-height: auto;
-    max-height: 900px;
+
     .log--content {
       opacity: 1;
       transition-delay: 1200ms;
@@ -149,6 +156,16 @@ export default {
       opacity: 0;
       transition-delay: 0s !important;
     }
+  }
+
+  &.portrait {
+    min-height: auto;
+    max-height: 900px;
+  }
+
+  &.landscape {
+    min-height: auto;
+    max-height: 600px;
   }
 
   &:after {
