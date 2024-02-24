@@ -138,6 +138,7 @@ export default {
   border-radius: 0px 20px 0px 20px;
   box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
   z-index: $z-ui;
+  border: 2px solid var(--secondary-text-color);
   // transition: all 600ms ease-in-out;
   transition-property: all;
   transition-duration: 600ms;
@@ -146,6 +147,7 @@ export default {
 
   &.open {
     width: 490px;
+    max-height: 210px;
 
     .log--content {
       opacity: 1;
@@ -196,6 +198,7 @@ export default {
       letter-spacing: 1px;
       font-size: 14px;
       line-height: 1.4;
+      padding-bottom: 15px;
     }
   }
   h3 {

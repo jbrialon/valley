@@ -102,6 +102,7 @@ export default {
     padding: 6px 12px;
     background: var(--secondary-bg-color);
     box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
+    border: 1px solid var(--secondary-text-color);
   }
 }
 </style>

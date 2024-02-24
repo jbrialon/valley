@@ -183,10 +183,12 @@ export default {
 
     h1 {
       font-size: 150px;
+      text-shadow: 3px 3px 0px var(--secondary-text-color);
     }
 
     h3 {
       margin-top: -15px;
+      text-shadow: 2px 2px 0px var(--secondary-text-color);
     }
   }
 
@@ -201,6 +203,7 @@ export default {
     background: var(--secondary-bg-color);
     border-radius: 20px;
     box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
+    border: 2px solid var(--secondary-text-color);
 
     p {
       letter-spacing: 1px;
@@ -230,10 +233,12 @@ export default {
 
     h2 {
       font-size: 130px;
+      text-shadow: 3px 3px 0px var(--secondary-text-color);
     }
 
     h3 {
       font-size: 35px;
+      text-shadow: 2px 2px 0px var(--secondary-text-color);
     }
   }
 
@@ -250,6 +255,11 @@ export default {
 
     h2 {
       font-size: 76px;
+      text-shadow: 3px 3px 0px var(--secondary-text-color);
+    }
+
+    h3 {
+      text-shadow: 2px 2px 0px var(--secondary-text-color);
     }
   }
 
@@ -265,6 +275,7 @@ export default {
     color: var(--secondary-text-color);
     border-radius: 0px 20px 0px 20px;
     box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
+    border: 2px solid var(--secondary-text-color);
 
     &:after {
       font-size: 120px;
