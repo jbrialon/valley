@@ -175,7 +175,7 @@ export default {
     font-weight: 500;
     letter-spacing: 10px;
     top: 0;
-    padding-top: 45px;
+    padding-top: 25px;
     left: 50%;
     transform: translateX(-50%);
     color: var(--main-text-color);
@@ -208,25 +208,11 @@ export default {
       font-size: 18px;
       text-align: justify;
     }
-
-    button {
-      cursor: pointer;
-      background: none;
-      border: 2px solid var(--secondary-text-color);
-      padding: 15px;
-      text-transform: uppercase;
-      min-width: 165px;
-      color: var(--secondary-text-color);
-      font-weight: 500;
-      letter-spacing: 2px;
-      font-weight: 700;
-      margin: 0 15px;
-    }
   }
 
   &--menu-buttons {
     display: flex;
-    padding-top: 55px;
+    padding-top: 35px;
     justify-content: space-around;
   }
 
