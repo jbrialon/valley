@@ -175,7 +175,10 @@ export default class Markers {
         onComplete: () => {
           // when marker is revealed we add the events
           this.manager.addHoverEventToMesh(markerMesh, () => {
-            if (!this.manager.getZoomState()) {
+            if (
+              !this.manager.getZoomState() &&
+              this.manager.getTutorialStep() === 4
+            ) {
               this.manager.trigger("infowindow-show", markerMesh.index);
               this.manager.setActiveMarker(markerMesh);
             }
