@@ -31,6 +31,10 @@ export default class Loader {
   }
 
   initEvents() {
+    this.manager.on("loaded", () => {
+      this.hideLoader();
+    });
+
     this.manager.on("loader-hide", this.hideLoader.bind(this));
     this.manager.on("loader-tutorial-hide", this.hideLoaderTutorial.bind(this));
     this.manager.on(
@@ -94,10 +98,6 @@ export default class Loader {
         if (callback && typeof callback === "function") {
           callback();
         }
-
-        // if (!this.debug.active) {
-        //   this.destroy();
-        // }
       },
     });
   }
@@ -156,7 +156,9 @@ export default class Loader {
         if (callback && typeof callback === "function") {
           callback();
         }
-        this.destroy();
+        if (this.manager.getTutorialStep() === 4 && !this.debug.active) {
+          this.destroy();
+        }
       },
     });
   }
@@ -170,7 +172,9 @@ export default class Loader {
         if (callback && typeof callback === "function") {
           callback();
         }
-        // this.destroy();
+        if (this.manager.getTutorialStep() === 4 && !this.debug.active) {
+          this.destroy();
+        }
       },
     });
   }
@@ -226,5 +230,6 @@ export default class Loader {
     this.mesh.geometry.dispose();
     this.mesh.material.dispose();
     this.scene.remove(this.mesh);
+    this.debugFolder.destroy();
   }
 }

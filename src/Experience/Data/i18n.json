@@ -5,7 +5,7 @@
       "tuto": "Start Tutorial"
     },
     "title": {
-      "paragraph": "Follow our footsteps in a 3D Experiment through Nepal, uncovering hidden photos and moments from our two-week trek as you go."
+      "paragraph": "Follow our footsteps  an <span class=\"bold\">Exploration Game</span> through <strong>Nepal</strong>, uncovering hidden photos and moments from our two-week trek as you go."
     },
     "chapter": {
       "title0": "Chapter 1",
@@ -15,7 +15,7 @@
     },
     "tooltip": {
       "tutorial": {
-        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden <span class=\"bold\">Milestones</span> on a map to retrace our journey.",
+        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden <span class=\"bold\">Milestones</span> on a map to retrace our two-week trek as you go.",
         "two": "Use your <span class=\"bold\">Mouse</span> and <span class=\"bold\">Hold Click</span> on the map to search for a <span class=\"bold\">Milestone</span>.",
         "three": "<span class=\"bold\">Scroll</span> can be used to travel along the valley.",
         "four": "And <span class=\"bold\">reveal</span> the next <span class=\"bold\">Milestone</span> of our journey.",
@@ -34,7 +34,7 @@
       "tuto": "Tutoriel"
     },
     "title": {
-      "paragraph": "Follow our footsteps in a 3D Experiment through Nepal, uncovering hidden photos and moments from our two-week trek as you go."
+      "paragraph": "Follow our footsteps  an <span class=\"bold\">Exploration Game</span> through <strong>Nepal</strong>, uncovering hidden photos and moments from our two-week trek as you go."
     },
     "chapter": {
       "title0": "Chapitre 1",
@@ -44,7 +44,7 @@
     },
     "tooltip": {
       "tutorial": {
-        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden <span class=\"bold\">Milestones</span> on a map to retrace our journey.",
+        "one": "This is an <span class=\"bold\">Exploration Game</span> where your goal is to reveal hidden <span class=\"bold\">Milestones</span> on a map to retrace our two-week trek as you go.",
         "two": "Use your <span class=\"bold\">Mouse</span> and <span class=\"bold\">Hold Click</span> on the map to search for a <span class=\"bold\">Milestone</span>.",
         "three": "<span class=\"bold\">Scroll</span> can be used to travel along the valley.",
         "four": "And <span class=\"bold\">reveal</span> the next <span class=\"bold\">Milestone</span> of our journey.",

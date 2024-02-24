@@ -150,7 +150,7 @@ export default class Camera {
           );
         },
         onComplete: () => {
-          this.manager.goToTutorialStep(4);
+          this.manager.goToTutorialStep(3);
         },
       });
     }
