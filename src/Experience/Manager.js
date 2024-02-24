@@ -44,16 +44,14 @@ export default class Manager extends EventEmitter {
 
   startGame() {
     this.tutorialStep = 4;
-    this.trigger("ui-title-hide");
-    this.trigger("loader-hide", () => {
-      this.setScrollState(true);
-      this.setSearchState(true);
-      this.setMouseMoveState(true);
-      this.setMaxScrollProgress(1);
-
+    this.trigger("ui-title-hide", () => {
       this.trigger("ui-chapter-show", this.currentChapter);
       this.trigger("log-show");
     });
+    this.setScrollState(true);
+    this.setSearchState(true);
+    this.setMouseMoveState(true);
+    this.setMaxScrollProgress(1);
   }
 
   // Tutorial State Management

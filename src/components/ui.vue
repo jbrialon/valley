@@ -100,20 +100,26 @@ export default {
         this.showTooltip = false;
       }, this.autoHideDuration);
     },
+    uiHideTitle(callback) {
+      this.showTitle = false;
+      if (callback && typeof callback === "function") {
+        setTimeout(callback, 1000);
+      }
+    },
   },
   mounted() {
     this.showTitle = true;
     this.manager.on("loaded", () => {
-      this.showMenu = true;
+      this.manager.trigger("loader-hide", () => {
+        this.showMenu = true;
+      });
     });
 
     this.manager.on("ui-title-show", () => {
       this.showTitle = true;
     });
 
-    this.manager.on("ui-title-hide", () => {
-      this.showTitle = false;
-    });
+    this.manager.on("ui-title-hide", this.uiHideTitle.bind(this));
 
     this.manager.on("ui-chapter-show", (chapterNumber) => {
       this.title = this.$t(`chapter.title${chapterNumber}`);

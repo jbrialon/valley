@@ -31,10 +31,6 @@ export default class Loader {
   }
 
   initEvents() {
-    this.manager.on("loaded", () => {
-      this.hideLoader();
-    });
-
     this.manager.on("loader-hide", this.hideLoader.bind(this));
     this.manager.on("loader-tutorial-hide", this.hideLoaderTutorial.bind(this));
     this.manager.on(
@@ -150,7 +146,8 @@ export default class Loader {
     this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.5, 0.5);
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 14,
-      duration: 1.5,
+      delay: 1,
+      duration: 2.5,
       ease: "power4.inOut",
       onComplete: () => {
         if (callback && typeof callback === "function") {
