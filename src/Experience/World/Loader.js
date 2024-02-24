@@ -146,7 +146,7 @@ export default class Loader {
     this.material.uniforms.uCirclePos.value = new THREE.Vector2(0.5, 0.5);
     gsap.to(this.material.uniforms.uCircleRadius, {
       value: 14,
-      delay: 1,
+      delay: 0.1,
       duration: 2.5,
       ease: "power4.inOut",
       onComplete: () => {

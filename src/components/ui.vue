@@ -110,6 +110,7 @@ export default {
   mounted() {
     this.showTitle = true;
     this.manager.on("loaded", () => {
+      this.manager.trigger("camera-intro-animation");
       this.manager.trigger("loader-hide", () => {
         this.showMenu = true;
       });

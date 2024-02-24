@@ -17,7 +17,10 @@ export default class Camera {
     this.scene = this.experience.scene;
     this.time = this.experience.time;
 
-    this.options = {};
+    this.options = {
+      initialPos: paths.camera[0],
+      initialTargetPos: paths.target[0],
+    };
 
     // Setup
     this.isAnimated = false;
@@ -44,18 +47,18 @@ export default class Camera {
     );
 
     this.cameraParent.position.set(
-      paths.camera[0].x,
-      paths.camera[0].y,
-      paths.camera[0].z
+      this.options.initialPos.x,
+      this.options.initialPos.y + 1,
+      this.options.initialPos.z
     );
 
     this.scene.add(this.cameraParent);
     this.cameraParent.add(this.instance);
 
     this.instance.lookAt(
-      paths.target[0].x,
-      paths.target[0].y,
-      paths.target[0].z
+      this.options.initialTargetPos.x,
+      this.options.initialTargetPos.y,
+      this.options.initialTargetPos.z
     );
   }
 
@@ -72,9 +75,20 @@ export default class Camera {
     this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
     // Keyboard Events
     this.inputEvents.on("keydown", this.onKeyDown.bind(this));
+    // Animation
+    this.manager.on("camera-intro-animation", this.introAnimation.bind(this));
     // Camera Zoom
     this.manager.on("camera-zoom", this.zoom.bind(this));
     this.manager.on("camera-unzoom", this.unzoom.bind(this));
+  }
+
+  introAnimation() {
+    gsap.to(this.cameraParent.position, {
+      y: paths.camera[0].y,
+      duration: 6.5,
+      ease: "power1.out",
+      onUpdate: () => {},
+    });
   }
 
   zoom() {

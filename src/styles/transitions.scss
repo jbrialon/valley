@@ -8,9 +8,12 @@
   opacity: 0;
 }
 
-.fade-menu-enter-active,
-.fade-menu-leave-active {
+.fade-menu-enter-active {
   transition: opacity 600ms ease-in-out 600ms;
+}
+
+.fade-menu-leave-active {
+  transition: opacity 600ms ease-in-out;
 }
 
 .fade-menu-enter-from,
