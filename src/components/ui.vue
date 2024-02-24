@@ -112,6 +112,7 @@ export default {
     this.manager.on("loaded", () => {
       this.manager.trigger("camera-intro-animation");
       this.manager.trigger("loader-hide", () => {
+        this.manager.trigger("markers-intro-animation");
         this.showMenu = true;
       });
     });

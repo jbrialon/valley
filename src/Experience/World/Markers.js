@@ -25,6 +25,12 @@ export default class Markers {
       defaultColor: new THREE.Color(0x992625),
       secondaryColor: new THREE.Color(0x2c4d38),
       mountainColor: new THREE.Color(0x5a5444),
+      scale: {
+        main: new THREE.Vector3(0.075, 0.1, 0.075),
+        secondary: new THREE.Vector3(0.05, 0.05, 0.05),
+        mountain: new THREE.Vector3(0.075, 0.05, 0.075),
+        poi: new THREE.Vector3(0.075, 0.1, 0.075),
+      },
     };
 
     // Setup
@@ -64,12 +70,11 @@ export default class Markers {
     markersArray.forEach((marker, index) => {
       let material = this.material.clone();
       let geometry = new THREE.OctahedronGeometry(1, 0);
-      let scale = new THREE.Vector3(0.075, 0.1, 0.075);
       let rotation = new THREE.Vector3(0, 0, 0);
+      const scale = this.options.scale[marker.type];
 
       if (marker.type === "secondary") {
         geometry = new THREE.ConeGeometry(1, 2, 4, 1);
-        scale = new THREE.Vector3(0.05, 0.05, 0.05);
         material = this.secondaryMaterial;
         rotation = new THREE.Vector3(0, 0, Math.PI);
       }
@@ -77,7 +82,6 @@ export default class Markers {
       if (marker.type === "mountain") {
         geometry = new THREE.ConeGeometry(1, 2, 6, 1);
         material = this.mountainMaterial;
-        scale = new THREE.Vector3(0.075, 0.05, 0.075);
         rotation = new THREE.Vector3(0, 0, 0);
       }
 
@@ -90,7 +94,7 @@ export default class Markers {
         marker.position.y,
         marker.position.z
       );
-      markerMesh.visible = false;
+      markerMesh.visible = true;
       markerMesh.scale.set(scale.x, scale.y, scale.z);
       markerMesh.rotation.set(rotation.x, rotation.y, rotation.z);
 
@@ -158,6 +162,9 @@ export default class Markers {
       // Reveal Marker
       markerMesh.visible = true;
       markerMesh.position.y = markersArray[index].position.y - 0.5;
+      const scale = this.options.scale[markerMesh.type];
+      markerMesh.scale.set(scale.x, scale.y, scale.z);
+
       gsap.to(markerMesh.position, {
         y: markersArray[index].position.y,
         duration: 0.5,
@@ -192,10 +199,45 @@ export default class Markers {
     }
   }
 
+  introAnimation() {
+    this.markers.forEach((markerMesh) => {
+      markerMesh.visible = true;
+      const index = markerMesh.index;
+      const tl = gsap.timeline({
+        delay: index * 0.1,
+        onComplete: () => {
+          markerMesh.visible = false;
+        },
+      });
+      tl.to(
+        markerMesh.position,
+        {
+          y: markersArray[index].position.y + 0.5,
+          duration: 1.5,
+          ease: "power2.inOut",
+        },
+        "disappear"
+      );
+      tl.to(
+        markerMesh.scale,
+        {
+          x: 0,
+          y: 0,
+          z: 0,
+          duration: 1.5,
+          ease: "power2.inOut",
+        },
+        "disappear"
+      );
+    });
+  }
+
   initEvents() {
     this.manager.on("navigation", (point) => {
       this.point = point;
     });
+
+    this.manager.on("markers-intro-animation", this.introAnimation.bind(this));
 
     this.manager.on("updateColors", (colors) => {
       this.options.defaultColor = colors[4];
