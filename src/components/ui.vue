@@ -181,6 +181,10 @@ export default {
     color: var(--main-text-color);
     white-space: nowrap;
 
+    @include ipad {
+      padding-top: 0;
+    }
+
     h1 {
       font-size: 150px;
       text-shadow: 3px 3px 0px var(--secondary-text-color);
@@ -236,14 +240,25 @@ export default {
     color: var(--main-text-color);
     white-space: nowrap;
 
+    @include ipad {
+      top: 0;
+    }
+
     h2 {
       font-size: 130px;
       text-shadow: 3px 3px 0px var(--secondary-text-color);
+
+      @include ipad {
+        font-size: 65px;
+      }
     }
 
     h3 {
       font-size: 35px;
       text-shadow: 2px 2px 0px var(--secondary-text-color);
+      @include ipad {
+        font-size: 25px;
+      }
     }
   }
 
@@ -258,13 +273,25 @@ export default {
     color: var(--main-text-color);
     white-space: nowrap;
 
+    @include ipad {
+      left: 30px;
+      top: 30px;
+    }
+
     h2 {
       font-size: 76px;
       text-shadow: 3px 3px 0px var(--secondary-text-color);
+
+      @include ipad {
+        font-size: 36px;
+      }
     }
 
     h3 {
       text-shadow: 2px 2px 0px var(--secondary-text-color);
+      @include ipad {
+        font-size: 14px;
+      }
     }
   }
 
@@ -281,6 +308,11 @@ export default {
     border-radius: 0px 20px 0px 20px;
     box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
     border: 2px solid var(--secondary-text-color);
+
+    @include ipad {
+      right: 25px;
+      bottom: 25px;
+    }
 
     &:after {
       font-size: 120px;

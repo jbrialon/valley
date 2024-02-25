@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import glsl from "vite-plugin-glsl";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig({
   root: "src/",
@@ -30,12 +31,13 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "./src/styles/variables/_z-index.scss";`,
+        additionalData: `@import "./src/styles/_vars.scss";`,
       },
     },
   },
   plugins: [
     vue(),
+    basicSsl(),
     glsl({
       compress: true, // Compress output shader code
     }),

@@ -224,6 +224,11 @@ export default {
   z-index: $z-ui;
   border: 2px solid var(--secondary-text-color);
 
+  @include ipad {
+    right: 25px;
+    top: 25px;
+  }
+
   &:after {
     font-size: 120px;
     display: block;
