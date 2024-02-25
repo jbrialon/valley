@@ -24,12 +24,12 @@ export default {
           ? '<span class="bold">Touch/Tap</span> on the map to search for a <span class="bold">Milestone</span>.'
           : 'Use your <span class="bold">Mouse</span> and <span class="bold">Hold Click</span> on the map to search for a <span class="bold">Milestone</span>.',
         three: isTouch
-          ? '<span class="bold">Slide Two Fingers</span> up or down to <span class="bold">Scroll</span> can be used to travel along the valley.'
+          ? '<span class="bold">Slide Two Fingers</span> up or down to <span class="bold">Scroll</span> along the valley.'
           : '<span class="bold">Scroll</span> can be used to travel along the valley.',
-        four: 'And <span class="bold">reveal</span> the next <span class="bold">Milestone</span> of our journey.',
+        four: 'And <span class="bold">Reveal</span> the next <span class="bold">Milestone</span> of our journey.',
         five: isTouch
-          ? 'You can Tap on the <span class="bold">Milestone</span> to discover more about it! keep track your progress with your <span class="bold">Travel log!</span>'
-          : 'You can click on the <span class="bold">Milestone</span> to discover more about it! keep track your progress with your <span class="bold">Travel log!</span>',
+          ? '<span class="bold">Tap</span> on the <span class="bold">Milestone</span> to discover more about it! keep track your progress with your <span class="bold">Travel log!</span>'
+          : '<span class="bold">Click</span> on the <span class="bold">Milestone</span> to discover more about it! keep track your progress with your <span class="bold">Travel log!</span>',
       },
       message: {
         later: "I can't go there yet, but I can come back later.",
