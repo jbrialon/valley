@@ -83,3 +83,24 @@ export function getNavigatorLanguage() {
   }
   return lang.substring(0, 2);
 }
+
+let throttleTimeout = null;
+
+export function throttle(fn, wait) {
+  return function (...args) {
+    if (!throttleTimeout) {
+      throttleTimeout = setTimeout(() => {
+        throttleTimeout = null;
+        fn.apply(this, args);
+      }, wait);
+    }
+  };
+}
+
+export function isTouchDevice() {
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
+  );
+}

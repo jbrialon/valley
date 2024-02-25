@@ -1,9 +1,9 @@
 <template>
   <div class="pointer-none">
     <Transition name="slide-fade-log">
-      <div class="log" v-show="show" ref="log" :class="openClass">
+      <div class="log" v-show="show" ref="log">
         <h3>Travel Log</h3>
-        <ul>
+        <ul ref="list">
           <li>
             <span>Chapter</span>
             <span>{{ currentChapterIndex + 1 }}</span>
@@ -18,7 +18,7 @@
             <span>{{ bonus.count }}/{{ bonus.total }}</span>
           </li>
         </ul>
-        <div class="log--content">
+        <div class="log--content" ref="content">
           <img
             v-if="activeMarker?.photo"
             :src="activeMarker.photo"
@@ -30,6 +30,7 @@
             Praesent vel mi vel libero facilisis porttitor. Nam rutrum interdum
             semper.
           </p>
+          <button @click="close()">Close</button>
         </div>
       </div>
     </Transition>
@@ -51,7 +52,6 @@ export default {
   data() {
     return {
       show: false,
-      open: false,
       currentChapterIndex: 0,
       currentChapter: "",
       revealedSteps: {},
@@ -65,13 +65,6 @@ export default {
       },
       activeMarker: null,
     };
-  },
-  computed: {
-    openClass() {
-      return this.activeMarker && this.open
-        ? `open ${this.activeMarker.orientation}`
-        : "";
-    },
   },
   methods: {
     wiggle() {
@@ -102,6 +95,102 @@ export default {
         (marker) => marker.chapter === this.currentChapter
       ).length;
     },
+    open(activeMarker) {
+      this.activeMarker = activeMarker;
+      const tl = gsap.timeline();
+      tl.to(
+        this.$refs.log,
+        {
+          width: "490px",
+          duration: 0.6,
+          ease: "power2.inOut",
+        },
+        "open-1"
+      );
+      tl.to(
+        this.$refs.list,
+        {
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.inOut",
+          onComplete: () => {
+            this.$refs.list.style.display = "none";
+          },
+        },
+        "open-1"
+      );
+      tl.to(
+        this.$refs.log,
+        {
+          maxHeight: "950px",
+          duration: 0.6,
+          ease: "power2.inOut",
+          onStart: () => {
+            this.$refs.content.style.display = "block";
+          },
+        },
+        "open-2"
+      );
+      tl.to(
+        this.$refs.content,
+        {
+          opacity: 1,
+          duration: 0.6,
+          ease: "power2.inOut",
+        },
+        "reveal"
+      );
+    },
+    close() {
+      const tl = gsap.timeline({
+        onStart: () => {
+          this.manager.zoomOutOfMarker();
+        },
+      });
+      tl.to(
+        this.$refs.content,
+        {
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.inOut",
+        },
+        "hide"
+      );
+      tl.to(
+        this.$refs.log,
+        {
+          maxHeight: "177px",
+          duration: 0.6,
+          ease: "power2.inOut",
+          onComplete: () => {
+            this.$refs.content.style.display = "none";
+          },
+        },
+        "close-1"
+      );
+      tl.to(
+        this.$refs.log,
+        {
+          width: "250px",
+          duration: 0.6,
+          ease: "power2.inOut",
+        },
+        "close-2"
+      );
+      tl.to(
+        this.$refs.list,
+        {
+          opacity: 1,
+          delay: 0.1,
+          duration: 0.6,
+          ease: "power2.inOut",
+          onStart: () => {
+            this.$refs.list.style.display = "block";
+          },
+        },
+        "close-2"
+      );
+    },
   },
   mounted() {
     this.updateLogTotal();
@@ -110,14 +199,9 @@ export default {
     });
     this.manager.on("log-update-count", this.updateLogCount.bind(this));
     this.manager.on("log-update-total", this.updateLogTotal.bind(this));
-    this.manager.on("log-open", (activeMarker) => {
-      this.activeMarker = activeMarker;
-      this.open = true;
-    });
-    this.manager.on("log-close", () => {
-      // this.activeMarker = null;
-      this.open = false;
-    });
+
+    this.manager.on("log-open", this.open.bind(this));
+    this.manager.on("log-close", this.close.bind(this));
   },
 };
 </script>
@@ -139,36 +223,6 @@ export default {
   box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
   z-index: $z-ui;
   border: 2px solid var(--secondary-text-color);
-  // transition: all 600ms ease-in-out;
-  transition-property: all;
-  transition-duration: 600ms;
-  transition-timing-function: ease-in-out;
-  transition-delay: 600ms;
-
-  &.open {
-    width: 490px;
-    max-height: 210px;
-
-    .log--content {
-      opacity: 1;
-      transition-delay: 1200ms;
-    }
-
-    ul {
-      opacity: 0;
-      transition-delay: 0s !important;
-    }
-  }
-
-  &.portrait {
-    min-height: auto;
-    max-height: 900px;
-  }
-
-  &.landscape {
-    min-height: auto;
-    max-height: 600px;
-  }
 
   &:after {
     font-size: 120px;
@@ -182,38 +236,35 @@ export default {
 
   &--content {
     opacity: 0;
-    transition-property: opacity;
-    transition-duration: 300ms;
-    padding: 25px 0px;
+    padding: 25px 0px 15px 0;
 
     img {
       display: block;
       max-width: 100%;
       margin-bottom: 25px;
+      border: 10px solid var(--bg-button);
     }
 
     p {
-      font-family: Libre Baskerville;
+      font-family: "Libre Baskerville";
       text-transform: none;
-      letter-spacing: 1px;
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.55;
       padding-bottom: 15px;
     }
+
+    button {
+      margin-top: 15px;
+    }
   }
+
   h3 {
     font-size: 29px;
     letter-spacing: 2px;
   }
 
   ul {
-    position: absolute;
-    opacity: 1;
-    transition-property: opacity;
-    transition-duration: 300ms;
-    transition-delay: 600ms;
-    top: 60px;
-    padding-top: 16px;
+    padding-top: 10px;
     list-style: none;
 
     li {

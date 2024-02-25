@@ -1,5 +1,6 @@
 button {
   position: relative;
+  pointer-events: all;
   cursor: pointer;
   background: var(--bg-button);
   border: 1px solid var(--secondary-text-color);
@@ -11,7 +12,6 @@ button {
   letter-spacing: 2px;
   font-weight: 700;
   border-radius: 6px;
-  margin: 0 15px;
   box-shadow: 0 5px var(--secondary-text-color);
 
   &:hover {

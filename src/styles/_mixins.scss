@@ -1,0 +1,46 @@
+@mixin media-query($media-query) {
+  @if $media-query == small {
+    @media only screen and (max-width: $medium) {
+      @content;
+    }
+  }
+
+  @if $media-query == ipad {
+    @media all and (min-width: $medium + 1) and (max-width: 1366px) {
+      @content;
+    }
+  }
+
+  @if $media-query == landscape {
+    @media (orientation: landscape) {
+      @content;
+    }
+  }
+
+  @if $media-query == portrait {
+    @media (orientation: portrait) and (max-width: $medium) {
+      @content;
+    }
+  }
+}
+
+@mixin small-only {
+  @include media-query(small) {
+    @content;
+  }
+}
+@mixin ipad {
+  @include media-query(ipad) {
+    @content;
+  }
+}
+@mixin landscape {
+  @include media-query(landscape) {
+    @content;
+  }
+}
+@mixin portrait {
+  @include media-query(portrait) {
+    @content;
+  }
+}

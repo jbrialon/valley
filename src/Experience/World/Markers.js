@@ -175,25 +175,12 @@ export default class Markers {
         onComplete: () => {
           // when marker is revealed we add the events
           this.manager.addHoverEventToMesh(markerMesh, () => {
-            if (
-              !this.manager.getZoomState() &&
-              this.manager.getTutorialStep() === 4
-            ) {
-              this.manager.trigger("infowindow-show", markerMesh.index);
-              this.manager.setActiveMarker(markerMesh);
-            }
+            this.manager.showInfowindow(markerMesh);
           });
 
-          this.manager.addClickEventToMesh(markerMesh, () => {
-            if (
-              this.manager.getZoomState() &&
-              markerMesh.name === this.manager.getActiveMarker()?.name
-            ) {
-              this.manager.trigger("camera-unzoom");
-              this.manager.trigger("ui-step-hide");
-              this.manager.setActiveMarker(null);
-            }
-          });
+          // this.manager.addClickEventToMesh(markerMesh, () => {
+          //   this.manager.zoomOutOfMarker(markerMesh);
+          // });
           if (index === 0) {
             this.manager.trigger("revealProps", index, name);
           }

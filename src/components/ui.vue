@@ -217,6 +217,10 @@ export default {
     display: flex;
     padding-top: 15px;
     justify-content: space-around;
+
+    button {
+      margin: 0 15px;
+    }
   }
 
   &--chapter {

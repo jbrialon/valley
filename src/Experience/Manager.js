@@ -45,7 +45,7 @@ export default class Manager extends EventEmitter {
 
   startGame() {
     this.tutorialStep = 4;
-    this.inputEvents.requestPermission();
+    // this.inputEvents.requestPermission();
     this.trigger("ui-title-hide", () => {
       this.trigger("ui-chapter-show", this.currentChapter);
       this.trigger("log-show");
@@ -54,6 +54,23 @@ export default class Manager extends EventEmitter {
     this.setSearchState(true);
     this.setMouseMoveState(true);
     this.setMaxScrollProgress(1);
+  }
+
+  // on Marker Hover -> Show Info Window
+  showInfowindow(markerMesh) {
+    if (!this.getZoomState() && this.getTutorialStep() === 4) {
+      this.trigger("infowindow-show", markerMesh.index);
+      this.setActiveMarker(markerMesh);
+    }
+  }
+
+  // on Marker Click -> Zoom Out of Marker
+  zoomOutOfMarker() {
+    if (this.getZoomState()) {
+      this.trigger("camera-unzoom");
+      this.trigger("ui-step-hide");
+      this.setActiveMarker(null);
+    }
   }
 
   // Tutorial State Management

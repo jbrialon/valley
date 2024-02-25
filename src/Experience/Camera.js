@@ -133,9 +133,6 @@ export default class Camera {
       z: this.previousPosition.z,
       duration: 2.5,
       ease: "power2.out",
-      onStart: () => {
-        this.manager.trigger("log-close");
-      },
       onComplete: () => {
         this.manager.setZoomState(false);
       },
@@ -218,8 +215,6 @@ export default class Camera {
   }
 
   onDeviceOrientation() {
-    // TODO: this.inputEvents.deviceOrientation.x
-
     const movementVector = new THREE.Vector3(
       THREE.MathUtils.clamp(
         this.inputEvents.deviceOrientation.x / 20,

@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import EventEmitter from "./EventEmitter";
 
+import { throttle } from "./Utils";
+
 export default class InputEvents extends EventEmitter {
   constructor() {
     super();
@@ -51,20 +53,21 @@ export default class InputEvents extends EventEmitter {
       DeviceOrientationEvent.requestPermission()
         .then((response) => {
           if (response == "granted") {
-            console.log("Orientation permission granted");
+            // Throttle the handleOrientation handler to limit calls to once every 100ms
+            const throttledDeviceOrientationHandler = throttle(
+              this.handleOrientation.bind(this),
+              100
+            );
+
             // Add event listener for device orientation
             window.addEventListener(
               "deviceorientation",
-              this.handleOrientation.bind(this),
+              throttledDeviceOrientationHandler,
               true
             );
           }
         })
         .catch(console.error);
-    } else {
-      console.log(
-        "DeviceOrientationEvent is not defined or permission request not needed."
-      );
     }
   }
 

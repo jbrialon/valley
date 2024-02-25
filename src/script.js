@@ -12,7 +12,8 @@ import Experience from "./Experience/Experience.js";
 const experience = new Experience(document.querySelector("canvas.webgl"));
 
 const i18n = new createI18n({
-  locale: getNavigatorLanguage(),
+  // locale: getNavigatorLanguage(),
+  locale: "en",
   messages,
   fallbackLocale: "en",
   warnHtmlInMessage: "off",
