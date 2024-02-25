@@ -1,20 +1,23 @@
 <template>
-  <div class="loader">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="80px"
-      height="60px"
-      viewBox="5 0 80 60"
-    >
-      <path
-        ref="path"
-        id="wave"
-        fill="none"
-        stroke="#c5c5c5"
-        stroke-width="3"
-        stroke-linecap="round"
-      ></path>
-    </svg>
+  <div class="pointer-none">
+    <Transition name="fade">
+      <div class="loader" v-show="showLoader">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="80px"
+          height="60px"
+          viewBox="5 0 80 60"
+        >
+          <path
+            ref="path"
+            id="wave"
+            fill="none"
+            stroke-width="3"
+            stroke-linecap="round"
+          ></path>
+        </svg>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -26,9 +29,14 @@ export default {
   name: "loader",
   props: {
     manager: {
-      required: true,
+      required: false,
       type: Object,
     },
+  },
+  data() {
+    return {
+      showLoader: true,
+    };
   },
   methods: {
     buildWave(w, h) {
@@ -124,6 +132,10 @@ export default {
   },
   mounted() {
     this.buildWave(90, 60);
+    this.manager.on("loaded", () => {
+      console.log("loaded");
+      this.showLoader = false;
+    });
   },
 };
 </script>
@@ -131,14 +143,19 @@ export default {
 <style scoped lang="scss">
 .loader {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   align-items: center;
-  border: 3px solid #c5c5c5;
+  border: 3px solid var(--main-text-color);
   display: flex;
   height: 110px;
   margin: 0 auto;
   width: 110px;
+  z-index: $z-ui;
 
   #wave {
+    stroke: var(--main-text-color);
     stroke-dasharray: 0 16 101 16;
     animation: moveTheWave 2400ms linear infinite;
   }

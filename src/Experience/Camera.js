@@ -84,9 +84,16 @@ export default class Camera {
 
   introAnimation() {
     gsap.to(this.cameraParent.position, {
-      y: paths.camera[0].y,
+      y: this.options.initialPos.y,
       duration: 3.5,
       ease: "power1.out",
+      onUpdate: () => {
+        this.instance.lookAt(
+          this.options.initialTargetPos.x,
+          this.options.initialTargetPos.y,
+          this.options.initialTargetPos.z
+        );
+      },
     });
   }
 

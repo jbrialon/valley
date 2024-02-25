@@ -15,6 +15,7 @@ const i18n = new createI18n({
   locale: getNavigatorLanguage(),
   messages,
   fallbackLocale: "en",
+  warnHtmlInMessage: "off",
 });
 
 const app = createApp({
