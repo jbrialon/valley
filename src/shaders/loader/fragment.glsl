@@ -8,6 +8,8 @@ uniform float uCircleRadius;
 uniform vec2 uCirclePos;
 uniform float uTime;
 uniform vec3 uColor;
+uniform vec3 uBorderColor;
+uniform float uBorderWidth;
 uniform float uScreenRatio;
 
 void main() {
@@ -23,9 +25,15 @@ void main() {
 
   float finalMask = smoothstep(0.4, 0.5, noise + pow(circle, 2.));
 
+  // Determine if we are within the border range
+  float borderRange = smoothstep(uCircleRadius - (uCircleRadius * uBorderWidth), uCircleRadius + (uCircleRadius * uBorderWidth), dot(circlePos, circlePos) * 4.0);
+
+  // Mix the border color and the main color based on border range
+  vec3 finalColor = mix(uColor, uBorderColor, 1.0 - borderRange);
+
   if(finalMask > 0.5) {
     discard;
   }
 
-  gl_FragColor = vec4(uColor, uAlpha);
+  gl_FragColor = vec4(finalColor, uAlpha);
 }

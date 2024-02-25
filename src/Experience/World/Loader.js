@@ -17,6 +17,7 @@ export default class Loader {
     // Options
     this.options = {
       uColor: "#b9a998",
+      uBorderColor: "#5a5444",
       uCirclePos: new THREE.Vector2(0.804, 0.765),
     };
 
@@ -65,10 +66,13 @@ export default class Loader {
           value: this.sizes.width / this.sizes.height,
         },
         uColor: { value: new THREE.Color(this.options.uColor) },
-
+        uBorderColor: { value: new THREE.Color(this.options.uBorderColor) },
         uTime: { value: 0 },
         uCirclePos: {
           value: this.options.uCirclePos,
+        },
+        uBorderWidth: {
+          value: 0.01,
         },
       },
       vertexShader: vertexShader,
