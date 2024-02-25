@@ -153,7 +153,7 @@ export default class Loader {
         if (callback && typeof callback === "function") {
           callback();
         }
-        if (this.manager.getTutorialStep() === 4 && !this.debug.active) {
+        if (this.manager.getTutorialStep() === 4) {
           this.destroy();
         }
       },
@@ -169,7 +169,7 @@ export default class Loader {
         if (callback && typeof callback === "function") {
           callback();
         }
-        if (this.manager.getTutorialStep() === 4 && !this.debug.active) {
+        if (this.manager.getTutorialStep() === 4) {
           this.destroy();
         }
       },
@@ -227,6 +227,8 @@ export default class Loader {
     this.mesh.geometry.dispose();
     this.mesh.material.dispose();
     this.scene.remove(this.mesh);
-    this.debugFolder.destroy();
+    if (this.debug.active) {
+      this.debugFolder.destroy();
+    }
   }
 }
