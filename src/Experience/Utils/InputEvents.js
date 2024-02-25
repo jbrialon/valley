@@ -8,6 +8,7 @@ export default class InputEvents extends EventEmitter {
     // Setup
     this.mouse = new THREE.Vector3(0, 0, 0);
     this.touch = new THREE.Vector2(0, 0);
+    this.deviceOrientation = new THREE.Vector3(0, 0, 0);
     this.direction = "";
     this.keys = {};
 
@@ -40,6 +41,31 @@ export default class InputEvents extends EventEmitter {
       this.keys[event.code] = false;
       this.trigger("keyup", event.code);
     });
+  }
+
+  requestPermission() {
+    if (
+      typeof DeviceOrientationEvent !== "undefined" &&
+      typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
+      DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+          if (response == "granted") {
+            console.log("Orientation permission granted");
+            // Add event listener for device orientation
+            window.addEventListener(
+              "deviceorientation",
+              this.handleOrientation.bind(this),
+              true
+            );
+          }
+        })
+        .catch(console.error);
+    } else {
+      console.log(
+        "DeviceOrientationEvent is not defined or permission request not needed."
+      );
+    }
   }
 
   handleMouseDown() {
@@ -111,6 +137,14 @@ export default class InputEvents extends EventEmitter {
       this.isPressed = false;
       this.trigger("pressUp");
     }
+  }
+
+  handleOrientation(event) {
+    const { beta } = event; // Get the beta value (device's rotation around the x axis)
+    this.deviceOrientation.x = beta;
+    // this.deviceOrientation.y = gamma;
+
+    this.trigger("deviceOrientation");
   }
 
   isKeyDown(keyCode) {

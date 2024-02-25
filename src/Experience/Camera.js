@@ -80,6 +80,11 @@ export default class Camera {
     // Camera Zoom
     this.manager.on("camera-zoom", this.zoom.bind(this));
     this.manager.on("camera-unzoom", this.unzoom.bind(this));
+    // Device Orientation
+    this.inputEvents.on(
+      "deviceOrientation",
+      this.onDeviceOrientation.bind(this)
+    );
   }
 
   introAnimation() {
@@ -210,6 +215,30 @@ export default class Camera {
         ease: "power4.easeInOut",
       });
     }
+  }
+
+  onDeviceOrientation() {
+    // TODO: this.inputEvents.deviceOrientation.x
+
+    const movementVector = new THREE.Vector3(
+      THREE.MathUtils.clamp(
+        this.inputEvents.deviceOrientation.x / 20,
+        -0.12,
+        0.12
+      ),
+      0,
+      0
+    );
+
+    movementVector.applyQuaternion(this.instance.quaternion);
+    gsap.to(this.instance.position, {
+      delay: 0.1,
+      x: movementVector.x,
+      y: movementVector.y,
+      z: movementVector.z,
+      duration: 2,
+      ease: "power4.easeInOut",
+    });
   }
 
   animateMove(direction) {

@@ -215,7 +215,7 @@ export default {
 
   &--menu-buttons {
     display: flex;
-    padding-top: 35px;
+    padding-top: 15px;
     justify-content: space-around;
   }
 

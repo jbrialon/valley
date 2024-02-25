@@ -1,7 +1,7 @@
 <template>
   <div class="pointer-none">
     <Transition name="fade">
-      <div class="loader" v-show="showLoader">
+      <div class="loader" v-if="showLoader">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="80px"
@@ -133,7 +133,6 @@ export default {
   mounted() {
     this.buildWave(90, 60);
     this.manager.on("loaded", () => {
-      console.log("loaded");
       this.showLoader = false;
     });
   },
