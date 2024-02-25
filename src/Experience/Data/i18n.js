@@ -9,7 +9,7 @@ export default {
     },
     title: {
       paragraph:
-        'Follow our footsteps  an <span class="bold">Exploration Game</span> through <strong>Nepal</strong>, uncovering hidden photos and moments from our two-week trek as you go.',
+        'Follow our footsteps an <span class="bold">Exploration Game</span> through <strong>Nepal</strong>, uncovering hidden photos and moments from our two-week trek as you go.',
     },
     chapter: {
       title0: "Chapter 1",
@@ -19,7 +19,7 @@ export default {
     },
     tooltip: {
       tutorial: {
-        one: 'This is an <span class="bold">Exploration Game</span> where your goal is to reveal hidden <span class="bold">Milestones</span> on a map to retrace our two-week trek as you go.',
+        one: 'Follow our footsteps in an <span class="bold">Exploration Game</span> through <strong>Nepal</strong> where the goal is to reveal hidden <span class="bold">Milestones</span> on a map to retrace and uncover photos and moments in our two-week trek as you go.',
         two: isTouch
           ? '<span class="bold">Long Touch/Tap</span> on the map to search for a <span class="bold">Milestone</span>.'
           : 'Use your <span class="bold">Mouse</span> and <span class="bold">Hold Click</span> on the map to search for a <span class="bold">Milestone</span>.',

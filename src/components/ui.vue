@@ -210,12 +210,13 @@ export default {
       color: var(--secondary-text-color);
       font-size: 18px;
       text-align: justify;
+      line-height: 1.6;
     }
   }
 
   &--menu-buttons {
     display: flex;
-    padding-top: 15px;
+    padding-top: 25px;
     justify-content: space-around;
 
     button {
