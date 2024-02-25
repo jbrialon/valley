@@ -83,7 +83,7 @@ export default {
     updateLogCount() {
       this.revealedSteps = this.manager.getRevealedStepsPerChapter();
       this.step.count = this.revealedSteps.length;
-      // this.wiggle();
+      this.wiggle();
     },
     updateLogTotal() {
       this.updateLogCount();
