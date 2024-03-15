@@ -10,10 +10,10 @@
 
     <Transition name="fade-menu">
       <div class="ui--menu" v-if="showMenu">
-        <p v-html="$t('tooltip.tutorial.one')"></p>
+        <p v-html="$t('title.paragraph')"></p>
         <div class="ui--menu-buttons">
-          <button @click="start('game')">{{ $t("menu.start") }}</button>
-          <button @click="start('tutorial')">{{ $t("menu.tuto") }}</button>
+          <button @click="start('normal')">{{ $t("menu.start") }}</button>
+          <button @click="start('game')">{{ $t("menu.game") }}</button>
         </div>
       </div>
     </Transition>
@@ -71,9 +71,10 @@ export default {
   methods: {
     start(mode) {
       this.showMenu = false;
-      if (mode === "game") {
+      this.manager.trigger("markers-intro-animation");
+      if (mode === "normal") {
         this.manager.startGame();
-      } else if (mode === "tutorial") {
+      } else if (mode === "game") {
         this.manager.goToTutorialStep(1);
       }
     },
@@ -112,7 +113,6 @@ export default {
     this.manager.on("loaded", () => {
       this.manager.trigger("camera-intro-animation");
       this.manager.trigger("loader-hide", () => {
-        this.manager.trigger("markers-intro-animation");
         this.showMenu = true;
       });
     });

@@ -194,7 +194,7 @@ export default class Markers {
       markerMesh.visible = true;
       const index = markerMesh.index;
       const tl = gsap.timeline({
-        delay: 1 + index * 0.1,
+        delay: index * 0.1,
         onComplete: () => {
           markerMesh.visible = false;
         },

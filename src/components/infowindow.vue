@@ -90,7 +90,7 @@ export default {
     position: relative;
     left: -50%;
     bottom: 100px;
-    padding-bottom: 100px;
+    padding-bottom: 130px;
     cursor: pointer;
   }
 
