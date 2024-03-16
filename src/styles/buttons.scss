@@ -1,4 +1,4 @@
-button {
+button.btn {
   position: relative;
   pointer-events: all;
   cursor: pointer;
@@ -13,6 +13,42 @@ button {
   font-weight: 700;
   border-radius: 6px;
   box-shadow: 0 5px var(--secondary-text-color);
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    top: 2px;
+    box-shadow: 0 3px var(--secondary-text-color);
+  }
+
+  &:active {
+    top: 5px;
+    box-shadow: 0 0 var(--secondary-text-color);
+  }
+}
+
+button.cross {
+  position: relative;
+  font-family: "icomoon" !important;
+  border-radius: 50%;
+  pointer-events: all;
+  cursor: pointer;
+  background: var(--bg-button);
+  border: 2px solid var(--secondary-text-color);
+  color: var(--secondary-text-color);
+  font-size: 0;
+  width: 35px;
+  height: 35px;
+  box-shadow: 0 5px var(--secondary-text-color);
+
+  &:after {
+    font-weight: 500;
+    font-size: 22px;
+    content: "\e906";
+    color: var(--secondary-text-color);
+  }
 
   &:hover {
     top: 2px;

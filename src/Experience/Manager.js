@@ -85,6 +85,7 @@ export default class Manager extends EventEmitter {
           this.setMouseMoveState(false);
           this.trigger("ui-tooltip-show", "tooltip.tutorial.two");
           this.trigger("loader-tutorial-two");
+          this.trigger("ui-show-progress");
           break;
         case 2:
           this.tutorialStep = 2;
@@ -115,6 +116,7 @@ export default class Manager extends EventEmitter {
           this.trigger("loader-tutorial-hide");
           this.trigger("ui-title-hide");
           this.trigger("ui-tooltip-hide", () => {
+            this.trigger("header-show");
             this.trigger("ui-tooltip-auto-hide", "tooltip.tutorial.five");
             this.setScrollState(true);
             this.setMouseMoveState(true);

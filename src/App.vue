@@ -1,5 +1,6 @@
 <script setup>
 // Vue Components
+import top from "./components/top.vue";
 import ui from "./components/ui.vue";
 import infowindow from "./components/infowindow.vue";
 import log from "./components/log.vue";
@@ -11,6 +12,7 @@ const manager = experience.manager;
 </script>
 
 <template>
+  <top :manager="manager"></top>
   <ui :manager="manager"></ui>
   <infowindow :manager="manager"></infowindow>
   <log :manager="manager"></log>

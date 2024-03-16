@@ -30,7 +30,9 @@
             Praesent vel mi vel libero facilisis porttitor. Nam rutrum interdum
             semper.
           </p>
-          <button @click="close()">Close</button>
+          <div class="close">
+            <button class="cross" @click="close()">Close</button>
+          </div>
         </div>
       </div>
     </Transition>
@@ -227,6 +229,12 @@ export default {
   @include ipad {
     right: 25px;
     top: 25px;
+  }
+
+  .close {
+    position: absolute;
+    top: 3px;
+    right: 20px;
   }
 
   &:after {
