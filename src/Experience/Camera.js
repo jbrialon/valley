@@ -106,15 +106,32 @@ export default class Camera {
     const activeMarker = this.manager.getActiveMarker();
     if (activeMarker) {
       this.previousPosition = this.cameraParent.position.clone();
+
       // Calculate the new camera position
       const distance = -0.7; // Distance from the marker
+
       const direction = new THREE.Vector3()
         .subVectors(activeMarker.position, this.cameraParent.position)
         .normalize();
+
+      // Calculate left vector as the cross product of the direction and the up vector
+      const upVector = new THREE.Vector3(0, 1, 0); // Assuming up direction is along the y-axis
+      const leftVector = new THREE.Vector3()
+        .crossVectors(upVector, direction)
+        .normalize();
+
+      // Calculate the panning effect by moving 0.25 units to the right
+      const panDistance = -0.25;
+      const panRight = new THREE.Vector3()
+        .copy(leftVector)
+        .multiplyScalar(panDistance);
+
+      // Combine the forward/backward movement with the left panning
       const newPosition = new THREE.Vector3()
         .copy(direction)
         .multiplyScalar(distance)
-        .add(activeMarker.position);
+        .add(activeMarker.position)
+        .add(panRight); // Apply the left panning
 
       gsap.to(this.cameraParent.position, {
         x: newPosition.x,
