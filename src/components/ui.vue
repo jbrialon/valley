@@ -46,25 +46,6 @@
         v-html="tooltipText"
       ></div>
     </Transition>
-
-    <Transition name="slide-fade">
-      <div class="ui--progress" v-if="showProgress">
-        <ul>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
-      </div>
-    </Transition>
   </div>
 </template>
 
@@ -82,7 +63,6 @@ export default {
       showMenu: false,
       showChapter: false,
       showTitle: false,
-      showProgress: false,
       title: "",
       subtitle: "",
       showStep: false,
@@ -179,14 +159,6 @@ export default {
     this.manager.on("ui-step-hide", () => {
       this.activeMarker = null;
       this.showStep = false;
-    });
-
-    this.manager.on("ui-show-progress", () => {
-      this.showProgress = true;
-    });
-
-    this.manager.on("ui-hide-progress", () => {
-      this.showProgress = true;
     });
   },
 };
@@ -305,11 +277,6 @@ export default {
     color: var(--main-text-color);
     white-space: nowrap;
 
-    @include ipad {
-      left: 30px;
-      top: 30px;
-    }
-
     h2 {
       font-size: 76px;
       text-shadow: 3px 3px 0px var(--secondary-text-color);
@@ -324,44 +291,6 @@ export default {
 
       @include ipad {
         font-size: 14px;
-      }
-    }
-  }
-
-  &--progress {
-    position: absolute;
-    top: 50%;
-    left: 20px;
-    transform: translateY(-50%);
-
-    ul {
-      position: relative;
-
-      &:after {
-        display: block;
-        content: "";
-        position: absolute;
-        top: 0;
-        left: calc(50% - 1px);
-        bottom: 0;
-        width: 3px;
-        background: var(--secondary-text-color);
-        z-index: -1;
-      }
-
-      li {
-        display: block;
-        width: 30px;
-        height: 30px;
-        margin: 25px;
-        border-radius: 50%;
-        background: var(--main-bg-color);
-        border: 2px solid var(--secondary-text-color);
-        //box-shadow: -0px 2px 0px 1px var(--secondary-text-color);
-
-        &:first-child {
-          background: var(--secondary-text-color);
-        }
       }
     }
   }

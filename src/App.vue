@@ -4,6 +4,7 @@ import top from "./components/top.vue";
 import ui from "./components/ui.vue";
 import infowindow from "./components/infowindow.vue";
 import log from "./components/log.vue";
+import timeline from "./components/timeline.vue";
 
 // Three.js app
 import Experience from "./Experience/Experience";
@@ -16,6 +17,7 @@ const manager = experience.manager;
   <ui :manager="manager"></ui>
   <infowindow :manager="manager"></infowindow>
   <log :manager="manager"></log>
+  <timeline :manager="manager"></timeline>
 </template>
 
 <style lang="scss">

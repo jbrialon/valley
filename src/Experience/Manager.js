@@ -85,7 +85,7 @@ export default class Manager extends EventEmitter {
           this.setMouseMoveState(false);
           this.trigger("ui-tooltip-show", "tooltip.tutorial.two");
           this.trigger("loader-tutorial-two");
-          this.trigger("ui-show-progress");
+          this.trigger("timeline-show");
           break;
         case 2:
           this.tutorialStep = 2;
@@ -198,6 +198,8 @@ export default class Manager extends EventEmitter {
 
     if (chapter) {
       const marker = findMarkerByName(markers, name);
+      this.trigger("timeline-update", marker);
+
       if (!this.revealedSteps[chapter].includes(marker.order)) {
         this.revealedSteps[chapter].push(marker.order);
         if (

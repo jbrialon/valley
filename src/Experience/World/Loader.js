@@ -154,6 +154,7 @@ export default class Loader {
       duration: 2.5,
       ease: "power4.inOut",
       onComplete: () => {
+        this.manager.trigger("loader-hidden");
         if (callback && typeof callback === "function") {
           callback();
         }

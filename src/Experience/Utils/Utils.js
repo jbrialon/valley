@@ -70,6 +70,14 @@ export function findMarkerByName(markers, name) {
   return foundMarker;
 }
 
+export function getMarkerByDay(markers, day) {
+  return markers.find(
+    (marker) =>
+      (marker.type === "main" || marker.type === "mountain") &&
+      marker.day.includes(day)
+  );
+}
+
 export function getNavigatorLanguage() {
   let lang = "en";
   if (navigator.languages && navigator.languages.length) {
