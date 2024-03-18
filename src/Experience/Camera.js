@@ -120,8 +120,8 @@ export default class Camera {
         .crossVectors(upVector, direction)
         .normalize();
 
-      // Calculate the panning effect by moving 0.25 units to the right
-      const panDistance = -0.25;
+      // Calculate the panning effect by moving 0.30 units to the right
+      const panDistance = -0.3;
       const panRight = new THREE.Vector3()
         .copy(leftVector)
         .multiplyScalar(panDistance);

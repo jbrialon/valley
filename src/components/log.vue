@@ -103,7 +103,7 @@ export default {
       tl.to(
         this.$refs.log,
         {
-          width: "490px",
+          width: "55vw",
           duration: 0.6,
           ease: "power2.inOut",
         },
@@ -124,7 +124,7 @@ export default {
       tl.to(
         this.$refs.log,
         {
-          maxHeight: "950px",
+          maxHeight: "90vh",
           duration: 0.6,
           ease: "power2.inOut",
           onStart: () => {
@@ -254,8 +254,13 @@ export default {
     img {
       display: block;
       max-width: 100%;
-      margin-bottom: 25px;
+      margin: 0 auto 25px auto;
+      max-height: 70vh;
       border: 10px solid var(--bg-button);
+
+      @include ipad {
+        max-height: 55vh;
+      }
     }
 
     p {
