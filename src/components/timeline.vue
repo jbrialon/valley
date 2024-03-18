@@ -52,11 +52,11 @@ export default {
     },
     onMouseOver(index) {
       const marker = getMarkerByDay(markersArray, index);
+      console.log(marker.name);
     },
   },
   mounted() {
     this.manager.on("loader-hidden", () => {
-      console.log("loaded");
       this.show = true;
     });
 
@@ -107,7 +107,7 @@ export default {
       z-index: 0;
       height: var(--timeline-bar-height);
       transition: height 300ms ease-in-out;
-      width: 1px;
+      width: 2px;
       background: var(--secondary-text-color);
     }
 
