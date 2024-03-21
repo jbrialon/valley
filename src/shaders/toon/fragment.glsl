@@ -1,4 +1,4 @@
-#include ../utils/inverse4.glsl;
+#include ../includes/inverse4.glsl;
 
 uniform vec3 uLightDirection;
 uniform sampler2D uTexture;

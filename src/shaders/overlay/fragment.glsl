@@ -1,6 +1,6 @@
-#include ../utils/circle.glsl;
-#include ../utils/snoise3.glsl;
-#include ../utils/mapRangeClamped.glsl;
+#include ../includes/circle.glsl;
+#include ../includes/snoise3.glsl;
+#include ../includes/mapRangeClamped.glsl;
 
 uniform float uAlpha;
 uniform float uStrength;
@@ -18,8 +18,8 @@ varying vec3 vVertex;
 
 uniform float uNoiseIntensity;
 
-uniform float uCircleRadius;
-uniform vec2 uCirclePos;
+uniform float uCircleRadius[10];
+uniform vec2 uCirclePos[10];
 
 uniform float uTime;
 
@@ -31,17 +31,23 @@ void main() {
 
   float contourWidth = mapRangeClamped(uPixelRatio, inputMin, inputMax, outputMin, outputMax);
 
-  vec2 circlePos = vUv + (uCirclePos) - vec2(1.0);
-    // this 1.5 should be adapted by the ratio of the model we apply the material to 
-    // circlePos.x = circlePos.x * 1.5;
-  float c = circle(circlePos, (uCircleRadius / 10000.0), 2.) * 2.5;
-
   float offx = vUv.x + sin(vUv.y + uTime * .1);
   float offy = vUv.y - uTime * 0.1 - cos(uTime * .001) * .01;
 
-  float n = snoise3(vec3(offx, offy, uTime * 0.1) * uNoiseIntensity) - 1.0;
+  float noise = snoise3(vec3(offx, offy, uTime * 0.1) * uNoiseIntensity) - 1.0;
 
-  float finalMask = smoothstep(0.4, 0.5, n + pow(c, 2.));
+  float finalMask = 0.;
+
+  for(int i = 0; i < 10; ++i) {
+    // I don't now if it's better in terms of performances to draw a 0 radius circle or doing an if > 0.0 
+    if(uCircleRadius[i] > 0.0) {
+      vec2 circlePos = vUv + (uCirclePos[i]) - vec2(1.0);
+      float circle = circle(circlePos, (uCircleRadius[i] / 10000.0), 2.) * 2.5;
+      float circleNoise = smoothstep(0.4, 0.5, noise + pow(circle, 2.));
+
+      finalMask += circleNoise;
+    }
+  }
 
   if(finalMask < 0.5) {
     discard;

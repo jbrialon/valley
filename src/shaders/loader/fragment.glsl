@@ -1,5 +1,5 @@
-#include ../utils/circle.glsl;
-#include ../utils/snoise3.glsl;
+#include ../includes/circle.glsl;
+#include ../includes/snoise3.glsl;
 
 varying vec2 vUv;
 

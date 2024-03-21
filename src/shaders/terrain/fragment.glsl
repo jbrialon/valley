@@ -1,5 +1,5 @@
 
-#include ../utils/mapRangeClamped.glsl;
+#include ../includes/mapRangeClamped.glsl;
 
 uniform float uAlpha;
 uniform float uStrength;
