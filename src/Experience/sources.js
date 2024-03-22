@@ -29,4 +29,9 @@ export default [
     type: "texture",
     path: "/textures/toon/toon.jpg",
   },
+  {
+    name: "perlinTexture",
+    type: "texture",
+    path: "/textures/perlin.png",
+  },
 ];

@@ -1,28 +1,26 @@
-import * as THREE from "three";
+import { ShaderMaterial, Uniform, Vector3, Vector4, FrontSide } from "three";
 
 import toonVertexShader from "../../shaders/toon/vertex.glsl";
 import toonFragmentShader from "../../shaders/toon/fragment.glsl";
 
 // https://wgld.org/d/webgl/w048.html implementation
 const toonMaterial = (options) => {
-  return new THREE.ShaderMaterial({
+  return new ShaderMaterial({
+    uniforms: {
+      uLightDirection: new Uniform(
+        options.uLightDirection || new Vector3(-2, 3.5, 5)
+      ),
+      uEdge: new Uniform(options.uEdge),
+      uLineWidth: new Uniform(options.uLineWidth || 0.004),
+      uEdgeColor: new Uniform(
+        options.uEdgeColor || new Vector4(0.0, 0.0, 0.0, 0.0)
+      ),
+      uColor: new Uniform(options.uColor),
+      uTexture: new Uniform(options.uTexture),
+    },
     vertexShader: toonVertexShader,
     fragmentShader: toonFragmentShader,
-    uniforms: {
-      uLightDirection: {
-        value: options.uLightDirection || new THREE.Vector3(-2, 3.5, 5),
-      },
-      uEdge: { value: options.uEdge },
-      uLineWidth: { value: options.uLineWidth || 0.004 },
-      uEdgeColor: {
-        value: options.uEdgeColor || new THREE.Vector4(0.0, 0.0, 0.0, 0.0),
-      },
-      uColor: {
-        value: options.uColor,
-      },
-      uTexture: { value: options.uTexture },
-    },
-    side: options.side || THREE.FrontSide,
+    side: options.side || FrontSide,
   });
 };
 

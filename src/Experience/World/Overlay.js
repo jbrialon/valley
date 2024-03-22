@@ -41,7 +41,7 @@ export default class Overlay {
       ],
       uCircleRadius: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       offsetPosY: 0.001,
-
+      uNoiseIntensity: 140,
       // Overlay 1
       uStrength: 0.5,
       uLineColor: "#53524c", // #74675e
@@ -85,6 +85,7 @@ export default class Overlay {
   setMaterial() {
     this.overlayMaterial = overlayMaterial({
       uAlpha: this.options.uAlpha,
+      uNoiseIntensity: this.options.uNoiseIntensity,
       uStrength: this.options.uStrength,
       uPixelRatio: this.sizes.pixelRatio,
       uContourWidth: this.options.uContourWidth,
@@ -100,6 +101,7 @@ export default class Overlay {
 
     this.overlay2Material = overlay2Material({
       uAlpha: this.options.uAlpha,
+      uNoiseIntensity: this.options.uNoiseIntensity,
       uFill: this.options.uFill,
       uStroke: this.options.uStroke,
       uThickness: this.options.uThickness,

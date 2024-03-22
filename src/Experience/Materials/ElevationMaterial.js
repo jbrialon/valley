@@ -1,16 +1,16 @@
-import * as THREE from "three";
+import { ShaderMaterial, Uniform, Color } from "three";
 
 import elevationVertexShader from "../../shaders/elevation/vertex.glsl";
 import elevationFragmentShader from "../../shaders/elevation/fragment.glsl";
 
 const elevationMaterial = (options) => {
-  return new THREE.ShaderMaterial({
+  return new ShaderMaterial({
     uniforms: {
-      uAlpha: { value: 1 },
-      uTerrainColor: { value: new THREE.Color(options.uColorOne) },
-      uLineColor: { value: new THREE.Color(options.uLineColor) },
-      uContourFrequency: { value: 0.05 },
-      uContourWidth: { value: 0.005 },
+      uAlpha: new Uniform(1),
+      uTerrainColor: new Uniform(new Color(options.uColorOne)),
+      uLineColor: new Uniform(new Color(options.uLineColor)),
+      uContourFrequency: new Uniform(0.05),
+      uContourWidth: new Uniform(0.005),
     },
     vertexShader: elevationVertexShader,
     fragmentShader: elevationFragmentShader,

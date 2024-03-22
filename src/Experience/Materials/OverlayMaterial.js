@@ -1,31 +1,27 @@
-import * as THREE from "three";
+import { ShaderMaterial, Uniform, Color } from "three";
 
 import overlayVertexShader from "../../shaders/overlay/vertex.glsl";
 import overlayFragmentShader from "../../shaders/overlay/fragment.glsl";
 
 const overlayMaterial = (options) => {
-  return new THREE.ShaderMaterial({
+  return new ShaderMaterial({
     uniforms: {
-      uAlpha: { value: options.uAlpha || 0 },
-      uStrength: {
-        value: options.uStrength || 0.5,
-      },
-      uPixelRatio: { value: options.uPixelRatio || 2 },
-      uContourWidth: { value: options.uContourWidth || 1 },
-      uColorNumber: { value: options.uColorNumber || 1 },
-      uContourFrequency: { value: options.uContourFrequency || 1 },
-      uLineColor: { value: new THREE.Color(options.uLineColor || "#000000") },
-      uColorOne: { value: new THREE.Color(options.uColorOne || "#ff0000") },
-      uColorTwo: { value: new THREE.Color(options.uColorTwo || "#00ff00") },
-      uColorThree: { value: new THREE.Color(options.uColorThree || "#0000ff") },
-      uCircleRadius: {
-        value: options.uCircleRadius || 3,
-      },
-      uTime: { value: 0 },
-      uNoiseIntensity: { value: 140 },
-      uCirclePos: {
-        value: options.uCirclePos || new THREE.Vector2(0.14, 0.41),
-      },
+      uTime: new Uniform(0),
+      uAlpha: new Uniform(options.uAlpha || 0),
+      // Visual
+      uStrength: new Uniform(options.uStrength || 0.5),
+      uPixelRatio: new Uniform(options.uPixelRatio || 2),
+      uContourWidth: new Uniform(options.uContourWidth || 1),
+      uColorNumber: new Uniform(options.uColorNumber || 1),
+      uContourFrequency: new Uniform(options.uContourFrequency || 1),
+      uLineColor: new Uniform(new Color(options.uLineColor || "#000000")),
+      uColorOne: new Uniform(new Color(options.uColorOne || "#ff0000")),
+      uColorTwo: new Uniform(new Color(options.uColorTwo || "#00ff00")),
+      uColorThree: new Uniform(new Color(options.uColorThree || "#0000ff")),
+      // Mask
+      uNoiseIntensity: new Uniform(options.uNoiseIntensity),
+      uCircleRadius: new Uniform(options.uCircleRadius || 3),
+      uCirclePos: new Uniform(options.uCirclePos || new Vector2(0.14, 0.41)),
     },
     vertexShader: overlayVertexShader,
     fragmentShader: overlayFragmentShader,

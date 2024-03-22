@@ -56,24 +56,17 @@ export default class Loader {
     this.material = new THREE.ShaderMaterial({
       transparent: true,
       uniforms: {
-        uAlpha: {
-          value: 1,
-        },
-        uCircleRadius: {
-          value: 0,
-        },
-        uScreenRatio: {
-          value: this.sizes.width / this.sizes.height,
-        },
-        uColor: { value: new THREE.Color(this.options.uColor) },
-        uBorderColor: { value: new THREE.Color(this.options.uBorderColor) },
-        uTime: { value: 0 },
-        uCirclePos: {
-          value: this.options.uCirclePos,
-        },
-        uBorderWidth: {
-          value: 0.01,
-        },
+        uTime: new THREE.Uniform(0),
+
+        uAlpha: new THREE.Uniform(1),
+        uCircleRadius: new THREE.Uniform(0),
+        uScreenRatio: new THREE.Uniform(this.sizes.width / this.sizes.height),
+        uColor: new THREE.Uniform(new THREE.Color(this.options.uColor)),
+        uBorderColor: new THREE.Uniform(
+          new THREE.Color(this.options.uBorderColor)
+        ),
+        uCirclePos: new THREE.Uniform(this.options.uCirclePos),
+        uBorderWidth: new THREE.Uniform(0.01),
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,

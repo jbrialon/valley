@@ -1,13 +1,13 @@
-import * as THREE from "three";
+import { ShaderMaterial, Uniform, Color } from "three";
 
 import outlineVertexShader from "../../shaders/outline/vertex.glsl";
 import outlineFragmentShader from "../../shaders/outline/fragment.glsl";
 
 const outlineMaterial = (options) => {
-  return new THREE.ShaderMaterial({
+  return new ShaderMaterial({
     uniforms: {
-      uLinewidth: { value: options.uLinewidth },
-      uColor: { value: new THREE.Color(options.uColor) || "#ff0000" },
+      uLinewidth: new Uniform(options.uLinewidth),
+      uColor: new Uniform(new Color(options.uColor) || "#ff0000"),
     },
     vertexShader: outlineVertexShader,
     fragmentShader: outlineFragmentShader,
