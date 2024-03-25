@@ -38,16 +38,6 @@ export default {
         const chapterIndex = this.manager.getCurrentChapterIndex();
         this.currentDay =
           marker.day.length === 1 ? marker.day[0] : marker.day[chapterIndex];
-
-        const progressPercentage =
-          this.currentDay > 1
-            ? ((this.currentDay - 1) / (this.totalDays - 1)) * 100
-            : 0;
-
-        document.documentElement.style.setProperty(
-          "--timeline-bar-height",
-          `${progressPercentage}%`
-        );
       }
     },
     onMouseOver(index) {
@@ -103,27 +93,38 @@ export default {
       z-index: -1;
     }
 
-    &:after {
-      z-index: 0;
-      height: var(--timeline-bar-height);
-      transition: height 300ms ease-in-out;
-      width: 2px;
-      background: var(--secondary-text-color);
-    }
-
     li {
       display: block;
-      width: 15px;
-      height: 15px;
+      position: relative;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: var(--secondary-bg-color);
-      transition: background 300ms ease-in-out 300ms;
       z-index: 1;
+
+      &:after {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        content: "";
+        opacity: 1;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--secondary-text-color);
+        opacity: 0;
+      }
 
       &.active {
         cursor: pointer;
         opacity: 1;
-        background: var(--secondary-text-color);
+
+        &:after {
+          opacity: 1;
+        }
+        // background: var(--secondary-text-color);
       }
     }
   }
