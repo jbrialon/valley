@@ -83,13 +83,18 @@ export default class Props {
     };
 
     props.forEach((props) => {
+      const name = props.name;
       props.objects.forEach((object, index) => {
         const mesh = models[object.type].clone();
         mesh.name = `${props.name}.${index}`;
         mesh.type = "props";
         mesh.index = index;
-        mesh.visible = false;
-        mesh.scale.set(0, 0, 0);
+        if (name !== "syabru_besi") {
+          mesh.visible = false;
+          mesh.scale.set(0, 0, 0);
+        } else {
+          mesh.scale.set(object.scale.x, object.scale.y, object.scale.z);
+        }
         mesh.finalScale = object.scale;
         mesh.position.set(
           object.position.x,
@@ -110,14 +115,16 @@ export default class Props {
   }
 
   initEvents() {
-    // expecting index and name as parameter
-    this.manager.on("revealProps", this.revealProps.bind(this));
+    // expecting index as parameter
+    this.manager.on("props-reveal", this.revealProps.bind(this));
+    this.manager.on("props-hide", this.hideProps.bind(this));
   }
 
   revealProps(index) {
     const name = markersArray[index].name;
     const meshes = this.propsMeshes.filter((mesh) => mesh.name.includes(name));
     meshes.forEach((mesh, index) => {
+      console.log(mesh.visible);
       if (!mesh.visible) {
         mesh.visible = true;
         const size = mesh.finalScale;
@@ -141,6 +148,31 @@ export default class Props {
     });
     // Debug
     console.log("Reveal Props:", index, name);
+  }
+
+  hideProps(index) {
+    const name = markersArray[index].name;
+    const meshes = this.propsMeshes.filter((mesh) => mesh.name.includes(name));
+    meshes.forEach((mesh, index) => {
+      if (mesh.visible) {
+        // mesh.visible = true;
+        // const size = mesh.finalScale;
+        gsap.to(mesh.scale, {
+          duration: 0.5,
+          delay: index * 0.1, // Stagger the animation
+          x: 0,
+          y: 0,
+          z: 0,
+          ease: "power4.out",
+          onComplete: () => {
+            mesh.visible = false;
+          },
+        });
+      }
+    });
+
+    // Debug
+    console.log("Hide Props:", index, name);
   }
 
   setDebug() {

@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       show: false,
-      currentDay: 0,
+      currentDay: 1,
       totalDays: 12,
     };
   },

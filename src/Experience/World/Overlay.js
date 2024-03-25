@@ -39,7 +39,7 @@ export default class Overlay {
         new THREE.Vector2(0.5413955982456653, 0.6508027193055853), // Thulo Syabru
         // TODO: the rest
       ],
-      uCircleRadius: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      uCircleRadius: [0, 1.8, 0, 0, 0, 0, 0, 0, 0, 0],
       offsetPosY: 0.001,
       uNoiseIntensity: 140,
       // Overlay 1
@@ -151,7 +151,9 @@ export default class Overlay {
 
     this.inputEvents.on("pressUp", this.onPressUp.bind(this));
 
-    this.manager.on("revealOverlay", this.revealOverlay.bind(this));
+    this.manager.on("overlay-reveal", this.revealOverlay.bind(this));
+
+    this.manager.on("overlay-hide", this.hideOverlay.bind(this));
 
     this.manager.on("updateColors", (colors) => {
       // Overlay 1
@@ -235,6 +237,18 @@ export default class Overlay {
     console.log("revealOverlay: ", index, name);
     const animationProps = {};
     animationProps[index + 1] = this.options.circleSizes[index] || 1.8;
+
+    gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
+      duration: 0.5,
+      ...animationProps,
+      ease: "power4.inOut",
+    });
+  }
+
+  hideOverlay(index, name) {
+    console.log("hideOverlay: ", index, name);
+    const animationProps = {};
+    animationProps[index + 1] = 0;
 
     gsap.to(this.activeMaterial.uniforms.uCircleRadius.value, {
       duration: 0.5,

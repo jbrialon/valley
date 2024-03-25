@@ -157,7 +157,7 @@ export default class Markers {
     if (!markerMesh.visible) {
       // Reveal Overlay only if in current chapter
       if (marker) {
-        this.manager.trigger("revealOverlay", index, name);
+        this.manager.trigger("overlay-reveal", index, name);
       }
       // Reveal Marker
       markerMesh.visible = true;
@@ -182,7 +182,7 @@ export default class Markers {
           //   this.manager.zoomOutOfMarker(markerMesh);
           // });
           if (index === 0) {
-            this.manager.trigger("revealProps", index, name);
+            this.manager.trigger("props-reveal", index);
           }
         },
       });

@@ -226,7 +226,7 @@ export default class DashLine {
             console.log(
               `Revealed dashLine for missing Step ${missingIndex}(${name}) of ${currentChapter}`
             );
-            this.manager.trigger("revealProps", missingIndex, name);
+            this.manager.trigger("props-reveal", missingIndex);
             // we mark the steps as revealed to ensure it's not triggering twice because of the threshold
             revealed[missingIndex] = true;
           }
@@ -236,13 +236,13 @@ export default class DashLine {
         console.log(
           `Revealed dashLine for Step ${index}(${name}) of ${currentChapter}`
         );
-        this.manager.trigger("revealProps", index, name);
+        this.manager.trigger("props-reveal", index);
       },
     });
   }
 
   initEvents() {
-    this.manager.on("showDashLine", this.showDashLine.bind(this));
+    this.manager.on("dashline-show", this.showDashLine.bind(this));
   }
 
   resize() {

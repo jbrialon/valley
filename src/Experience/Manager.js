@@ -83,6 +83,8 @@ export default class Manager extends EventEmitter {
           this.trigger("loader-tutorial-one");
           this.setSearchState(true);
           this.setMouseMoveState(false);
+          this.trigger("props-hide", 0);
+          this.trigger("overlay-hide", 0);
           this.trigger("ui-tooltip-show", "tooltip.tutorial.two");
           this.trigger("loader-tutorial-two");
           this.trigger("timeline-show");
@@ -218,7 +220,7 @@ export default class Manager extends EventEmitter {
             const currentStep =
               findMaxConsecutive(this.revealedSteps[chapter]) - 1;
 
-            this.trigger("showDashLine", currentStep, name);
+            this.trigger("dashline-show", currentStep, name);
           } else {
             // All previous steps for are not revealed.
             this.trigger("ui-tooltip-auto-hide", "tooltip.message.missed");
