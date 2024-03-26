@@ -19,6 +19,7 @@ export default class Manager extends EventEmitter {
     this.inputEvents = this.experience.inputEvents;
 
     // App State
+    this.mode = "normal";
     this.isScrollEnabled = false;
     this.isSearchEnabled = false;
     this.maxScrollProgress = 0.034;
@@ -43,7 +44,17 @@ export default class Manager extends EventEmitter {
     this.setDebug();
   }
 
-  startGame() {
+  startExperience(mode) {
+    this.trigger("markers-intro-animation");
+    this.mode = mode;
+    if (mode === "normal") {
+      // this.manager.startNormalMode();
+    } else if (mode === "game") {
+      this.goToTutorialStep(1);
+    }
+  }
+
+  startNormalMode() {
     this.tutorialStep = 4;
     // this.inputEvents.requestPermission();
     this.trigger("ui-title-hide", () => {
@@ -135,6 +146,11 @@ export default class Manager extends EventEmitter {
 
   getTutorialStep() {
     return this.tutorialStep;
+  }
+
+  // State Management Mode
+  getMode() {
+    return this.mode;
   }
 
   // State Management Search/Browse

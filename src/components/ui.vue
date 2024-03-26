@@ -12,7 +12,7 @@
       <div class="ui--menu" v-if="showMenu">
         <p v-html="$t('title.paragraph')"></p>
         <div class="ui--menu-buttons">
-          <button class="btn" @click="start('normal')" disabled>
+          <button class="btn" @click="start('normal')">
             {{ $t("menu.start") }}
           </button>
           <button class="btn" @click="start('game')">
@@ -75,12 +75,7 @@ export default {
   methods: {
     start(mode) {
       this.showMenu = false;
-      this.manager.trigger("markers-intro-animation");
-      if (mode === "normal") {
-        this.manager.startGame();
-      } else if (mode === "game") {
-        this.manager.goToTutorialStep(1);
-      }
+      this.manager.startExperience(mode);
     },
     uiShowTooltip(key, callback) {
       this.tooltipText = this.$t(key);
