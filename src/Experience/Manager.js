@@ -48,7 +48,7 @@ export default class Manager extends EventEmitter {
     this.trigger("markers-intro-animation");
     this.mode = mode;
     if (mode === "normal") {
-      // this.manager.startNormalMode();
+      this.startNormalMode();
     } else if (mode === "game") {
       this.goToTutorialStep(1);
     }

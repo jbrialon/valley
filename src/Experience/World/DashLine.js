@@ -50,6 +50,7 @@ export default class DashLine {
     };
 
     // Setup
+    this.scrollProgress = 0;
     this.progress = {
       chapterOne: [0, 0.285, 0.361, 0.49, 0.852, 1],
       chapterTwo: [0.177, 1],
@@ -131,6 +132,26 @@ export default class DashLine {
     this.setDebug();
   }
 
+  initEvents() {
+    this.manager.on("dashline-show", this.showDashLine.bind(this));
+    // Scroll event
+    this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
+    // this.manager.on("dashline-update", this.updateDashLine.bind(this));
+  }
+
+  onMouseWheel() {
+    if (
+      this.manager.isScrollingEnabled() &&
+      !this.manager.getZoomState() &&
+      this.manager.getMode() === "normal"
+    ) {
+      let delta = 0.025;
+
+      const targetScrollProgress = (this.scrollProgress += delta);
+      console.log(targetScrollProgress);
+    }
+  }
+
   setMaterial() {
     const material = new MeshLineMaterial({
       color: this.options.chapterOne.color,
@@ -194,6 +215,19 @@ export default class DashLine {
     });
   }
 
+  updateDashLine(progress) {
+    const currentChapter = this.manager.getCurrentChapter();
+    const material = this.materials[currentChapter];
+    const test = progress + 0.25;
+    gsap.to(material.uniforms.visibility, {
+      value: test,
+      duration: 1,
+      ease: "power1.inOut",
+      onUpdate: () => {},
+      onComplete: () => {},
+    });
+  }
+
   showDashLine(index, name) {
     const currentChapter = this.manager.getCurrentChapter();
     const progressTarget = this.progress[currentChapter][index];
@@ -239,10 +273,6 @@ export default class DashLine {
         this.manager.trigger("props-reveal", index);
       },
     });
-  }
-
-  initEvents() {
-    this.manager.on("dashline-show", this.showDashLine.bind(this));
   }
 
   resize() {
