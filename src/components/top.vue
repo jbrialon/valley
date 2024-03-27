@@ -1,7 +1,7 @@
 <template>
   <Transition name="fade">
     <header class="top" v-if="show">
-      <h1>Valley</h1>
+      <h1>Chapter 1 - Langtang Valley</h1>
       <nav>
         <ul>
           <li>

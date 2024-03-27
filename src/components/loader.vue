@@ -2,29 +2,14 @@
   <div class="pointer-none">
     <Transition name="fade">
       <div class="loader" v-if="showLoader">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="80px"
-          height="60px"
-          viewBox="5 0 80 60"
-        >
-          <path
-            ref="path"
-            id="wave"
-            fill="none"
-            stroke-width="3"
-            stroke-linecap="round"
-          ></path>
-        </svg>
+        <p>{{ loadingText }}</p>
       </div>
     </Transition>
   </div>
 </template>
 
 <script>
-// https://codepen.io/winkerVSbecks/pen/EVJGVj
-const m = 0.512286623256592433;
-
+let interval;
 export default {
   name: "loader",
   props: {
@@ -36,105 +21,32 @@ export default {
   data() {
     return {
       showLoader: true,
+      index: 0,
     };
   },
   methods: {
-    buildWave(w, h) {
-      const a = h / 4;
-      const y = h / 2;
-
-      const pathData = [
-        "M",
-        w * 0,
-        y + a / 2,
-        "c",
-        a * m,
-        0,
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-        "s",
-        -(1 - a) * m,
-        a,
-        a,
-        a,
-        "s",
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-        "s",
-        -(1 - a) * m,
-        a,
-        a,
-        a,
-        "s",
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-
-        "s",
-        -(1 - a) * m,
-        a,
-        a,
-        a,
-        "s",
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-        "s",
-        -(1 - a) * m,
-        a,
-        a,
-        a,
-        "s",
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-        "s",
-        -(1 - a) * m,
-        a,
-        a,
-        a,
-        "s",
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-        "s",
-        -(1 - a) * m,
-        a,
-        a,
-        a,
-        "s",
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-        "s",
-        -(1 - a) * m,
-        a,
-        a,
-        a,
-        "s",
-        -(1 - a) * m,
-        -a,
-        a,
-        -a,
-      ].join(" ");
-
-      this.$refs.path.setAttribute("d", pathData);
+    randomNumber(min, max) {
+      return Math.random() * (max - min) + min;
+    },
+  },
+  computed: {
+    loadingText() {
+      return this.$t(`loader.${this.index}`);
     },
   },
   mounted() {
-    this.buildWave(90, 60);
     this.manager.on("loaded", () => {
       this.showLoader = false;
     });
+
+    this.index = Math.round(this.randomNumber(0, 19));
+    interval = setInterval(() => {
+      this.index = Math.round(this.randomNumber(0, 19));
+    }, 200);
+  },
+  unmounted() {
+    console.log("unmount");
+    clearInterval(interval);
   },
 };
 </script>
@@ -146,33 +58,18 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   align-items: center;
-  border: 3px solid var(--main-text-color);
   display: flex;
   height: 110px;
   margin: 0 auto;
-  width: 110px;
   z-index: $z-ui;
 
-  #wave {
-    stroke: var(--main-text-color);
-    stroke-dasharray: 0 16 101 16;
-    animation: moveTheWave 2400ms linear infinite;
-  }
-
-  svg {
-    margin: 0 auto;
-    overflow: hidden;
-  }
-
-  @keyframes moveTheWave {
-    0% {
-      stroke-dashoffset: 0;
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
-      stroke-dashoffset: -133;
-      transform: translate3d(-90px, 0, 0);
-    }
+  p {
+    background: var(--secondary-bg-color);
+    color: var(--secondary-text-color);
+    border-radius: 20px;
+    box-shadow: 4px 4px 0px 1px var(--secondary-text-color);
+    border: 2px solid var(--secondary-text-color);
+    padding: 20px;
   }
 }
 </style>

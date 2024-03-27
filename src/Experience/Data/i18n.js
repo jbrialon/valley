@@ -3,6 +3,28 @@ import { isTouchDevice } from "../Utils/Utils";
 const isTouch = isTouchDevice();
 export default {
   en: {
+    loader: {
+      0: "Initiating launch sequence...",
+      1: "Loading the digital stuff...",
+      2: "Calibrating the flux...",
+      3: "loading aesthetics...",
+      4: "scaling bananas...",
+      5: "procedurally generating worlds...",
+      6: "brewing coffee for the developer...",
+      7: "waking up the pixels...",
+      8: "counting stars in the database...",
+      9: "untangling the Internet cables...",
+      10: "polishing screen pixels...",
+      11: "watering the cloud plants...",
+      12: "tuning in to the right frequencies",
+      13: "blending colors for the perfect palette...",
+      14: "whispering secrets to the firewall...",
+      15: "herding cats in the backend...",
+      16: "convincing the elements to cooperate...",
+      17: "deploying invisible bugs...",
+      18: "hiring cats for tech support...",
+      19: "summoning internet spirits...",
+    },
     menu: {
       start: "Normal mode",
       game: "Game mode",
