@@ -5,10 +5,10 @@ export default [
     name: "syabru_besi",
     objects: [
       {
-        type: "tree",
+        type: "building",
         position: new THREE.Vector3(-4.58, 1.44, -9.03),
         rotation: new THREE.Vector3(0, 0, 0),
-        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+        scale: new THREE.Vector3(0.1, 0.1, 0.1),
       },
       {
         type: "tree",

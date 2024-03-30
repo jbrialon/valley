@@ -56,7 +56,6 @@ export default class Props {
   }
 
   setModels() {
-    this.treeMeshes = [];
     this.tree = this.resources.items.treeModel.scene;
     this.tree.traverse((child) => {
       if (child instanceof THREE.Mesh) {
@@ -77,9 +76,22 @@ export default class Props {
       }
     });
 
+    this.building = this.resources.items.buildingModel.scene;
+    this.building.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
+      }
+    });
+
     const models = {
       tree: this.tree,
       rock: this.rock,
+      building: this.building,
     };
 
     props.forEach((props) => {

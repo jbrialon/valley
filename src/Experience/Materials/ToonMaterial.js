@@ -10,11 +10,6 @@ const toonMaterial = (options) => {
       uLightDirection: new Uniform(
         options.uLightDirection || new Vector3(-2, 3.5, 5)
       ),
-      uEdge: new Uniform(options.uEdge),
-      uLineWidth: new Uniform(options.uLineWidth || 0.004),
-      uEdgeColor: new Uniform(
-        options.uEdgeColor || new Vector4(0.0, 0.0, 0.0, 0.0)
-      ),
       uColor: new Uniform(options.uColor),
       uTexture: new Uniform(options.uTexture),
     },
