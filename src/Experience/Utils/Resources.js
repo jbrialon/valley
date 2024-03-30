@@ -51,6 +51,8 @@ export default class Resources extends EventEmitter {
           (progress) => this.onProgress(progress),
           (error) => this.onError(error)
         );
+      } else if (source.type === "image") {
+        this.loadImage(source);
       }
     }
   }
@@ -62,6 +64,21 @@ export default class Resources extends EventEmitter {
     if (this.loaded === this.toLoad) {
       this.trigger("ready");
     }
+  }
+
+  loadImage(source) {
+    let image = new Image();
+
+    image.onload = () => {
+      this.sourceLoaded(source, image);
+    };
+
+    image.onerror = (error) => {
+      console.log(error);
+      this.onError(error);
+    };
+
+    image.src = source.path;
   }
 
   onProgress(progress) {
