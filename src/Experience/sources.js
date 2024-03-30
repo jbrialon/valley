@@ -15,9 +15,19 @@ export default [
     path: "/models/rock/rock.glb",
   },
   {
-    name: "buildingModel",
+    name: "buildingModelA",
     type: "gltfModel",
-    path: "/models/building/building.glb",
+    path: "/models/building/building-a.glb",
+  },
+  {
+    name: "buildingModelB",
+    type: "gltfModel",
+    path: "/models/building/building-b.glb",
+  },
+  {
+    name: "buildingModelC",
+    type: "gltfModel",
+    path: "/models/building/building-c.glb",
   },
   {
     name: "threeToneToonTexture",

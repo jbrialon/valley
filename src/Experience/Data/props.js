@@ -5,28 +5,29 @@ export default [
     name: "syabru_besi",
     objects: [
       {
-        type: "building",
-        position: new THREE.Vector3(-4.58, 1.44, -9.03),
-        rotation: new THREE.Vector3(0, 0, 0),
-        scale: new THREE.Vector3(0.1, 0.1, 0.1),
-      },
-      {
         type: "tree",
         position: new THREE.Vector3(-4.26, 1.53, -8.82),
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
+
       {
-        type: "rock",
-        position: new THREE.Vector3(-4.36, 1.45, -9.3),
-        rotation: new THREE.Vector3(0, 0, 0),
-        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+        type: "building-a",
+        position: new THREE.Vector3(-4.06, 1.44, -9.5),
+        rotation: new THREE.Vector3(0.0, -0.29, 0.0),
+        scale: new THREE.Vector3(0.16, 0.16, 0.16),
       },
       {
-        type: "tree",
-        position: new THREE.Vector3(-4.13, 1.49, -9.23),
-        rotation: new THREE.Vector3(0, 0, 0),
-        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+        type: "building-b",
+        position: new THREE.Vector3(-4.44, 1.5, -9.43),
+        rotation: new THREE.Vector3(0.0, -0.23, 0.0),
+        scale: new THREE.Vector3(0.14, 0.14, 0.14),
+      },
+      {
+        type: "building-c",
+        position: new THREE.Vector3(-4.61, 1.44, -8.82),
+        rotation: new THREE.Vector3(-3.14, 0.69, -3.14),
+        scale: new THREE.Vector3(0.15, 0.15, 0.15),
       },
     ],
   },

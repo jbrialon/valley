@@ -59,25 +59,53 @@ export default class Props {
     this.tree = this.resources.items.treeModel.scene;
     this.tree.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        if (child.material.name === "foliage") {
-          child.material = this.foliageMaterial;
-        } else if (child.material.name === "wood") {
-          child.material = this.woodMaterial;
-        }
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
       }
     });
 
     this.rock = this.resources.items.rockModel.scene;
     this.rock.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        if (child.name === "rockB") {
-          child.material = this.rockMaterial;
-        }
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
       }
     });
 
-    this.building = this.resources.items.buildingModel.scene;
-    this.building.traverse((child) => {
+    this.buildingA = this.resources.items.buildingModelA.scene;
+    this.buildingA.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
+      }
+    });
+
+    this.buildingB = this.resources.items.buildingModelB.scene;
+    this.buildingB.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
+      }
+    });
+
+    this.buildingC = this.resources.items.buildingModelC.scene;
+    this.buildingC.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const material = toonMaterial({
           uColor: child.material.color,
@@ -91,7 +119,9 @@ export default class Props {
     const models = {
       tree: this.tree,
       rock: this.rock,
-      building: this.building,
+      "building-a": this.buildingA,
+      "building-b": this.buildingB,
+      "building-c": this.buildingC,
     };
 
     props.forEach((props) => {
@@ -108,6 +138,12 @@ export default class Props {
           mesh.scale.set(object.scale.x, object.scale.y, object.scale.z);
         }
         mesh.finalScale = object.scale;
+        mesh.rotation.set(
+          object.rotation.x,
+          object.rotation.y,
+          object.rotation.z
+        );
+
         mesh.position.set(
           object.position.x,
           object.position.y,
@@ -226,6 +262,24 @@ export default class Props {
             )},${transformedPoint.position.y.toFixed(
               2
             )},${transformedPoint.position.z.toFixed(2)})`
+          );
+          console.log(
+            `New Props Scale for ${name}:`,
+            index,
+            `new THREE.Vector3(${transformedPoint.scale.x.toFixed(
+              2
+            )},${transformedPoint.scale.y.toFixed(
+              2
+            )},${transformedPoint.scale.z.toFixed(2)})`
+          );
+          console.log(
+            `New Props Rotation for ${name}:`,
+            index,
+            `new THREE.Vector3(${transformedPoint.rotation.x.toFixed(
+              2
+            )},${transformedPoint.rotation.y.toFixed(
+              2
+            )},${transformedPoint.rotation.z.toFixed(2)})`
           );
         }
       });
