@@ -10,7 +10,6 @@ export default [
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
-
       {
         type: "building-a",
         position: new THREE.Vector3(-4.06, 1.44, -9.5),
@@ -18,7 +17,7 @@ export default [
         scale: new THREE.Vector3(0.16, 0.16, 0.16),
       },
       {
-        type: "building-b",
+        type: "building-b-flags",
         position: new THREE.Vector3(-4.44, 1.5, -9.43),
         rotation: new THREE.Vector3(0.0, -0.23, 0.0),
         scale: new THREE.Vector3(0.14, 0.14, 0.14),
@@ -28,6 +27,12 @@ export default [
         position: new THREE.Vector3(-4.61, 1.44, -8.82),
         rotation: new THREE.Vector3(-3.14, 0.69, -3.14),
         scale: new THREE.Vector3(0.15, 0.15, 0.15),
+      },
+      {
+        type: "bush",
+        position: new THREE.Vector3(-4.53, 1.53, -9.48),
+        rotation: new THREE.Vector3(0.0, -0.83, 0.0),
+        scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
     ],
   },

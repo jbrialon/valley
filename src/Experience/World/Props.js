@@ -35,29 +35,23 @@ export default class Props {
   setMaterial() {
     this.toonTexture = this.resources.items.toonTexture;
     this.toonTexture.magFilter = THREE.NearestFilter;
-
-    this.foliageMaterial = toonMaterial({
-      uColor: new THREE.Color(0x1e854d),
-      uTexture: this.toonTexture,
-      uLightDirection: this.options.uLightDirection,
-    });
-
-    this.woodMaterial = toonMaterial({
-      uColor: new THREE.Color(0xa67b56),
-      uTexture: this.toonTexture,
-      uLightDirection: this.options.uLightDirection,
-    });
-
-    this.rockMaterial = toonMaterial({
-      uColor: new THREE.Color(0xead3a2),
-      uTexture: this.toonTexture,
-      uLightDirection: this.options.uLightDirection,
-    });
   }
 
   setModels() {
     this.tree = this.resources.items.treeModel.scene;
     this.tree.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
+      }
+    });
+
+    this.bush = this.resources.items.bushModel.scene;
+    this.bush.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const material = toonMaterial({
           uColor: child.material.color,
@@ -104,6 +98,18 @@ export default class Props {
       }
     });
 
+    this.buildingBFlags = this.resources.items.buildingModelBFlags.scene;
+    this.buildingBFlags.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
+      }
+    });
+
     this.buildingC = this.resources.items.buildingModelC.scene;
     this.buildingC.traverse((child) => {
       if (child instanceof THREE.Mesh) {
@@ -118,9 +124,11 @@ export default class Props {
 
     const models = {
       tree: this.tree,
+      bush: this.bush,
       rock: this.rock,
       "building-a": this.buildingA,
       "building-b": this.buildingB,
+      "building-b-flags": this.buildingBFlags,
       "building-c": this.buildingC,
     };
 

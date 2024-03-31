@@ -10,6 +10,11 @@ export default [
     path: "/models/tree/tree.glb",
   },
   {
+    name: "bushModel",
+    type: "gltfModel",
+    path: "/models/tree/bush.glb",
+  },
+  {
     name: "rockModel",
     type: "gltfModel",
     path: "/models/rock/rock.glb",
@@ -23,6 +28,11 @@ export default [
     name: "buildingModelB",
     type: "gltfModel",
     path: "/models/building/building-b.glb",
+  },
+  {
+    name: "buildingModelBFlags",
+    type: "gltfModel",
+    path: "/models/building/building-b-flags.glb",
   },
   {
     name: "buildingModelC",
