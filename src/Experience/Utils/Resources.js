@@ -40,7 +40,7 @@ export default class Resources extends EventEmitter {
             this.sourceLoaded(source, file);
           },
           (progress) => this.onProgress(progress),
-          (error) => this.onError(error)
+          (error) => this.onError(error, source)
         );
       } else if (source.type === "texture") {
         this.loaders.textureLoader.load(
@@ -49,7 +49,7 @@ export default class Resources extends EventEmitter {
             this.sourceLoaded(source, file);
           },
           (progress) => this.onProgress(progress),
-          (error) => this.onError(error)
+          (error) => this.onError(error, source)
         );
       } else if (source.type === "image") {
         this.loadImage(source);
@@ -73,9 +73,8 @@ export default class Resources extends EventEmitter {
       this.sourceLoaded(source, image);
     };
 
-    image.onerror = (error) => {
-      console.log(error);
-      this.onError(error);
+    image.onerror = (error, source) => {
+      this.onError(error, source);
     };
 
     image.src = source.path;
@@ -85,7 +84,7 @@ export default class Resources extends EventEmitter {
     // console.log(progress);
   }
 
-  onError(error) {
-    console.log(error);
+  onError(error, source) {
+    console.log(error, source);
   }
 }
