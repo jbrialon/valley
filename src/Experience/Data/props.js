@@ -40,11 +40,18 @@ export default [
     name: "pairo",
     objects: [
       {
+        type: "building-d",
+        position: new THREE.Vector3(0.18, 1.95, -7.45),
+        rotation: new THREE.Vector3(3.14, -0.78, 3.14),
+        scale: new THREE.Vector3(0.14, 0.14, 0.14),
+      },
+      {
         type: "tree",
-        position: new THREE.Vector3(0.18, 1.92, -7.45),
+        position: new THREE.Vector3(-0.1, 1.75, -7.69),
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
+
       {
         type: "rock",
         position: new THREE.Vector3(-0.1, 1.77, -7.5),
@@ -53,7 +60,13 @@ export default [
       },
       {
         type: "tree",
-        position: new THREE.Vector3(-0.1, 1.75, -7.69),
+        position: new THREE.Vector3(0.37, 1.91, -7.5),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(0.15, 0.15, 0.15),
+      },
+      {
+        type: "rock",
+        position: new THREE.Vector3(-0.03, 1.83, -7.43),
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
@@ -149,12 +162,11 @@ export default [
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
-      ,
       {
         type: "tree",
         position: new THREE.Vector3(20.34, 3.88, -15.58),
         rotation: new THREE.Vector3(0, 0, 0),
-        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+        scale: new THREE.Vector3(0.18, 0.18, 0.18),
       },
     ],
   },

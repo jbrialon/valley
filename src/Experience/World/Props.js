@@ -122,6 +122,18 @@ export default class Props {
       }
     });
 
+    this.buildingD = this.resources.items.buildingModelD.scene;
+    this.buildingD.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = toonMaterial({
+          uColor: child.material.color,
+          uTexture: this.toonTexture,
+          uLightDirection: this.options.uLightDirection,
+        });
+        child.material = material;
+      }
+    });
+
     const models = {
       tree: this.tree,
       bush: this.bush,
@@ -130,6 +142,7 @@ export default class Props {
       "building-b": this.buildingB,
       "building-b-flags": this.buildingBFlags,
       "building-c": this.buildingC,
+      "building-d": this.buildingD,
     };
 
     props.forEach((props) => {

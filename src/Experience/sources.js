@@ -40,6 +40,11 @@ export default [
     path: "/models/building/building-c.glb",
   },
   {
+    name: "buildingModelD",
+    type: "gltfModel",
+    path: "/models/building/building-d.glb",
+  },
+  {
     name: "threeToneToonTexture",
     type: "texture",
     path: "/textures/toon/threeTone.jpg",
