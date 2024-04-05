@@ -65,7 +65,6 @@ export default class Helpers {
 
   setDebug() {
     if (this.debug.active) {
-      // this.debugFolder = this.debug.ui.addFolder("Helpers");
       this.debugFolder = this.debug.debugEditorFolder;
       this.debugFolder.close();
 

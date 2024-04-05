@@ -186,6 +186,7 @@ export default class Props {
         if (this.debug.active) {
           this.manager.addClickEventToMesh(mesh, () => {
             this.helpers.setActiveMesh(mesh);
+            this.addToDebug(mesh);
           });
         }
       });
@@ -264,8 +265,6 @@ export default class Props {
         const name = mesh.name;
 
         if (!event.value && type === "props") {
-          console.log(mesh);
-          this.addToDebug(mesh);
           console.log(
             `New Props Position for ${name}:`,
             index,
