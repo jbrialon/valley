@@ -24,6 +24,7 @@ export default class Props {
 
     // Setup
     this.propsMeshes = [];
+    this.propsColors = {};
     this.setMaterial();
     this.setModels();
     this.initEvents();
@@ -201,7 +202,6 @@ export default class Props {
     const name = markersArray[index].name;
     const meshes = this.propsMeshes.filter((mesh) => mesh.name.includes(name));
     meshes.forEach((mesh, index) => {
-      console.log(mesh.visible);
       if (!mesh.visible) {
         mesh.visible = true;
         const size = mesh.finalScale;
@@ -255,6 +255,7 @@ export default class Props {
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Props");
+      this.debugFolder.close();
 
       this.transformControls.addEventListener("dragging-changed", (event) => {
         const mesh = this.transformControls.object;
@@ -292,18 +293,23 @@ export default class Props {
   }
 
   addToDebug(mesh) {
-    if (this.debugFolder) {
-      this.debugFolder.destroy();
+    if (this.debugSubFolder) {
+      this.debugSubFolder.destroy();
+      this.propsColors = {};
     }
-    this.debugFolder = this.debug.ui.addFolder(mesh.name);
+    this.debugSubFolder = this.debugFolder.addFolder("Active Prop");
 
     mesh.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        this.debugFolder
-          .addColor(child.material.uniforms.uColor, "value")
-          .name("Color")
-          .onChange((value) => {
-            child.material.uniforms.uColor.value = value;
+        const color = child.material.uniforms.uColor.value.clone();
+        this.propsColors[child.name] = color.convertLinearToSRGB();
+        this.debugSubFolder
+          .addColor(this.propsColors, child.name)
+          .name(child.name)
+          .onChange(() => {
+            child.material.uniforms.uColor.value.set(
+              this.propsColors[child.name].convertSRGBToLinear()
+            );
           });
       }
     });
