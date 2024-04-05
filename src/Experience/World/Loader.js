@@ -16,8 +16,8 @@ export default class Loader {
 
     // Options
     this.options = {
-      uColor: "#b9a998",
-      uBorderColor: "#5a5444",
+      uColor: 0xb9a998,
+      uBorderColor: 0x5a5444,
       uCirclePos: new THREE.Vector2(0.804, 0.765),
     };
 

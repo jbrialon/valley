@@ -20,8 +20,8 @@ export default class Map {
     // Options
     this.options = {
       // Wireframe Material
-      uFill: new THREE.Color(0x697f73),
-      uStroke: new THREE.Color(0xf4e2d6),
+      uFill: 0x697f73,
+      uStroke: 0xf4e2d6,
       uInsideAltColor: false,
       uThickness: 0.02,
       uSecondThickness: 0.05,
@@ -37,10 +37,10 @@ export default class Map {
       uAlpha: 1,
       uStrength: 0.5,
       uContourFrequency: 1,
-      uLineColor: "#f4e2d6", // #74675e
-      uColorOne: "#697f73", // #6a5e52
-      uColorTwo: "#eda17f",
-      uColorThree: "#e45221",
+      uLineColor: 0xf4e2d6, // #74675e
+      uColorOne: 0x697f73, // #6a5e52
+      uColorTwo: 0xeda17f,
+      uColorThree: 0xe45221,
       uColorNumber: 1,
       uContourFrequency: 2.7,
     };
@@ -85,16 +85,16 @@ export default class Map {
   initEvents() {
     this.manager.on("updateColors", (colors) => {
       // Wireframe
-      this.options.uFill = new THREE.Color(colors[0]);
+      this.options.uFill = colors[0];
       this.wireframeMaterial.uniforms.uFill.value.set(this.options.uFill);
 
-      this.options.uStroke = new THREE.Color(colors[1]);
+      this.options.uStroke = colors[1];
       this.wireframeMaterial.uniforms.uStroke.value.set(this.options.uStroke);
 
       // Terrain
-      this.options.uColorOne = new THREE.Color(colors[0]);
+      this.options.uColorOne = colors[0];
       this.terrainMaterial.uniforms.uColorOne.value.set(this.options.uColorOne);
-      this.options.uLineColor = new THREE.Color(colors[1]);
+      this.options.uLineColor = colors[1];
 
       this.terrainMaterial.uniforms.uLineColor.value.set(
         this.options.uLineColor
@@ -261,13 +261,15 @@ export default class Map {
         .addColor(this.options, "uFill")
         .name("Fill color")
         .onChange(() => {
-          this.wireframeMaterial.uniforms.uFill.value = this.options.uFill;
+          this.wireframeMaterial.uniforms.uFill.value.set(this.options.uFill);
         });
       this.debugVisualFolder
         .addColor(this.options, "uStroke")
         .name("Stroke color")
         .onChange(() => {
-          this.wireframeMaterial.uniforms.uStroke.value = this.options.uStroke;
+          this.wireframeMaterial.uniforms.uStroke.value.set(
+            this.options.uStroke
+          );
         });
       this.debugVisualFolder
         .add(this.options, "uThickness")

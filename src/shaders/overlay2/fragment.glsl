@@ -108,4 +108,7 @@ void main() {
   }
 
   gl_FragColor = getStyledWireframe(vBarycentric);
+
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
 }

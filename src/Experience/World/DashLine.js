@@ -24,7 +24,7 @@ export default class DashLine {
     this.options = {
       // Line
       chapterOne: {
-        color: new THREE.Color(0xffffff),
+        color: 0xffffff,
         lineWidth: 18,
         dashArray: 0.01,
         dashRatio: 0.5,
@@ -32,7 +32,7 @@ export default class DashLine {
         visibility: 0,
       },
       chapterTwo: {
-        color: new THREE.Color(0xffffff),
+        color: 0xffffff,
         lineWidth: 18,
         dashArray: 0.01,
         dashRatio: 0.5,
@@ -40,7 +40,7 @@ export default class DashLine {
         visibility: 0,
       },
       chapterTree: {
-        color: new THREE.Color(0xffffff),
+        color: 0xffffff,
         lineWidth: 18,
         dashArray: 0.01,
         dashRatio: 0.5,
@@ -300,9 +300,7 @@ export default class DashLine {
           .addColor(this.options[chapter], "color")
           .name("Color")
           .onChange(() => {
-            this.materials[chapter].color = new THREE.Color(
-              this.options[chapter].color
-            );
+            this.materials[chapter].color.set(this.options[chapter].color);
           });
         debugFolder
           .add(this.options[chapter], "lineWidth")

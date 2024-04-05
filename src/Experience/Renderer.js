@@ -38,14 +38,8 @@ export default class Renderer {
       alpha: false,
     });
 
-    // TODO: try to understand that
-    THREE.ColorManagement.enabled = false;
-    // https://threejs.org/docs/#manual/en/introduction/Color-management
-    // discourse.threejs.org/t/updates-to-color-management-in-three-js-r152/50791
-    // this.instance.outputColorSpace = THREE.SRGBColorSpace;
-    // this.instance.outputColorSpace = THREE.LinearSRGBColorSpace;
-    // this.instance.shadowMap.enabled = true;
-    // this.instance.shadowMap.type = THREE.PCFSoftShadowMap;
+    THREE.ColorManagement.enabled = true;
+    this.instance.outputColorSpace = THREE.SRGBColorSpace;
     this.instance.setClearColor(this.options.backgroundColor);
 
     this.instance.setSize(this.sizes.width, this.sizes.height);

@@ -1,4 +1,4 @@
-import { ShaderMaterial, Uniform } from "three";
+import { ShaderMaterial, Uniform, Color } from "three";
 
 import vertexShader from "../../shaders/wireframe/vertex.glsl";
 import fragmentShader from "../../shaders/wireframe/fragment.glsl";
@@ -11,8 +11,8 @@ const terrainMaterial = (options) => {
     uniforms: {
       uTime: { value: 0 },
       // Visual
-      uFill: new Uniform(options.uFill),
-      uStroke: new Uniform(options.uStroke),
+      uFill: new Uniform(new Color(options.uFill)),
+      uStroke: new Uniform(new Color(options.uStroke)),
       uThickness: new Uniform(options.uThickness),
       uSqueeze: new Uniform(options.uSqueeze),
       uSqueezeMin: new Uniform(options.uSqueezeMin),

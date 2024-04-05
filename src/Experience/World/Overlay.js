@@ -44,17 +44,17 @@ export default class Overlay {
       uNoiseIntensity: 140,
       // Overlay 1
       uStrength: 0.5,
-      uLineColor: "#53524c", // #74675e
-      uColorOne: "#f4814a", // #6a5e52
-      uColorTwo: "#eda17f",
-      uColorThree: "#e45221",
+      uLineColor: 0x53524c, // #74675e
+      uColorOne: 0xf4814a, // #6a5e52
+      uColorTwo: 0xeda17f,
+      uColorThree: 0xe45221,
       uColorNumber: 2,
       uContourWidth: 1,
       uContourFrequency: 2.7,
 
       // Overlay 2
-      uFill: new THREE.Color(0xde9e7b),
-      uStroke: new THREE.Color(0xf4e2d6),
+      uFill: 0xde9e7b,
+      uStroke: 0xf4e2d6,
       uThickness: 0.04,
       uDashEnabled: true,
       uDashRepeats: 2.0,
@@ -157,24 +157,24 @@ export default class Overlay {
 
     this.manager.on("updateColors", (colors) => {
       // Overlay 1
-      this.options.uColorOne = new THREE.Color(colors[2]);
+      this.options.uColorOne = colors[2];
       this.overlayMaterial.uniforms.uColorOne.value.set(this.options.uColorOne);
-      this.options.uColorTwo = new THREE.Color(colors[3]);
+      this.options.uColorTwo = colors[3];
       this.overlayMaterial.uniforms.uColorTwo.value.set(this.options.uColorTwo);
-      this.options.uColorThree = new THREE.Color(colors[4]);
+      this.options.uColorThree = colors[4];
       this.overlayMaterial.uniforms.uColorThree.value.set(
         this.options.uColorThree
       );
 
-      this.options.uLineColor = new THREE.Color(colors[1]);
+      this.options.uLineColor = new colors[1]();
       this.overlayMaterial.uniforms.uLineColor.value.set(
         this.options.uLineColor
       );
 
       // Overlay 2
-      this.options.uFill = new THREE.Color(colors[4]);
+      this.options.uFill = colors[4];
       this.overlay2Material.uniforms.uFill.value.set(this.options.uFill);
-      this.options.uStroke = new THREE.Color(colors[1]);
+      this.options.uStroke = colors[1];
       this.overlay2Material.uniforms.uStroke.value.set(this.options.uStroke);
 
       this.debugVisualFolder.controllers.forEach((controller) => {
@@ -413,13 +413,15 @@ export default class Overlay {
         .addColor(this.options, "uFill")
         .name("Fill Color")
         .onChange(() => {
-          this.overlay2Material.uniforms.uFill.value = this.options.uFill;
+          this.overlay2Material.uniforms.uFill.value.set(this.options.uFill);
         });
       this.debugVisualFolder
         .addColor(this.options, "uStroke")
         .name("Stroke Color")
         .onChange(() => {
-          this.overlay2Material.uniforms.uStroke.value = this.options.uStroke;
+          this.overlay2Material.uniforms.uStroke.value.set(
+            this.options.uStroke
+          );
         });
       this.debugVisualFolder
         .add(this.options, "uThickness")

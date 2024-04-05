@@ -41,8 +41,9 @@ export default class Props {
     this.tree = this.resources.items.treeModel.scene;
     this.tree.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -53,8 +54,9 @@ export default class Props {
     this.bush = this.resources.items.bushModel.scene;
     this.bush.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -65,8 +67,9 @@ export default class Props {
     this.rock = this.resources.items.rockModel.scene;
     this.rock.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -77,8 +80,9 @@ export default class Props {
     this.buildingA = this.resources.items.buildingModelA.scene;
     this.buildingA.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -89,8 +93,9 @@ export default class Props {
     this.buildingB = this.resources.items.buildingModelB.scene;
     this.buildingB.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -101,8 +106,9 @@ export default class Props {
     this.buildingBFlags = this.resources.items.buildingModelBFlags.scene;
     this.buildingBFlags.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -113,8 +119,9 @@ export default class Props {
     this.buildingC = this.resources.items.buildingModelC.scene;
     this.buildingC.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -125,8 +132,9 @@ export default class Props {
     this.buildingD = this.resources.items.buildingModelD.scene;
     this.buildingD.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
         const material = toonMaterial({
-          uColor: child.material.color,
+          uColor: color,
           uTexture: this.toonTexture,
           uLightDirection: this.options.uLightDirection,
         });
@@ -247,64 +255,58 @@ export default class Props {
   setDebug() {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Props");
-      this.debugFolder.close();
-
-      this.debugFolder.add(this.options.uLightDirection, "x").onChange(() => {
-        this.woodMaterial.uniforms.uLightDirection.x =
-          this.options.uLightDirection.x;
-        this.foliageMaterial.uniforms.uLightDirection.x =
-          this.options.uLightDirection.x;
-      });
-      this.debugFolder.add(this.options.uLightDirection, "y").onChange(() => {
-        this.woodMaterial.uniforms.uLightDirection.y =
-          this.options.uLightDirection.y;
-        this.foliageMaterial.uniforms.uLightDirection.y =
-          this.options.uLightDirection.y;
-      });
-      this.debugFolder.add(this.options.uLightDirection, "z").onChange(() => {
-        this.woodMaterial.uniforms.uLightDirection.z =
-          this.options.uLightDirection.z;
-        this.foliageMaterial.uniforms.uLightDirection.z =
-          this.options.uLightDirection.z;
-      });
 
       this.transformControls.addEventListener("dragging-changed", (event) => {
-        const transformedPoint = this.transformControls.object;
-        const index = transformedPoint.index;
-        const type = transformedPoint.type;
-        const name = transformedPoint.name;
+        const mesh = this.transformControls.object;
+        const index = mesh.index;
+        const type = mesh.type;
+        const name = mesh.name;
 
         if (!event.value && type === "props") {
+          console.log(mesh);
+          this.addToDebug(mesh);
           console.log(
             `New Props Position for ${name}:`,
             index,
-            `new THREE.Vector3(${transformedPoint.position.x.toFixed(
+            `new THREE.Vector3(${mesh.position.x.toFixed(
               2
-            )},${transformedPoint.position.y.toFixed(
-              2
-            )},${transformedPoint.position.z.toFixed(2)})`
+            )},${mesh.position.y.toFixed(2)},${mesh.position.z.toFixed(2)})`
           );
           console.log(
             `New Props Scale for ${name}:`,
             index,
-            `new THREE.Vector3(${transformedPoint.scale.x.toFixed(
+            `new THREE.Vector3(${mesh.scale.x.toFixed(
               2
-            )},${transformedPoint.scale.y.toFixed(
-              2
-            )},${transformedPoint.scale.z.toFixed(2)})`
+            )},${mesh.scale.y.toFixed(2)},${mesh.scale.z.toFixed(2)})`
           );
           console.log(
             `New Props Rotation for ${name}:`,
             index,
-            `new THREE.Vector3(${transformedPoint.rotation.x.toFixed(
+            `new THREE.Vector3(${mesh.rotation.x.toFixed(
               2
-            )},${transformedPoint.rotation.y.toFixed(
-              2
-            )},${transformedPoint.rotation.z.toFixed(2)})`
+            )},${mesh.rotation.y.toFixed(2)},${mesh.rotation.z.toFixed(2)})`
           );
         }
       });
     }
+  }
+
+  addToDebug(mesh) {
+    if (this.debugFolder) {
+      this.debugFolder.destroy();
+    }
+    this.debugFolder = this.debug.ui.addFolder(mesh.name);
+
+    mesh.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        this.debugFolder
+          .addColor(child.material.uniforms.uColor, "value")
+          .name("Color")
+          .onChange((value) => {
+            child.material.uniforms.uColor.value = value;
+          });
+      }
+    });
   }
 
   update() {}

@@ -13,4 +13,7 @@ void main() {
 
     // If not discarded, set the fragment color to white
   gl_FragColor = vec4(1.0, 1.0, 1.0, 1);
+
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
 }

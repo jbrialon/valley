@@ -22,9 +22,9 @@ export default class Markers {
     this.options = {
       range: 45,
       markerCloseTimer: 800,
-      defaultColor: new THREE.Color(0x992625),
-      secondaryColor: new THREE.Color(0x2c4d38),
-      mountainColor: new THREE.Color(0x5a5444),
+      defaultColor: 0xcb6c6a,
+      secondaryColor: 0x739581,
+      mountainColor: 0xa09b8d,
       scale: {
         main: new THREE.Vector3(0.075, 0.1, 0.075),
         secondary: new THREE.Vector3(0.05, 0.05, 0.05),
@@ -237,12 +237,12 @@ export default class Markers {
       this.markers
         .filter((marker) => marker.type === "main")
         .forEach((marker) => {
-          marker.material.color = new THREE.Color(this.options.defaultColor);
+          marker.material.color.set(this.options.defaultColor);
         });
       this.markers
         .filter((marker) => marker.type === "secondary" || "mountain")
         .forEach((marker) => {
-          marker.material.color = new THREE.Color(this.options.secondaryColor);
+          marker.material.color.set(options.secondaryColor);
         });
       this.debugFolder.controllers.forEach((controller) => {
         controller.updateDisplay();
@@ -274,9 +274,7 @@ export default class Markers {
           this.markers
             .filter((marker) => marker.type === "main")
             .forEach((marker) => {
-              marker.material.color = new THREE.Color(
-                this.options.defaultColor
-              );
+              marker.material.color.set(this.options.defaultColor);
             });
         });
       this.debugFolder
@@ -286,9 +284,7 @@ export default class Markers {
           this.markers
             .filter((marker) => marker.type === "secondary")
             .forEach((marker) => {
-              marker.material.color = new THREE.Color(
-                this.options.secondaryColor
-              );
+              marker.material.color.set(this.options.secondaryColor);
             });
         });
       this.debugFolder
@@ -298,9 +294,7 @@ export default class Markers {
           this.markers
             .filter((marker) => marker.type === "mountain")
             .forEach((marker) => {
-              marker.material.color = new THREE.Color(
-                this.options.mountainColor
-              );
+              marker.material.color.set(this.options.mountainColor);
             });
         });
     }
