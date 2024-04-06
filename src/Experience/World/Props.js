@@ -301,6 +301,8 @@ export default class Props {
     mesh.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.uniforms.uColor.value.clone();
+        const lightDirection =
+          child.material.uniforms.uLightDirection.value.clone();
         this.propsColors[child.name] = color.convertLinearToSRGB();
         this.debugSubFolder
           .addColor(this.propsColors, child.name)
@@ -310,6 +312,15 @@ export default class Props {
               this.propsColors[child.name].convertSRGBToLinear()
             );
           });
+        this.debugSubFolder.add(lightDirection, "x").onChange(() => {
+          child.material.uniforms.uLightDirection.value.x = lightDirection.x;
+        });
+        this.debugSubFolder.add(lightDirection, "y").onChange(() => {
+          child.material.uniforms.uLightDirection.value.x = lightDirection.y;
+        });
+        this.debugSubFolder.add(lightDirection, "z").onChange(() => {
+          child.material.uniforms.uLightDirection.value.x = lightDirection.z;
+        });
       }
     });
   }
