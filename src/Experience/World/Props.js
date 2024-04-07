@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import Experience from "../Experience.js";
 
 import props from "../Data/props.js";
-import toonMaterial from "../Materials/ToonMaterial.js";
 
 import { markersArray } from "../Data/markers.js";
 
@@ -18,13 +17,11 @@ export default class Props {
     this.transformControls = this.experience.helpers.transformControls;
 
     // Options
-    this.options = {
-      uLightDirection: new THREE.Vector3(1, 3, 3),
-    };
+    this.options = {};
 
     // Setup
     this.propsMeshes = [];
-    this.propsColors = {};
+    this.propsLights = [];
     this.setMaterial();
     this.setModels();
     this.initEvents();
@@ -34,8 +31,8 @@ export default class Props {
   }
 
   setMaterial() {
-    this.toonTexture = this.resources.items.toonTexture;
-    this.toonTexture.magFilter = THREE.NearestFilter;
+    this.gradientMap = this.resources.items.threeToneToonTexture;
+    this.gradientMap.magFilter = THREE.NearestFilter;
   }
 
   setModels() {
@@ -43,10 +40,9 @@ export default class Props {
     this.tree.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -56,10 +52,9 @@ export default class Props {
     this.bush.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -69,10 +64,9 @@ export default class Props {
     this.rock.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -82,10 +76,9 @@ export default class Props {
     this.buildingA.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -95,10 +88,9 @@ export default class Props {
     this.buildingB.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -108,10 +100,9 @@ export default class Props {
     this.buildingBFlags.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -121,10 +112,9 @@ export default class Props {
     this.buildingC.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -134,10 +124,9 @@ export default class Props {
     this.buildingD.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = toonMaterial({
-          uColor: color,
-          uTexture: this.toonTexture,
-          uLightDirection: this.options.uLightDirection,
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
         });
         child.material = material;
       }
@@ -255,7 +244,7 @@ export default class Props {
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Props");
+      this.debugFolder = this.debug.ui.addFolder("Prop");
       this.debugFolder.close();
 
       this.transformControls.addEventListener("dragging-changed", (event) => {
@@ -264,7 +253,7 @@ export default class Props {
         const type = mesh.type;
         const name = mesh.name;
 
-        if (!event.value && type === "props") {
+        if (!event.value && type === "prop") {
           console.log(
             `New Props Position for ${name}:`,
             index,
@@ -294,33 +283,24 @@ export default class Props {
   addToDebug(mesh) {
     if (this.debugSubFolder) {
       this.debugSubFolder.destroy();
-      this.propsColors = {};
     }
+
     this.debugSubFolder = this.debugFolder.addFolder("Active Prop");
+    this.propsLights[mesh.index].visible = true;
+    const propsColors = {};
 
     mesh.traverse((child) => {
       if (child instanceof THREE.Mesh) {
-        const color = child.material.uniforms.uColor.value.clone();
-        const lightDirection =
-          child.material.uniforms.uLightDirection.value.clone();
-        this.propsColors[child.name] = color.convertLinearToSRGB();
+        const color = child.material.color.clone();
+        propsColors[child.name] = color.convertLinearToSRGB();
         this.debugSubFolder
-          .addColor(this.propsColors, child.name)
+          .addColor(propsColors, child.name)
           .name(child.name)
           .onChange(() => {
-            child.material.uniforms.uColor.value.set(
-              this.propsColors[child.name].convertSRGBToLinear()
+            child.material.color.set(
+              propsColors[child.name].convertSRGBToLinear()
             );
           });
-        this.debugSubFolder.add(lightDirection, "x").onChange(() => {
-          child.material.uniforms.uLightDirection.value.x = lightDirection.x;
-        });
-        this.debugSubFolder.add(lightDirection, "y").onChange(() => {
-          child.material.uniforms.uLightDirection.value.x = lightDirection.y;
-        });
-        this.debugSubFolder.add(lightDirection, "z").onChange(() => {
-          child.material.uniforms.uLightDirection.value.x = lightDirection.z;
-        });
       }
     });
   }
