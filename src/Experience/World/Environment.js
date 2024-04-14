@@ -20,7 +20,7 @@ export default class Environment {
   }
 
   setAmbientLight() {
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     this.scene.add(this.ambientLight);
   }
 
@@ -40,22 +40,22 @@ export default class Environment {
       this.debugFolder = this.debug.ui.addFolder("Environment");
       this.debugFolder.close();
 
-      this.helper = new THREE.DirectionalLightHelper(this.sunLight, 5);
-      this.scene.add(this.helper);
+      // this.helper = new THREE.DirectionalLightHelper(this.sunLight, 5);
+      // this.scene.add(this.helper);
 
       this.debugFolder
         .add(this.sunLight, "intensity")
         .name("sunLightIntensity")
         .min(0)
         .max(10)
-        .step(0.001);
+        .step(0.1);
 
       this.debugFolder
         .add(this.ambientLight, "intensity")
         .name("ambientLightIntensity")
         .min(0)
         .max(5)
-        .step(0.001);
+        .step(0.1);
 
       this.debugFolder.add(this.options.sunlightPosition, "x").onChange(() => {
         this.sunLight.position.x = this.options.sunlightPosition.x;

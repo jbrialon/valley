@@ -45,7 +45,6 @@ export default class Manager extends EventEmitter {
   }
 
   startExperience(mode) {
-    this.trigger("markers-intro-animation");
     this.mode = mode;
     if (mode === "normal") {
       this.startNormalMode();
@@ -91,6 +90,7 @@ export default class Manager extends EventEmitter {
       switch (step) {
         case 1:
           this.tutorialStep = 1;
+          this.trigger("markers-intro-animation");
           this.trigger("loader-tutorial-one");
           this.setSearchState(true);
           this.setMouseMoveState(false);

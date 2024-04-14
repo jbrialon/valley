@@ -77,7 +77,7 @@ vec4 getStyledWireframe(vec3 barycentric) {
 
 void main() {
   gl_FragColor = getStyledWireframe(vBarycentric);
-  // #include <colorspace_fragment>
+
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }
