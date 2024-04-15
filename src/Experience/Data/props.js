@@ -47,7 +47,7 @@ export default [
       },
       {
         type: "tree",
-        position: new THREE.Vector3(-0.1, 1.75, -7.69),
+        position: new THREE.Vector3(0.19, 1.79, -7.83),
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
@@ -72,8 +72,8 @@ export default [
       },
       {
         type: "river-a",
-        position: new THREE.Vector3(0.08, 1.89, -7.57),
-        rotation: new THREE.Vector3(0, 0, 0),
+        position: new THREE.Vector3(0.1, 1.8, -7.7),
+        rotation: new THREE.Vector3(0.69, -1.39, 0.69),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
     ],

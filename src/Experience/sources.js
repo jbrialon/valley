@@ -55,6 +55,11 @@ export default [
     path: "/textures/toon/threeTone.jpg",
   },
   {
+    name: "perlinTexture",
+    type: "texture",
+    path: "/textures/perlin.png",
+  },
+  {
     name: "photo-1",
     type: "image",
     path: "/photos/photo-1.jpg",

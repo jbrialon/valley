@@ -6,22 +6,26 @@ import props from "../Data/props.js";
 
 import { markersArray } from "../Data/markers.js";
 
+import riverMaterial from "../Materials/RiverMaterial.js";
+
 export default class Props {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.manager = this.experience.manager;
+    this.time = this.experience.time;
     this.debug = this.experience.debug;
     this.helpers = this.experience.helpers;
     this.transformControls = this.experience.helpers.transformControls;
 
     // Options
-    this.options = {};
+    this.options = {
+      color: 0x0059b3,
+    };
 
     // Setup
     this.propsMeshes = [];
-    this.propsLights = [];
     this.setMaterial();
     this.setModels();
     this.initEvents();
@@ -33,6 +37,15 @@ export default class Props {
   setMaterial() {
     this.gradientMap = this.resources.items.threeToneToonTexture;
     this.gradientMap.magFilter = THREE.NearestFilter;
+
+    this.perlinTexture = this.resources.items.perlinTexture;
+    this.perlinTexture.wrapS = THREE.RepeatWrapping;
+    this.perlinTexture.wrapT = THREE.RepeatWrapping;
+
+    this.riverMaterial = riverMaterial({
+      uColor: new THREE.Color(this.options.color),
+      uPerlinTexture: this.perlinTexture,
+    });
   }
 
   setModels() {
@@ -136,10 +149,14 @@ export default class Props {
     this.riverA.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const color = child.material.color;
-        const material = new THREE.MeshToonMaterial({
+        let material = new THREE.MeshToonMaterial({
           color: color,
           gradientMap: this.gradientMap,
         });
+
+        if (color.getHexString() === "0e44e7") {
+          material = this.riverMaterial;
+        }
         child.material = material;
       }
     });
@@ -161,7 +178,7 @@ export default class Props {
       props.objects.forEach((object, index) => {
         const mesh = models[object.type].clone();
         mesh.name = `${props.name}.${index}`;
-        mesh.type = "props";
+        mesh.type = "prop";
         mesh.index = index;
         if (name !== "syabru_besi") {
           mesh.visible = false;
@@ -257,8 +274,17 @@ export default class Props {
 
   setDebug() {
     if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("Prop");
+      this.debugFolder = this.debug.ui.addFolder("Props");
       this.debugFolder.close();
+
+      this.debugFolder
+        .addColor(this.options, "color")
+        .name("River color")
+        .onChange(() => {
+          console.log(this.riverMaterial.uniforms.uColor.value);
+          console.log(new THREE.Color(this.options.color));
+          this.riverMaterial.uniforms.uColor.value.set(this.options.color);
+        });
 
       this.transformControls.addEventListener("dragging-changed", (event) => {
         const mesh = this.transformControls.object;
@@ -299,7 +325,6 @@ export default class Props {
     }
 
     this.debugSubFolder = this.debugFolder.addFolder("Active Prop");
-    this.propsLights[mesh.index].visible = true;
     const propsColors = {};
 
     mesh.traverse((child) => {
@@ -318,5 +343,7 @@ export default class Props {
     });
   }
 
-  update() {}
+  update() {
+    this.riverMaterial.uniforms.uTime.value = this.time.elapsedTime;
+  }
 }
