@@ -132,6 +132,18 @@ export default class Props {
       }
     });
 
+    this.riverA = this.resources.items.riverModelA.scene;
+    this.riverA.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const color = child.material.color;
+        const material = new THREE.MeshToonMaterial({
+          color: color,
+          gradientMap: this.gradientMap,
+        });
+        child.material = material;
+      }
+    });
+
     const models = {
       tree: this.tree,
       bush: this.bush,
@@ -141,6 +153,7 @@ export default class Props {
       "building-b-flags": this.buildingBFlags,
       "building-c": this.buildingC,
       "building-d": this.buildingD,
+      "river-a": this.riverA,
     };
 
     props.forEach((props) => {

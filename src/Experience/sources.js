@@ -45,6 +45,11 @@ export default [
     path: "/models/building/building-d.glb",
   },
   {
+    name: "riverModelA",
+    type: "gltfModel",
+    path: "/models/river/river-a.glb",
+  },
+  {
     name: "threeToneToonTexture",
     type: "texture",
     path: "/textures/toon/threeTone.jpg",

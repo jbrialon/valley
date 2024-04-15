@@ -44,7 +44,6 @@ export default [
         position: new THREE.Vector3(0.18, 1.95, -7.45),
         rotation: new THREE.Vector3(3.14, -0.78, 3.14),
         scale: new THREE.Vector3(0.14, 0.14, 0.14),
-        lightDirection: new THREE.Vector3(4, 5.2, -1),
       },
       {
         type: "tree",
@@ -68,6 +67,12 @@ export default [
       {
         type: "rock",
         position: new THREE.Vector3(-0.03, 1.83, -7.43),
+        rotation: new THREE.Vector3(0, 0, 0),
+        scale: new THREE.Vector3(0.2, 0.2, 0.2),
+      },
+      {
+        type: "river-a",
+        position: new THREE.Vector3(0.08, 1.89, -7.57),
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
