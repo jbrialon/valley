@@ -70,12 +70,12 @@ export default [
         rotation: new THREE.Vector3(0, 0, 0),
         scale: new THREE.Vector3(0.2, 0.2, 0.2),
       },
-      {
-        type: "river-a",
-        position: new THREE.Vector3(0.1, 1.8, -7.7),
-        rotation: new THREE.Vector3(0.69, -1.39, 0.69),
-        scale: new THREE.Vector3(0.2, 0.2, 0.2),
-      },
+      // {
+      //   type: "river-a",
+      //   position: new THREE.Vector3(0.1, 1.8, -7.7),
+      //   rotation: new THREE.Vector3(0.69, -1.39, 0.69),
+      //   scale: new THREE.Vector3(0.2, 0.2, 0.2),
+      // },
     ],
   },
   {

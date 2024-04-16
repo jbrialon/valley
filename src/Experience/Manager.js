@@ -28,6 +28,7 @@ export default class Manager extends EventEmitter {
     this.activeMarker = null;
     this.tutorialStep = 0;
 
+    this.currentStepIndex = 1;
     this.revealedSteps = {
       chapterOne: [],
       chapterTwo: [],
@@ -263,6 +264,18 @@ export default class Manager extends EventEmitter {
     }
   }
 
+  goToNextStep() {
+    const currentChapter = this.chapters[this.currentChapter];
+
+    this.currentStepIndex++;
+    const nextStep = markers[currentChapter].find(
+      (item) => item.order === this.currentStepIndex
+    );
+    if (nextStep) {
+      this.trigger("dashline-show", nextStep.order - 1, nextStep.name);
+    }
+  }
+
   isLastStepOfChapter() {
     const currentChapter = this.chapters[this.currentChapter];
 
@@ -270,6 +283,9 @@ export default class Manager extends EventEmitter {
       this.revealedSteps[currentChapter].length ===
       markers[currentChapter].length
     );
+  }
+  getCurrentStepIndex() {
+    return this.currentStepIndex;
   }
 
   // Chapter Manegement

@@ -5,8 +5,6 @@ import { gsap } from "gsap";
 import Experience from "../Experience";
 import { findMissingSteps } from "../Utils/Utils.js";
 
-// import { Maf } from "../Utils/Maf";
-
 export default class DashLine {
   constructor() {
     this.experience = new Experience();
@@ -58,6 +56,11 @@ export default class DashLine {
     };
     this.revealedSteps = {
       chapterOne: [0],
+      chapterTwo: [0],
+      chapterTree: [0],
+    };
+    this.thresholds = {
+      chapterOne: [0, 0.75, 0.1, 0.25, 0.25, 0.75, 0.5],
       chapterTwo: [0],
       chapterTree: [0],
     };
@@ -124,6 +127,10 @@ export default class DashLine {
       chapterTwo: [],
       chapterTree: [],
     };
+
+    this.threshold = 0.75;
+    this.accumulatedDelta = 0;
+
     this.setMaterial();
     this.setDashLine();
     this.initEvents();
@@ -136,7 +143,6 @@ export default class DashLine {
     this.manager.on("dashline-show", this.showDashLine.bind(this));
     // Scroll event
     this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
-    // this.manager.on("dashline-update", this.updateDashLine.bind(this));
   }
 
   onMouseWheel() {
@@ -145,10 +151,17 @@ export default class DashLine {
       !this.manager.getZoomState() &&
       this.manager.getMode() === "normal"
     ) {
+      const currentChapter = this.manager.getCurrentChapter();
+      const currentStepIndex = this.manager.getCurrentStepIndex();
       let delta = 0.025;
 
-      const targetScrollProgress = (this.scrollProgress += delta);
-      console.log(targetScrollProgress);
+      this.accumulatedDelta += delta;
+      // this.threshold = this.threshold[currentChapter][currentStepIndex];
+      console.log(this.thresholds[currentChapter][currentStepIndex]);
+      if (this.accumulatedDelta >= this.threshold) {
+        this.manager.goToNextStep();
+        this.accumulatedDelta = 0;
+      }
     }
   }
 
@@ -215,19 +228,6 @@ export default class DashLine {
     });
   }
 
-  updateDashLine(progress) {
-    const currentChapter = this.manager.getCurrentChapter();
-    const material = this.materials[currentChapter];
-    const test = progress + 0.25;
-    gsap.to(material.uniforms.visibility, {
-      value: test,
-      duration: 1,
-      ease: "power1.inOut",
-      onUpdate: () => {},
-      onComplete: () => {},
-    });
-  }
-
   showDashLine(index, name) {
     const currentChapter = this.manager.getCurrentChapter();
     const progressTarget = this.progress[currentChapter][index];
@@ -271,6 +271,9 @@ export default class DashLine {
           `Revealed dashLine for Step ${index}(${name}) of ${currentChapter}`
         );
         this.manager.trigger("props-reveal", index);
+        if (this.manager.getMode() === "normal") {
+          this.manager.trigger("overlay-reveal", index, name);
+        }
       },
     });
   }
