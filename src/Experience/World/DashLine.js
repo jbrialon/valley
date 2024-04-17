@@ -60,7 +60,7 @@ export default class DashLine {
       chapterTree: [0],
     };
     this.thresholds = {
-      chapterOne: [0, 0.75, 0.1, 0.25, 0.25, 0.75, 0.5],
+      chapterOne: [0, 0.5, 0.75, 0.75, 0.75, 1, 1],
       chapterTwo: [0],
       chapterTree: [0],
     };
@@ -149,15 +149,15 @@ export default class DashLine {
     if (
       this.manager.isScrollingEnabled() &&
       !this.manager.getZoomState() &&
-      this.manager.getMode() === "normal"
+      this.manager.getMode() === "normal" &&
+      this.inputEvents.mouse.z > 0
     ) {
       const currentChapter = this.manager.getCurrentChapter();
       const currentStepIndex = this.manager.getCurrentStepIndex();
       let delta = 0.025;
 
       this.accumulatedDelta += delta;
-      // this.threshold = this.threshold[currentChapter][currentStepIndex];
-      console.log(this.thresholds[currentChapter][currentStepIndex]);
+      this.threshold = this.thresholds[currentChapter][currentStepIndex];
       if (this.accumulatedDelta >= this.threshold) {
         this.manager.goToNextStep();
         this.accumulatedDelta = 0;
