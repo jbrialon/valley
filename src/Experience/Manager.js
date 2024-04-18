@@ -69,7 +69,11 @@ export default class Manager extends EventEmitter {
 
   // on Marker Hover -> Show Info Window
   showInfowindow(markerMesh) {
-    if (!this.getZoomState() && this.getTutorialStep() === 4) {
+    if (
+      !this.getZoomState() &&
+      this.getTutorialStep() === 4 &&
+      markerMesh.revealed
+    ) {
       this.trigger("infowindow-show", markerMesh.index);
       this.setActiveMarker(markerMesh);
     }

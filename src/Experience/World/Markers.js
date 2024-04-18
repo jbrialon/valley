@@ -21,6 +21,7 @@ export default class Markers {
     // Options
     this.options = {
       range: 45,
+      minDistance: 4.5,
       markerCloseTimer: 800,
       defaultColor: 0xcb6c6a,
       secondaryColor: 0x739581,
@@ -44,6 +45,35 @@ export default class Markers {
 
     // Debug
     this.setDebug();
+  }
+
+  initEvents() {
+    this.manager.on("navigation", (point) => {
+      this.point = point;
+    });
+
+    this.manager.on("markers-intro-animation", this.introAnimation.bind(this));
+    // Scroll event
+
+    this.manager.on("updateColors", (colors) => {
+      this.options.defaultColor = colors[4];
+      this.options.secondaryColor = colors[2];
+      this.options.mountainColor = colors[2];
+
+      this.markers
+        .filter((marker) => marker.type === "main")
+        .forEach((marker) => {
+          marker.material.color.set(this.options.defaultColor);
+        });
+      this.markers
+        .filter((marker) => marker.type === "secondary" || "mountain")
+        .forEach((marker) => {
+          marker.material.color.set(options.secondaryColor);
+        });
+      this.debugFolder.controllers.forEach((controller) => {
+        controller.updateDisplay();
+      });
+    });
   }
 
   setMaterial() {
@@ -89,6 +119,7 @@ export default class Markers {
       markerMesh.index = index;
       markerMesh.name = marker.name;
       markerMesh.type = marker.type;
+      markerMesh.revealed = false;
       markerMesh.position.set(
         marker.position.x,
         marker.position.y,
@@ -100,11 +131,20 @@ export default class Markers {
 
       this.markers.push(markerMesh);
       this.scene.add(markerMesh);
+
+      // when marker is revealed we add the events
+      this.manager.addHoverEventToMesh(markerMesh, () => {
+        this.manager.showInfowindow(markerMesh);
+      });
     });
   }
 
   getMarkerByName(name) {
-    return markers[this.currentChapter].find((item) => item.name === name);
+    return markers[this.currentChapter].find((marker) => marker.name === name);
+  }
+
+  getMarkerMeshByName(name) {
+    return this.markers.find((marker) => marker.name === name);
   }
 
   bounce() {
@@ -173,11 +213,6 @@ export default class Markers {
           this.manager.trigger("log-update-count");
         },
         onComplete: () => {
-          // when marker is revealed we add the events
-          this.manager.addHoverEventToMesh(markerMesh, () => {
-            this.manager.showInfowindow(markerMesh);
-          });
-
           // this.manager.addClickEventToMesh(markerMesh, () => {
           //   this.manager.zoomOutOfMarker(markerMesh);
           // });
@@ -187,6 +222,20 @@ export default class Markers {
         },
       });
     }
+  }
+
+  checkMarkerDistances() {
+    const referencePoint = this.camera.cameraParent.position;
+    const minDistance = this.options.minDistance;
+
+    markers[this.currentChapter].forEach((marker) => {
+      const markerMesh = this.getMarkerMeshByName(marker.name);
+      const distance = markerMesh.position.distanceTo(referencePoint);
+      if (distance <= minDistance && !markerMesh.revealed) {
+        markerMesh.revealed = true;
+        this.manager.trigger("dashline-show", marker.order - 1, marker.name);
+      }
+    });
   }
 
   introAnimation() {
@@ -219,34 +268,6 @@ export default class Markers {
         },
         "disappear"
       );
-    });
-  }
-
-  initEvents() {
-    this.manager.on("navigation", (point) => {
-      this.point = point;
-    });
-
-    this.manager.on("markers-intro-animation", this.introAnimation.bind(this));
-
-    this.manager.on("updateColors", (colors) => {
-      this.options.defaultColor = colors[4];
-      this.options.secondaryColor = colors[2];
-      this.options.mountainColor = colors[2];
-
-      this.markers
-        .filter((marker) => marker.type === "main")
-        .forEach((marker) => {
-          marker.material.color.set(this.options.defaultColor);
-        });
-      this.markers
-        .filter((marker) => marker.type === "secondary" || "mountain")
-        .forEach((marker) => {
-          marker.material.color.set(options.secondaryColor);
-        });
-      this.debugFolder.controllers.forEach((controller) => {
-        controller.updateDisplay();
-      });
     });
   }
 
@@ -307,6 +328,10 @@ export default class Markers {
       this.manager.isSearchingEnabled()
     ) {
       this.showClosestMarkers();
+    }
+
+    if (this.manager.getMode() === "normal") {
+      this.checkMarkerDistances();
     }
 
     if (this.manager.getActiveMarker()) {

@@ -59,11 +59,7 @@ export default class DashLine {
       chapterTwo: [0],
       chapterTree: [0],
     };
-    this.thresholds = {
-      chapterOne: [0, 0.5, 0.75, 0.75, 0.75, 1, 1],
-      chapterTwo: [0],
-      chapterTree: [0],
-    };
+
     this.materials = {};
 
     this.points = {
@@ -128,7 +124,6 @@ export default class DashLine {
       chapterTree: [],
     };
 
-    this.threshold = 0.75;
     this.accumulatedDelta = 0;
 
     this.setMaterial();
@@ -141,28 +136,6 @@ export default class DashLine {
 
   initEvents() {
     this.manager.on("dashline-show", this.showDashLine.bind(this));
-    // Scroll event
-    this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
-  }
-
-  onMouseWheel() {
-    if (
-      this.manager.isScrollingEnabled() &&
-      !this.manager.getZoomState() &&
-      this.manager.getMode() === "normal" &&
-      this.inputEvents.mouse.z > 0
-    ) {
-      const currentChapter = this.manager.getCurrentChapter();
-      const currentStepIndex = this.manager.getCurrentStepIndex();
-      let delta = 0.025;
-
-      this.accumulatedDelta += delta;
-      this.threshold = this.thresholds[currentChapter][currentStepIndex];
-      if (this.accumulatedDelta >= this.threshold) {
-        this.manager.goToNextStep();
-        this.accumulatedDelta = 0;
-      }
-    }
   }
 
   setMaterial() {
