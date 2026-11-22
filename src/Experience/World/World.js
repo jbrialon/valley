@@ -1,4 +1,5 @@
 import Experience from "../Experience";
+import { TILE_WORLD } from "../../TerrainMap/index.js";
 import Loader from "./Loader";
 import Sky from "./Sky";
 import Topography from "./Topography";
@@ -20,11 +21,17 @@ export default class World {
 
   async setup() {
     this.topography = new Topography();
-    this.sky = new Sky();
+    this.setSky();
     await this.topography.ready;
 
     // Show Experience
     this.loader.hideLoader();
+  }
+
+  // The fog ends half a tile past the loaded tiles, so their edge fades into the sky
+  setSky() {
+    const fogEnd = (this.topography.terrainMap.radius + 0.5) * TILE_WORLD;
+    this.sky = new Sky({ fogStart: fogEnd * 0.4, fogEnd });
   }
 
   update() {

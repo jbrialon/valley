@@ -13,7 +13,7 @@ export default class Renderer {
     // Options
     this.options = {
       // Same as the sky horizon, it's what the loader fades from
-      clearColor: 0xc5d3dd,
+      clearColor: 0xefe5ce,
       toneMapping: THREE.NeutralToneMapping,
       toneMappingExposure: 1,
     };

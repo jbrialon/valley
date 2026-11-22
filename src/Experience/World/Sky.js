@@ -2,48 +2,64 @@ import * as THREE from "three/webgpu";
 import {
   Fn,
   cameraPosition,
-  clamp,
-  float,
+  dot,
   fog,
+  fract,
   max,
   mix,
   normalize,
-  positionView,
   positionWorld,
   positionWorldDirection,
   rangeFogFactor,
+  screenCoordinate,
+  sin,
   smoothstep,
+  time,
   uniform,
+  vec2,
 } from "three/tsl";
 
 import Experience from "../Experience";
 
-const SETTINGS = {
-  zenith: { label: "Zenith", view: "color" },
-  horizon: { label: "Horizon", view: "color" },
-  zenithHeight: { label: "Zenith height", min: 0.01, max: 1, step: 0.01 },
-  haze: { label: "Haze", min: 0, max: 1, step: 0.01 },
-  fogStart: { label: "Fog start", min: 0, max: 1000, step: 1 },
-  fogEnd: { label: "Fog end", min: 0, max: 1000, step: 1 },
+// One debug folder per group, each setting is sent to the shader under the same name
+const SETTING_FOLDERS = {
+  Sky: {
+    zenith: { label: "Zenith", view: "color" },
+    mid: { label: "Mid", view: "color" },
+    horizon: { label: "Horizon", view: "color" },
+    midHeight: { label: "Mid height", min: 0.01, max: 1, step: 0.01 },
+    zenithHeight: { label: "Zenith height", min: 0.01, max: 1, step: 0.01 },
+    grain: { label: "Grain", min: 0, max: 0.5, step: 0.005 },
+  },
+  Fog: {
+    fogColor: { label: "Color", view: "color" },
+    fogStart: { label: "Start", min: 0, max: 1000, step: 1 },
+    fogEnd: { label: "End", min: 0, max: 1000, step: 1 },
+  },
 };
 
 const isColor = (settings) => settings.view === "color";
 
+// A sky gradient behind the map, and a fog that fades the far terrain into the sky behind it
 export default class Sky {
-  constructor() {
+  constructor({ fogStart = 100, fogEnd = 250 } = {}) {
     this.experience = new Experience();
     this.debug = this.experience.debug;
     this.scene = this.experience.scene;
 
     // Options
     this.options = {
-      zenith: "#6f9cc4",
-      horizon: "#c5d3dd",
-      zenithHeight: 0.5,
-      // How much blue tint the terrain gets before the fog, right at fogEnd
-      haze: 0.075,
-      fogStart: 100,
-      fogEnd: 315,
+      zenith: "#2F5F86",
+      mid: "#8DB4C4",
+      horizon: "#EFE5CE",
+      // How high each color sits, 0 is the horizon and 1 is straight up
+      midHeight: 0.2,
+      zenithHeight: 0.6,
+      grain: 0.06,
+      // Haze in the middle distance, the far edge still ends in the sky color
+      fogColor: "#D6DCD2",
+      fogStart,
+      fogEnd,
     };
 
     // Setup
@@ -56,40 +72,51 @@ export default class Sky {
 
   setUniforms() {
     this.uniforms = {};
-    for (const [name, settings] of Object.entries(SETTINGS)) {
-      const value = this.options[name];
-      this.uniforms[name] = uniform(
-        isColor(settings) ? new THREE.Color(value) : value,
-      );
+    for (const folderSettings of Object.values(SETTING_FOLDERS)) {
+      for (const [name, settings] of Object.entries(folderSettings)) {
+        const value = this.options[name];
+        this.uniforms[name] = uniform(
+          isColor(settings) ? new THREE.Color(value) : value,
+        );
+      }
     }
   }
 
   setNodes() {
     const uniforms = this.uniforms;
 
+    // Same film grain as the terrain, a new random value per pixel that shimmers over time
+    const grain = fract(
+      sin(
+        dot(screenCoordinate.xy.add(time.mul(0.0002)), vec2(12.9898, 78.233)),
+      ).mul(43758.5453),
+    )
+      .sub(0.5)
+      .mul(uniforms.grain);
+
     const skyColor = Fn(([direction]) => {
+      // Below the horizon stays the horizon color
       const height = max(direction.y, 0);
-      return mix(
+      const lowSky = mix(
         uniforms.horizon,
-        uniforms.zenith,
-        smoothstep(0, uniforms.zenithHeight, height),
+        uniforms.mid,
+        smoothstep(0, uniforms.midHeight, height),
       );
+      // The fog gets the grain too, so a fully fogged mountain matches the sky right next to it
+      return mix(
+        lowSky,
+        uniforms.zenith,
+        smoothstep(uniforms.midHeight, uniforms.zenithHeight, height),
+      ).add(grain);
     });
 
     this.scene.backgroundNode = skyColor(positionWorldDirection);
 
-    const distance = positionView.z.negate();
-    const hazeFactor = clamp(distance.div(uniforms.fogEnd), 0, 1).mul(
-      uniforms.haze,
-    );
-    const fogFactor = mix(
-      hazeFactor,
-      float(1),
-      rangeFogFactor(uniforms.fogStart, uniforms.fogEnd),
-    );
-
+    // The terrain first goes through the haze, then into the sky color in the same direction
     const viewDirection = normalize(positionWorld.sub(cameraPosition));
-    this.scene.fogNode = fog(skyColor(viewDirection), fogFactor);
+    const fogFactor = rangeFogFactor(uniforms.fogStart, uniforms.fogEnd);
+    const fogColor = mix(uniforms.fogColor, skyColor(viewDirection), fogFactor);
+    this.scene.fogNode = fog(fogColor, fogFactor);
   }
 
   setDebug() {
@@ -100,13 +127,17 @@ export default class Sky {
       expanded: false,
     });
 
-    for (const [name, settings] of Object.entries(SETTINGS)) {
-      this.debugFolder
-        .addBinding(this.options, name, settings)
-        .on("change", (event) => {
-          if (isColor(settings)) this.uniforms[name].value.set(event.value);
-          else this.uniforms[name].value = event.value;
-        });
+    for (const [title, folderSettings] of Object.entries(SETTING_FOLDERS)) {
+      const subfolder = this.debugFolder.addFolder({ title, expanded: false });
+
+      for (const [name, settings] of Object.entries(folderSettings)) {
+        subfolder
+          .addBinding(this.options, name, settings)
+          .on("change", (event) => {
+            if (isColor(settings)) this.uniforms[name].value.set(event.value);
+            else this.uniforms[name].value = event.value;
+          });
+      }
     }
   }
 
