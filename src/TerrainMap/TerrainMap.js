@@ -10,15 +10,15 @@ import {
   mercatorYToLat,
 } from "./utils/mercator.js";
 import { loadTerrainTexture } from "./tiles/loadTerrain.js";
-import { loadSatelliteTexture } from "./tiles/loadSatellite.js";
-import { computeCellHeights, sampleHeight } from "./tiles/heights.js";
+import { loadWaterTexture } from "./tiles/loadWater.js";
+import { CELLS, computeCellHeights, sampleHeight } from "./tiles/heights.js";
+import { createReliefTexture, updateReliefTexture } from "./tiles/relief.js";
 import { stitchAround } from "./tiles/stitchEdges.js";
 import { createTerrainMaterial } from "./tiles/terrainMaterial.js";
+import TopoStyle from "./style/TopoStyle.js";
 
 // Width of one tile in scene units
 export const TILE_WORLD = 100;
-
-export const STYLES = ["satellite", "shaded", "wireframe"];
 
 export default class TerrainMap extends THREE.Group {
   constructor({
@@ -28,23 +28,24 @@ export default class TerrainMap extends THREE.Group {
     // How many tiles are shown on each side of the center one: 2 means a 5x5 square
     radius = 2,
     exaggeration = 1.5,
-    // How much sharper the photo is than the ground shape: 1 means 2x2 photos per tile, 2 means 4x4
-    satelliteZoomOffset = 1,
-    // Keeps the photo crisp when looking across the ground instead of straight down, up to 16
-    anisotropy = 8,
-    style = "satellite",
+    // Width of small rivers in pixels of the water image, 0 hides them
+    riverWidth = 4,
+    // How far to look around, in meters, for the lowest and highest ground that set the colors
+    reliefRadius = 4000,
+    // TopoStyle options: matcap, palette, contour lines…
+    style = {},
   } = {}) {
     super();
 
     this.accessToken = accessToken;
     this.zoom = zoom;
     this.radius = radius;
-    this.satelliteZoomOffset = satelliteZoomOffset;
-    this.anisotropy = anisotropy;
+    this.riverWidth = riverWidth;
+    this.reliefRadius = reliefRadius;
     this.exaggeration = uniform(exaggeration);
-    // Shared by every tile material, so switching style doesn't rebuild the shaders
-    this.shaded = uniform(0);
     this.boundsExaggeration = exaggeration;
+    // Shared by every tile material, so a change restyles the whole map at once
+    this.style = new TopoStyle(style);
 
     this.tileCount = 2 ** zoom;
     this.worldSize = this.tileCount * TILE_WORLD;
@@ -61,7 +62,6 @@ export default class TerrainMap extends THREE.Group {
 
     this.geometries = new Map();
     this.tiles = new Map();
-    this.setStyle(style);
     this.forward = new THREE.Vector3();
     this.focusPoint = new THREE.Vector3();
     // Counts every time the ground changes, so things sitting on it know to check their height again
@@ -121,19 +121,43 @@ export default class TerrainMap extends THREE.Group {
     );
   }
 
-  setStyle(style) {
-    if (!STYLES.includes(style)) {
-      throw new Error(`Unknown style "${style}", use one of: ${STYLES}`);
-    }
+  // The colors go from the lowest to the highest ground within this many meters
+  setReliefRadius(meters) {
+    this.reliefRadius = meters;
+    for (const tile of this.tiles.values()) this.updateRelief(tile);
+  }
 
-    this.style = style;
-    this.shaded.value = style === "shaded" ? 1 : 0;
+  updateRelief(tile) {
+    if (!tile.reliefTexture) return;
 
-    const wireframe = style === "wireframe";
-    for (const tile of this.tiles.values()) {
-      if (!tile.mesh || tile.mesh.material.wireframe === wireframe) continue;
-      tile.mesh.material.wireframe = wireframe;
-      tile.mesh.material.needsUpdate = true;
+    // The search circle plus the blur must fit in the next tile, since we only look one tile away
+    const cellMeters = this.tileMeters / CELLS;
+    const radiusCells = THREE.MathUtils.clamp(
+      this.reliefRadius / cellMeters,
+      1,
+      CELLS * 0.66,
+    );
+    const smoothCells = radiusCells * 0.5;
+
+    updateReliefTexture(
+      tile.reliefTexture,
+      (offsetX, offsetY) =>
+        this.tiles.get(`${tile.tileX + offsetX}/${tile.tileY + offsetY}`)
+          ?.cellHeights ?? null,
+      radiusCells,
+      smoothCells,
+    );
+  }
+
+  // A new tile adds valleys and peaks, so the 8 tiles around it redo their colors too
+  updateReliefAround(tile) {
+    for (let offsetY = -1; offsetY <= 1; offsetY++) {
+      for (let offsetX = -1; offsetX <= 1; offsetX++) {
+        const neighbor = this.tiles.get(
+          `${tile.tileX + offsetX}/${tile.tileY + offsetY}`,
+        );
+        if (neighbor) this.updateRelief(neighbor);
+      }
     }
   }
 
@@ -275,35 +299,35 @@ export default class TerrainMap extends THREE.Group {
       ((tileX % this.tileCount) + this.tileCount) % this.tileCount;
 
     try {
-      const [terrain, satelliteTexture] = await Promise.all([
+      const [terrain, waterTexture] = await Promise.all([
         loadTerrainTexture(this.zoom, wrappedX, tileY, this.accessToken),
-        loadSatelliteTexture({
+        loadWaterTexture({
           zoom: this.zoom,
           tileX: wrappedX,
           tileY,
           accessToken: this.accessToken,
-          zoomOffset: this.satelliteZoomOffset,
-          anisotropy: this.anisotropy,
+          riverWidth: this.riverWidth,
         }),
       ]);
 
       // The camera moved away while this was downloading, so it's not needed anymore
       if (this.tiles.get(key) !== tile) {
         terrain.texture.dispose();
-        satelliteTexture.dispose();
+        waterTexture.dispose();
         return;
       }
 
+      const reliefTexture = createReliefTexture();
       const material = createTerrainMaterial({
         heightTexture: terrain.texture,
-        satelliteTexture,
+        waterTexture,
+        reliefTexture,
         size: terrain.size,
         tileWorld: TILE_WORLD,
         metersToWorld: this.metersToWorld,
         exaggeration: this.exaggeration,
-        shaded: this.shaded,
+        style: this.style,
       });
-      material.wireframe = this.style === "wireframe";
 
       const mesh = new THREE.Mesh(this.getGeometry(terrain.size), material);
       mesh.position.set(
@@ -318,7 +342,8 @@ export default class TerrainMap extends THREE.Group {
 
       tile.mesh = mesh;
       tile.heightTexture = terrain.texture;
-      tile.satelliteTexture = satelliteTexture;
+      tile.waterTexture = waterTexture;
+      tile.reliefTexture = reliefTexture;
       tile.size = terrain.size;
       tile.data = terrain.data;
       // A clean copy of the heights, so the edges can be fixed again when another neighbor arrives
@@ -326,6 +351,7 @@ export default class TerrainMap extends THREE.Group {
       stitchAround(this.tiles, tile);
       tile.cellHeights = computeCellHeights(tile);
       this.updateBounds(tile);
+      this.updateReliefAround(tile);
       this.heightsVersion++;
       mesh.visible = this.isWithinRadius(tile);
       this.add(mesh);
@@ -340,7 +366,8 @@ export default class TerrainMap extends THREE.Group {
       this.remove(tile.mesh);
       tile.mesh.material.dispose();
       tile.heightTexture.dispose();
-      tile.satelliteTexture.dispose();
+      tile.waterTexture.dispose();
+      tile.reliefTexture.dispose();
       this.heightsVersion++;
     }
   }
@@ -354,5 +381,7 @@ export default class TerrainMap extends THREE.Group {
 
     for (const geometry of this.geometries.values()) geometry.dispose();
     this.geometries.clear();
+
+    this.style.dispose();
   }
 }

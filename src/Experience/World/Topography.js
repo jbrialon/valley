@@ -26,7 +26,7 @@ export default class Topography {
     this.terrainMap = new TerrainMap({
       accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
       center: this.options.center,
-      satelliteZoomOffset: 2,
+      style: { matcap: this.resources.items.matcap },
     });
     this.ready = this.terrainMap.ready;
 
@@ -50,6 +50,24 @@ export default class Topography {
         max: 5,
         step: 0.05,
       });
+
+      const styleFolder = this.debugFolder.addFolder({
+        title: "Style",
+        expanded: false,
+      });
+      this.terrainMap.style.setDebug(styleFolder);
+
+      // Redoing the colors is slow, so it waits until the slider is let go
+      styleFolder
+        .addBinding(this.terrainMap, "reliefRadius", {
+          label: "Relief radius (m)",
+          min: 500,
+          max: 6000,
+          step: 100,
+        })
+        .on("change", (event) => {
+          if (event.last) this.terrainMap.setReliefRadius(event.value);
+        });
     }
   }
 
