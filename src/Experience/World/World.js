@@ -1,51 +1,33 @@
 import Experience from "../Experience";
-import Environment from "./Environment";
 import Loader from "./Loader";
-import Map from "./Map";
-import Markers from "./Markers";
-import Paths from "./Paths";
-import Overlay from "./Overlay";
-import DashLine from "./DashLine";
-import Props from "./Props";
+import Sky from "./Sky";
+import Topography from "./Topography";
 
 export default class World {
   constructor() {
     this.experience = new Experience();
-    this.scene = this.experience.scene;
-    this.camera = this.experience.camera;
     this.resources = this.experience.resources;
-    this.manager = this.experience.manager;
 
-    // Wait for resources to be loaded
     this.loader = new Loader();
-    this.resources.on("ready", () => {
-      // Setup
-      this.map = new Map();
-      this.overlay = new Overlay();
-      this.markers = new Markers();
-      this.props = new Props();
-      this.paths = new Paths();
-      this.environment = new Environment();
 
-      this.dashLine = new DashLine();
-      this.camera.setPaths();
-      this.manager.trigger("loaded");
-    });
+    // Resources may already be done by the time the renderer is ready
+    if (this.resources.isReady) {
+      this.setup();
+    } else {
+      this.resources.on("ready", () => this.setup());
+    }
   }
 
-  resize() {
-    if (this.loader) this.loader.resize();
-    if (this.dashLine) this.dashLine.resize();
+  async setup() {
+    this.topography = new Topography();
+    this.sky = new Sky();
+    await this.topography.ready;
+
+    // Show Experience
+    this.loader.hideLoader();
   }
 
   update() {
-    if (this.loader) this.loader.update();
-    if (this.map) this.map.update();
-    if (this.overlay) this.overlay.update();
-    if (this.markers) this.markers.update();
-    if (this.props) this.props.update();
-    if (this.paths) this.paths.update();
-    if (this.environment) this.environment.update();
-    if (this.dashLine) this.dashLine.update();
+    if (this.topography) this.topography.update();
   }
 }

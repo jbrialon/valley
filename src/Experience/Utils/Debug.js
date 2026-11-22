@@ -1,14 +1,11 @@
-import * as dat from "lil-gui";
+import { Pane } from "tweakpane";
 
 export default class Debug {
   constructor() {
     this.active = window.location.hash === "#debug";
 
     if (this.active) {
-      this.ui = new dat.GUI({ width: 190 });
-
-      this.ui.close();
-      this.debugEditorFolder = this.ui.addFolder("Editor");
+      this.ui = new Pane({ title: "Parameters" });
     }
   }
 }

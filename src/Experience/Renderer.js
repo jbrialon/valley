@@ -1,6 +1,5 @@
-import * as THREE from "three";
+import * as THREE from "three/webgpu";
 import Experience from "./Experience";
-import { InteractionManager } from "three.interactive";
 
 export default class Renderer {
   constructor() {
@@ -10,58 +9,83 @@ export default class Renderer {
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
-    this.manager = this.experience.manager;
-
-    this.raycaster = new THREE.Raycaster();
-    this.raycaster.layers.set(1);
-    this.raycaster.firstHitOnly = true;
 
     // Options
     this.options = {
-      backgroundColor: "#b9a998",
+      // Same as the sky horizon, it's what the loader fades from
+      clearColor: 0xc5d3dd,
+      toneMapping: THREE.NeutralToneMapping,
+      toneMappingExposure: 1,
     };
-
-    // Setup
-    this.setInstance();
-    this.setInteractionManager();
-    this.initEvents();
-
-    // Debug
-    this.setDebug();
   }
 
-  setInstance() {
-    this.instance = new THREE.WebGLRenderer({
+  async setInstance() {
+    this.instance = new THREE.WebGPURenderer({
       canvas: this.canvas,
+      forceWebGL: false,
       antialias: true,
       powerPreference: "high-performance",
-      alpha: false,
     });
+
+    await this.instance.init();
 
     THREE.ColorManagement.enabled = true;
     this.instance.outputColorSpace = THREE.SRGBColorSpace;
-    this.instance.setClearColor(this.options.backgroundColor);
+    this.instance.shadowMap.enabled = true;
+    this.instance.shadowMap.type = THREE.PCFShadowMap;
+    this.instance.setClearColor(this.options.clearColor);
+
+    this.instance.toneMapping = this.options.toneMapping;
+    this.instance.toneMappingExposure = this.options.toneMappingExposure;
 
     this.instance.setSize(this.sizes.width, this.sizes.height);
     this.instance.setPixelRatio(this.sizes.pixelRatio);
+
+    this.setDebug();
   }
 
-  initEvents() {
-    this.manager.on("updateColors", (colors) => {
-      this.options.backgroundColor = colors[3];
-      this.instance.setClearColor(this.options.backgroundColor);
-      this.debugFolder.controllers.forEach((controller) => {
-        controller.updateDisplay();
+  setDebug() {
+    if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder({
+        title: "Experience",
+        expanded: false,
       });
-    });
-  }
-
-  setInteractionManager() {
-    this.interactionManager = new InteractionManager(
-      this.instance,
-      this.camera.instance,
-      this.canvas
-    );
+      this.debugFolder
+        .addBinding(this.options, "clearColor", {
+          label: "Background",
+          view: "color",
+        })
+        .on("change", () => {
+          this.instance.setClearColor(this.options.clearColor);
+        });
+      // Tone Mapping
+      this.debugFolder
+        .addBinding(this.options, "toneMapping", {
+          options: {
+            None: THREE.NoToneMapping,
+            Linear: THREE.LinearToneMapping,
+            Reinhard: THREE.ReinhardToneMapping,
+            Cineon: THREE.CineonToneMapping,
+            ACESFilmic: THREE.ACESFilmicToneMapping,
+            AgX: THREE.AgXToneMapping,
+            Neutral: THREE.NeutralToneMapping,
+          },
+        })
+        .on("change", () => {
+          this.instance.toneMapping = Number(this.options.toneMapping);
+        });
+      // Tone Mapping Exposure
+      this.debugFolder
+        .addBinding(this.options, "toneMappingExposure", {
+          label: "Exposure",
+          min: 0,
+          max: 2,
+          step: 0.01,
+        })
+        .on("change", () => {
+          this.instance.toneMappingExposure = this.options.toneMappingExposure;
+        });
+    }
   }
 
   resize() {
@@ -69,22 +93,7 @@ export default class Renderer {
     this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
   }
 
-  setDebug() {
-    if (this.debug.active) {
-      this.debugFolder = this.debug.ui.addFolder("World");
-      this.debugFolder.close();
-      this.debugFolder
-        .addColor(this.options, "backgroundColor")
-        .name("Background Color")
-        .onChange(() => {
-          this.instance.setClearColor(this.options.backgroundColor);
-          document.body.style.backgroundColor = this.options.backgroundColor;
-        });
-    }
-  }
-
   update() {
-    this.interactionManager.update();
     this.instance.render(this.scene, this.camera.instance);
   }
 }

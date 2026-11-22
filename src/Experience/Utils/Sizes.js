@@ -1,29 +1,37 @@
+import Experience from "./../Experience";
 import EventEmitter from "./EventEmitter";
 
 export default class Sizes extends EventEmitter {
   constructor() {
     super();
+    this.experience = new Experience();
+    this.debug = this.experience.debug;
+    this.targetElement = this.experience.targetElement;
 
-    // Setup
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
-    this.pixelRatio = Math.min(window.devicePixelRatio, 2);
+    // Resize event
+    this.resize = this.resize.bind(this);
+    window.addEventListener("resize", this.resize);
 
     this.adjustViewportHeight();
+    this.resize();
+  }
+  /**
+   * Resize
+   */
+  resize() {
+    this.adjustViewportHeight();
+    const containerBounds = this.targetElement.getBoundingClientRect();
 
-    window.addEventListener("resize", () => {
-      this.width = window.innerWidth;
-      this.height = window.innerHeight;
-      this.pixelRatio = Math.min(window.devicePixelRatio, 2);
+    this.width = Math.floor(containerBounds.width);
+    this.height = Math.floor(containerBounds.height);
 
-      this.adjustViewportHeight();
+    this.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-      this.trigger("resize");
-    });
+    this.trigger("resize");
   }
 
   adjustViewportHeight() {
-    const viewportHeight = this.height;
+    const viewportHeight = window.innerHeight;
     // Set the value in a custom property to be used in CSS
     document.documentElement.style.setProperty("--vh", `${viewportHeight}px`);
   }

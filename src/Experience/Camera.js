@@ -1,319 +1,83 @@
-import * as THREE from "three";
-import { gsap } from "gsap";
+import * as THREE from "three/webgpu";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Experience from "./Experience";
 
-import paths from "./Data/paths.js";
+import Experience from "./Experience";
 
 export default class Camera {
   constructor() {
     this.experience = new Experience();
 
-    this.debug = this.experience.debug;
     this.canvas = this.experience.canvas;
     this.sizes = this.experience.sizes;
-    this.inputEvents = this.experience.inputEvents;
-    this.manager = this.experience.manager;
     this.scene = this.experience.scene;
-    this.time = this.experience.time;
+    this.debug = this.experience.debug;
 
-    this.options = {
-      initialPos: paths.camera[0],
-      initialTargetPos: paths.target[0],
-    };
-
-    // Setup
-    this.isAnimated = false;
-    this.scrollProgress = 0;
-    this.cameraCurve = null;
-    this.targetCurve = null;
-    this.fakeTarget = null;
+    // Looking up the valley from above Syabru Besi
+    this.target = new THREE.Vector3(12.11, 35.92, -1.11);
 
     this.setInstance();
-    this.initEvents();
-    // this.setOrbitControls();
-
-    // Debug
+    this.setOrbitControls();
     this.setDebug();
   }
 
   setInstance() {
-    this.cameraParent = new THREE.Group();
     this.instance = new THREE.PerspectiveCamera(
-      75,
+      60,
       this.sizes.width / this.sizes.height,
       0.1,
-      100
+      300,
     );
 
-    this.cameraParent.position.set(
-      this.options.initialPos.x,
-      this.options.initialPos.y + 1,
-      this.options.initialPos.z
-    );
-
-    this.scene.add(this.cameraParent);
-    this.cameraParent.add(this.instance);
-
-    this.instance.lookAt(
-      this.options.initialTargetPos.x,
-      this.options.initialTargetPos.y,
-      this.options.initialTargetPos.z
-    );
-  }
-
-  setPaths() {
-    this.cameraCurve = this.experience.world.paths.cameraCurve;
-    this.targetCurve = this.experience.world.paths.targetCurve;
-    this.fakeTarget = this.experience.world.paths.fakeTarget;
-  }
-
-  initEvents() {
-    // Mouse Events
-    this.inputEvents.on("mousemove", this.onMouseMove.bind(this));
-    // Scroll event
-    this.inputEvents.on("wheel", this.onMouseWheel.bind(this));
-    // Keyboard Events
-    this.inputEvents.on("keydown", this.onKeyDown.bind(this));
-    // Animation
-    this.manager.on("camera-intro-animation", this.introAnimation.bind(this));
-    // Camera Zoom
-    this.manager.on("camera-zoom", this.zoom.bind(this));
-    this.manager.on("camera-unzoom", this.unzoom.bind(this));
-    // Device Orientation
-    this.inputEvents.on(
-      "deviceOrientation",
-      this.onDeviceOrientation.bind(this)
-    );
-  }
-
-  introAnimation() {
-    gsap.to(this.cameraParent.position, {
-      y: this.options.initialPos.y,
-      duration: 3.5,
-      ease: "power1.out",
-      onUpdate: () => {
-        this.instance.lookAt(
-          this.options.initialTargetPos.x,
-          this.options.initialTargetPos.y,
-          this.options.initialTargetPos.z
-        );
-      },
-    });
-  }
-
-  zoom() {
-    const activeMarker = this.manager.getActiveMarker();
-    if (activeMarker) {
-      this.previousPosition = this.cameraParent.position.clone();
-
-      // Calculate the new camera position
-      const distance = -0.7; // Distance from the marker
-
-      const direction = new THREE.Vector3()
-        .subVectors(activeMarker.position, this.cameraParent.position)
-        .normalize();
-
-      // Calculate left vector as the cross product of the direction and the up vector
-      const upVector = new THREE.Vector3(0, 1, 0); // Assuming up direction is along the y-axis
-      const leftVector = new THREE.Vector3()
-        .crossVectors(upVector, direction)
-        .normalize();
-
-      // Calculate the panning effect by moving 0.30 units to the right
-      const panDistance = -0.3;
-      const panRight = new THREE.Vector3()
-        .copy(leftVector)
-        .multiplyScalar(panDistance);
-
-      // Combine the forward/backward movement with the left panning
-      const newPosition = new THREE.Vector3()
-        .copy(direction)
-        .multiplyScalar(distance)
-        .add(activeMarker.position)
-        .add(panRight); // Apply the left panning
-
-      gsap.to(this.cameraParent.position, {
-        x: newPosition.x,
-        y: newPosition.y,
-        z: newPosition.z,
-        duration: 2,
-        ease: "power2.inOut",
-      });
-    }
-  }
-
-  unzoom() {
-    gsap.to(this.cameraParent.position, {
-      x: this.previousPosition.x,
-      y: this.previousPosition.y,
-      z: this.previousPosition.z,
-      duration: 2.5,
-      ease: "power2.out",
-      onComplete: () => {
-        this.manager.setZoomState(false);
-      },
-    });
-  }
-
-  onMouseWheel() {
-    if (
-      this.scrollProgress >= 0 &&
-      this.manager.isScrollingEnabled() &&
-      !this.manager.getZoomState()
-    ) {
-      let delta = 0.025;
-      if (this.inputEvents.mouse.z < 0) {
-        delta = -0.025;
-      }
-
-      const targetScrollProgress = this.scrollProgress + delta;
-      const clampedScrollProgress = Math.max(
-        0,
-        Math.min(targetScrollProgress, this.manager.getMaxScrollProgress())
-      );
-
-      gsap.to(this, {
-        duration: 1.5,
-        scrollProgress: clampedScrollProgress,
-        ease: "power2.EaseInOut",
-        onUpdate: () => {
-          const newPosition = this.cameraCurve.getPointAt(this.scrollProgress);
-          const newPosition2 = this.targetCurve.getPointAt(this.scrollProgress);
-          this.fakeTarget.position.copy(newPosition2);
-          this.cameraParent.position.copy(newPosition);
-          this.instance.lookAt(
-            this.fakeTarget.position.x,
-            this.fakeTarget.position.y,
-            this.fakeTarget.position.z
-          );
-        },
-        onComplete: () => {
-          this.manager.goToTutorialStep(3);
-        },
-      });
-    }
-  }
-
-  onMouseMove() {
-    if (this.manager.isMouseMoveEnabled()) {
-      // calculate the position of the mouse based with center as origin
-      const mouse = new THREE.Vector2(
-        this.inputEvents.mouse.x - this.sizes.width / 2,
-        this.inputEvents.mouse.y - this.sizes.height / 2
-      );
-
-      // normalize the mouse position
-      const position = new THREE.Vector2(
-        mouse.x / (this.sizes.width / 2),
-        mouse.y / (this.sizes.height / 2)
-      );
-
-      // Create a movement vector based on the mouse position
-      const movementVector = new THREE.Vector3(
-        position.x / 8,
-        position.y / -8,
-        0
-      );
-
-      // Apply the camera's current rotation to the movement vector
-      movementVector.applyQuaternion(this.instance.quaternion);
-
-      // Update the camera's position by adding the transformed movement vector
-      gsap.to(this.instance.position, {
-        delay: 0.1,
-        x: movementVector.x,
-        y: movementVector.y,
-        z: movementVector.z,
-        duration: 2,
-        ease: "power4.easeInOut",
-      });
-    }
-  }
-
-  onDeviceOrientation() {
-    const movementVector = new THREE.Vector3(
-      THREE.MathUtils.clamp(
-        this.inputEvents.deviceOrientation.x / 20,
-        -0.12,
-        0.12
-      ),
-      0,
-      0
-    );
-
-    movementVector.applyQuaternion(this.instance.quaternion);
-    gsap.to(this.instance.position, {
-      delay: 0.1,
-      x: movementVector.x,
-      y: movementVector.y,
-      z: movementVector.z,
-      duration: 2,
-      ease: "power4.easeInOut",
-    });
-  }
-
-  animateMove(direction) {
-    // Rotate to camera's orientation
-    direction.applyQuaternion(this.instance.quaternion);
-
-    const distanceToMove = 1;
-    const newPosition = this.cameraParent.position
-      .clone()
-      .add(direction.multiplyScalar(distanceToMove));
-
-    gsap.to(this.cameraParent.position, {
-      x: newPosition.x,
-      y: newPosition.y,
-      z: newPosition.z,
-      duration: 2, // Set the duration of the animation
-      ease: "power4.easeInOut",
-    });
-  }
-
-  onKeyDown(keyCode) {
-    const moveDistance = 0.1;
-    let direction = new THREE.Vector3(0, 0, 0);
-    switch (keyCode) {
-      case "ArrowUp":
-        direction = new THREE.Vector3(0, moveDistance, 0);
-        this.animateMove(direction);
-        break;
-      case "ArrowDown":
-        direction = new THREE.Vector3(0, -moveDistance, 0);
-        this.animateMove(direction);
-        break;
-      case "ArrowLeft":
-        direction = new THREE.Vector3(-moveDistance, 0, 0);
-        this.animateMove(direction);
-        break;
-      case "ArrowRight":
-        direction = new THREE.Vector3(moveDistance, 0, 0);
-        this.animateMove(direction);
-        break;
-      case "Space":
-        console.log(
-          "Camera Position:",
-          `new THREE.Vector3(${this.cameraParent.position.x.toFixed(
-            2
-          )},${this.cameraParent.position.y.toFixed(
-            2
-          )},${this.cameraParent.position.z.toFixed(2)})`
-        );
-        break;
-    }
+    this.instance.position.set(-53.37, 59.87, 8.72);
+    this.instance.lookAt(this.target);
+    this.scene.add(this.instance);
   }
 
   setOrbitControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
     this.controls.enableDamping = true;
+    this.controls.target.copy(this.target);
+    this.controls.update();
   }
 
   setDebug() {
-    if (this.debug.active) {
-      //this.debugFolder = this.debug.ui.addFolder("Camera");
-      //this.debugFolder.close();
-    }
+    if (!this.debug.active) return;
+
+    this.debugFolder = this.debug.ui.addFolder({
+      title: "Camera",
+      expanded: false,
+    });
+
+    const pointSettings = (label) => ({
+      label,
+      x: { step: 0.01 },
+      y: { step: 0.01 },
+      z: { step: 0.01 },
+    });
+
+    this.debugFolder
+      .addBinding(this.instance, "position", pointSettings("pos"))
+      .on("change", () => this.controls.update());
+
+    this.debugFolder
+      .addBinding(this.controls, "target", pointSettings("look"))
+      .on("change", () => this.controls.update());
+
+    this.debugFolder
+      .addBinding(this.instance, "fov", { min: 20, max: 120, step: 1 })
+      .on("change", () => this.instance.updateProjectionMatrix());
+
+    this.debugFolder
+      .addBinding(this.instance, "far", { min: 10, max: 2000, step: 10 })
+      .on("change", () => this.instance.updateProjectionMatrix());
+
+    this.debugFolder.addButton({ title: "Copy setup" }).on("click", () => {
+      const format = (vector) =>
+        `${vector.x.toFixed(2)}, ${vector.y.toFixed(2)}, ${vector.z.toFixed(2)}`;
+      const snippet = `this.target = new THREE.Vector3(${format(this.controls.target)});\nthis.instance.position.set(${format(this.instance.position)});`;
+      navigator.clipboard?.writeText(snippet);
+      console.log(snippet);
+    });
   }
 
   resize() {
@@ -322,6 +86,10 @@ export default class Camera {
   }
 
   update() {
-    if (this.controls) this.controls.update();
+    this.controls.update();
+  }
+
+  destroy() {
+    this.controls.dispose();
   }
 }

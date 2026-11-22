@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "three/webgpu";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
@@ -15,6 +15,7 @@ export default class Resources extends EventEmitter {
     this.items = {};
     this.toLoad = this.sources.length;
     this.loaded = 0;
+    this.isReady = false;
 
     this.setLoaders();
     this.startLoading();
@@ -29,9 +30,16 @@ export default class Resources extends EventEmitter {
     this.loaders.gltfLoader.setDRACOLoader(this.loaders.dracoLoader);
 
     this.loaders.textureLoader = new THREE.TextureLoader();
+
+    this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
   }
 
   startLoading() {
+    if (this.toLoad === 0) {
+      this.isReady = true;
+      return;
+    }
+
     for (const source of this.sources) {
       if (source.type === "gltfModel") {
         this.loaders.gltfLoader.load(
@@ -40,7 +48,7 @@ export default class Resources extends EventEmitter {
             this.sourceLoaded(source, file);
           },
           (progress) => this.onProgress(progress),
-          (error) => this.onError(error, source)
+          (error) => this.onError(error, source),
         );
       } else if (source.type === "texture") {
         this.loaders.textureLoader.load(
@@ -49,7 +57,16 @@ export default class Resources extends EventEmitter {
             this.sourceLoaded(source, file);
           },
           (progress) => this.onProgress(progress),
-          (error) => this.onError(error, source)
+          (error) => this.onError(error, source),
+        );
+      } else if (source.type === "cubeTexture") {
+        this.loaders.cubeTextureLoader.load(
+          source.path,
+          (file) => {
+            this.sourceLoaded(source, file);
+          },
+          (progress) => this.onProgress(progress),
+          (error) => this.onError(error, source),
         );
       } else if (source.type === "image") {
         this.loadImage(source);
@@ -62,6 +79,8 @@ export default class Resources extends EventEmitter {
     this.loaded++;
 
     if (this.loaded === this.toLoad) {
+      // Kept so anyone arriving after the event can still tell
+      this.isReady = true;
       this.trigger("ready");
     }
   }
