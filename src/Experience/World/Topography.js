@@ -17,6 +17,7 @@ export default class Topography {
 
     // Setup
     this.setTerrainMap();
+    this.setGroundHeight();
 
     // Debug
     this.setDebug();
@@ -35,6 +36,12 @@ export default class Topography {
     this.marker = new Marker({ color: 0xcb6c6a })
       .setLngLat(this.options.center)
       .addTo(this.terrainMap);
+  }
+
+  // Lets the camera know where the ground is, so it can't go under it
+  setGroundHeight() {
+    this.camera.getGroundHeight = (position) =>
+      this.terrainMap.getGroundHeight(position);
   }
 
   setDebug() {
@@ -78,6 +85,7 @@ export default class Topography {
   destroy() {
     this.scene.remove(this.terrainMap);
     this.terrainMap.dispose();
+    this.camera.getGroundHeight = null;
     this.debugFolder?.dispose();
   }
 }

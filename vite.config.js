@@ -1,3 +1,4 @@
+import vue from "@vitejs/plugin-vue";
 import restart from "vite-plugin-restart";
 
 export default {
@@ -14,5 +15,5 @@ export default {
     emptyOutDir: true,
     sourcemap: true,
   },
-  plugins: [restart({ restart: ["../static/**"] })],
+  plugins: [vue(), restart({ restart: ["../static/**"] })],
 };
