@@ -6,6 +6,7 @@ import Resources from "./Utils/Resources.js";
 import Debug from "./Utils/Debug.js";
 import Stats from "./Utils/Stats.js";
 
+import Manager from "./Manager.js";
 import Camera from "./Camera.js";
 import Renderer from "./Renderer.js";
 
@@ -48,6 +49,7 @@ export default class Experience {
     this.stats = new Stats();
     this.sizes = new Sizes();
     this.time = new Time();
+    this.manager = new Manager();
     this.scene = new THREE.Scene();
     this.resources = new Resources(sources);
     this.camera = new Camera();

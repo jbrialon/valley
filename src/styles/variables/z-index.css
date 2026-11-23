@@ -1,0 +1,5 @@
+:root {
+  --z-webgl: 20;
+  --z-ui: 30;
+  --z-debug: 99;
+}

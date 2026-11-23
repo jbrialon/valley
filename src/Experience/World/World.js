@@ -1,6 +1,7 @@
 import Experience from "../Experience";
 import { TILE_WORLD } from "../../TerrainMap/index.js";
 import Loader from "./Loader";
+import Markers from "./Markers";
 import Sky from "./Sky";
 import Topography from "./Topography";
 
@@ -22,6 +23,10 @@ export default class World {
   async setup() {
     this.topography = new Topography();
     this.setSky();
+    this.markers = new Markers({
+      terrainMap: this.topography.terrainMap,
+      sky: this.sky,
+    });
     await this.topography.ready;
 
     // Show Experience
@@ -36,5 +41,6 @@ export default class World {
 
   update() {
     if (this.topography) this.topography.update();
+    if (this.markers) this.markers.update();
   }
 }

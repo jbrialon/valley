@@ -49,9 +49,9 @@ export default class Sky {
 
     // Options
     this.options = {
-      zenith: "#2F5F86",
-      mid: "#8DB4C4",
-      horizon: "#EFE5CE",
+      zenith: "#20405b",
+      mid: "#7394a1",
+      horizon: "#efe5ce",
       // How high each color sits, 0 is the horizon and 1 is straight up
       midHeight: 0.2,
       zenithHeight: 0.6,

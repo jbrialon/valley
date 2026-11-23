@@ -1,5 +1,5 @@
 import Experience from "../Experience";
-import { TerrainMap, Marker } from "../../TerrainMap/index.js";
+import { TerrainMap } from "../../TerrainMap/index.js";
 
 export default class Topography {
   constructor() {
@@ -32,10 +32,6 @@ export default class Topography {
     this.ready = this.terrainMap.ready;
 
     this.scene.add(this.terrainMap);
-
-    this.marker = new Marker({ color: 0xcb6c6a })
-      .setLngLat(this.options.center)
-      .addTo(this.terrainMap);
   }
 
   // Lets the camera know where the ground is, so it can't go under it

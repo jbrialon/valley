@@ -1,0 +1,12 @@
+:root {
+  --ui-text-color: #f3ebdd;
+  --ink-color: #1f2840;
+  --accent-color: #e8752a;
+  --summit-color: #8a4a2b;
+  --secondary-color: #7e9a4e;
+  --ui-scrim-color: rgb(20 34 58 / 0.55);
+  --ui-shadow-color: rgb(20 34 58 / 0.45);
+  --ui-text-halo:
+    0 0 1px rgb(20 34 58 / 0.9), 0 0 2px rgb(20 34 58 / 0.8),
+    0 1px 3px rgb(20 34 58 / 0.45), 0 0 12px rgb(20 34 58 / 0.55);
+}
