@@ -43,7 +43,7 @@ export default {
         if (!screen) return;
 
         // A hidden marker stays where it was, so it fades out in place
-        // TODO: does not always work
+        // TODO: does not always work 
         if (visible) {
           screen.x = Math.round(x);
           screen.y = Math.round(y);

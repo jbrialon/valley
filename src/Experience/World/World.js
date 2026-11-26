@@ -4,6 +4,7 @@ import Loader from "./Loader";
 import Markers from "./Markers";
 import Sky from "./Sky";
 import Topography from "./Topography";
+import Tracks from "./Tracks";
 
 export default class World {
   constructor() {
@@ -23,6 +24,7 @@ export default class World {
   async setup() {
     this.topography = new Topography();
     this.setSky();
+    this.tracks = new Tracks({ terrainMap: this.topography.terrainMap });
     this.markers = new Markers({
       terrainMap: this.topography.terrainMap,
       sky: this.sky,
